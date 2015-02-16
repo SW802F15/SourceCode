@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -65,7 +66,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private void initialiseMusicPlayer(){
         if (musicPlayer == null){
-            musicPlayer = MediaPlayer.create(this, R.raw.music_sample);
+            musicPlayer = new MediaPlayer();
         }
         else {
             musicPlayer.reset();
@@ -82,11 +83,17 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void loadSong(Song song){
+        if (song == null || !new File(song.getPath()).exists()){
+            return;
+        }
         try {
+            musicPlayer.reset();
             musicPlayer.setDataSource(song.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 
 }
