@@ -1,6 +1,8 @@
 package com.example.sw802f15.tempoplayer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -51,5 +53,37 @@ public class MusicPlayerActivity extends ActionBarActivity {
         Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
         musicPlayerService.setAction("Play");
         startService(musicPlayerService);
+    }
+
+    public void volumeUp()
+    {
+        AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        final int curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        if(curVol == am.getStreamMaxVolume(AudioManager.STREAM_MUSIC))
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }else
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol + 1,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }
+    }
+
+    public void volumeDown()
+    {
+        AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        final int curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        if(curVol == 0)
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }else
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol + -1,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }
     }
 }
