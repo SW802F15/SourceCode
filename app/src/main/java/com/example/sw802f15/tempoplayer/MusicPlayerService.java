@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.io.IOException;
+
 /**
  * Created by Draegert on 16-02-2015.
  */
@@ -27,6 +29,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public int onStartCommand(Intent intent, int flags, int startId){
 
+        if (intent.getAction() == null){
+            return 0;
+        }
         switch (intent.getAction()){
             case "Play":
                 //musicPlayer.prepareAsync();
@@ -44,6 +49,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                 break;
             case "Previous":
 
+                break;
+
+            default:
                 break;
         }
 
@@ -73,5 +81,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
+    public void loadSong(Song song){
+        try {
+            musicPlayer.setDataSource(song.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
