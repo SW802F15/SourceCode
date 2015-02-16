@@ -29,7 +29,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
         switch (intent.getAction()){
             case "Play":
-                musicPlayer.prepareAsync();
+                //musicPlayer.prepareAsync();
                 Log.d("LogCat", "MusicPlayer started.");
                 break;
             case "Pause":
