@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import com.example.sw802f15.tempoplayer.MusicPlayerActivity;
+import android.view.KeyEvent;
 
 public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<MusicPlayerActivity>
 {
@@ -48,6 +49,28 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         v.volumeDown();
         final int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
         final int expectedVolume = initialVolume - 1;
+        assertEquals(expectedVolume, endVolume);
+    }
+
+    @SmallTest
+    public void testPhysicalVolumeUp()
+    {
+        int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        MusicPlayerActivity v = (MusicPlayerActivity)_ac;
+        sendKeys(KeyEvent.KEYCODE_VOLUME_UP);
+        int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int expectedVolume = initialVolume + 1;
+        assertEquals(expectedVolume, endVolume);
+    }
+
+    @SmallTest
+    public void testPhysicalVolumeDown()
+    {
+        int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        MusicPlayerActivity v = (MusicPlayerActivity)_ac;
+        sendKeys(KeyEvent.KEYCODE_VOLUME_DOWN);
+        int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int expectedVolume = initialVolume - 1;
         assertEquals(expectedVolume, endVolume);
     }
 }

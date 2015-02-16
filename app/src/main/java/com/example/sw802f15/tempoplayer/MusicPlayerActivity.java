@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,6 +44,32 @@ public class MusicPlayerActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        switch(event.getKeyCode())
+        {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                volumeUp();
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                volumeDown();
+            default:
+                int x = 0;
+        }
+
+        return super.dispatchKeyEvent(event);
     }
 
     private void DRIVER_MusicPlayerService(){
@@ -82,7 +109,7 @@ public class MusicPlayerActivity extends ActionBarActivity {
                     AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
         }else
         {
-            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol + -1,
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol - 1,
                     AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
         }
     }
