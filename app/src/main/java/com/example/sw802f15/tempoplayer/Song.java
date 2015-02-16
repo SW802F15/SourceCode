@@ -4,29 +4,29 @@ package com.example.sw802f15.tempoplayer;
  * Created by Draegert on 16-02-2015.
  */
 public class Song {
-    private long id;
-    private String title;
-    private  String artist;
-    private float bpm;
+    private long _id;
+    private String _title;
+    private  String _artist;
+    private float _bpm;
 
     public Song(long songId, String songTitle, String songArtist){
-        id = songId;
-        title = songTitle;
-        artist = songArtist;
+        _id = songId;
+        _title = songTitle;
+        _artist = songArtist;
     }
 
     public Song(long songId, String songTitle, String songArtist, float songBpm){
-        id = songId;
-        title = songTitle;
-        artist = songArtist;
-        bpm = songBpm;
+        _id = songId;
+        _title = songTitle;
+        _artist = songArtist;
+        _bpm = songBpm;
     }
 
-    public long getId() {return id;}
+    public long getID() {return _id;}
 
-    public String getTitle() {return title;}
+    public String get_title() {return _title;}
 
-    public String getArtist() {return artist;}
+    public String getArtist() {return _artist;}
 
-    public float getBpm() {return bpm;}
+    public float getBpm() {return _bpm;}
 }
