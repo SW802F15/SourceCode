@@ -1,12 +1,10 @@
 package com.example.sw802f15.tempoplayer;
 
-import android.test.InstrumentationTestCase;
+import android.test.ActivityInstrumentationTestCase2;
 
-public class TestMusicPlayerActivity extends InstrumentationTestCase
+public class TestMusicPlayerActivity extends ActivityInstrumentationTestCase2
 {
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 5;
-        assertEquals(expected, reality);
+    public TestMusicPlayerActivity(Class activityClass) {
+        super(activityClass);
     }
 }

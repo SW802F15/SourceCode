@@ -1,12 +1,18 @@
 package com.example.sw802f15.tempoplayer;
 
 import android.test.InstrumentationTestCase;
+import android.test.ServiceTestCase;
 
-public class TestMusicPlayerService extends InstrumentationTestCase
+public class TestMusicPlayerService extends ServiceTestCase
 {
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 5;
-        assertEquals(expected, reality);
+    /**
+     * Constructor
+     *
+     * @param serviceClass The type of the service under test.
+     */
+    public TestMusicPlayerService(Class serviceClass) {
+        super(serviceClass);
     }
+
+
 }
