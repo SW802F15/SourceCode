@@ -55,7 +55,7 @@ public class MusicPlayerActivity extends ActionBarActivity {
         Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
         musicPlayerService.setAction("Play");
 
-        musicPlayerService.setDataAndType(song.getPath(), "mp3");
+        musicPlayerService.setDataAndType(song.getUri(), "mp3");
 
         startService(musicPlayerService);
     }

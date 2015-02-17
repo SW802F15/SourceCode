@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,15 +87,17 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void loadSong(Song song) {
-        if (song == null || song.getPath().getPath().isEmpty()){
+        if (song == null || song.getUri().getPath().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         musicPlayer.reset();
         try {
-            musicPlayer.setDataSource(this, song.getPath());
+            musicPlayer.setDataSource(this, song.getUri());
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
         musicPlayer.prepareAsync();
 

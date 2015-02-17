@@ -55,29 +55,21 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 
         getService().loadSong(testSongValid);
         try {
-            getService().musicPlayer.prepare();
+            getService().musicPlayer.start();
         } catch (IllegalStateException ignored) {
             Assert.fail();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         getService().loadSong(testSongInvalid);
         try {
-            getService().musicPlayer.prepare();
+            getService().musicPlayer.start();
             Assert.fail();
-        } catch (IllegalStateException ignored) {
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IllegalStateException ignored) { }
 
         getService().loadSong(null);
         try {
-            getService().musicPlayer.prepare();
+            getService().musicPlayer.start();
             Assert.fail();
-        } catch (IllegalStateException ignored) {
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IllegalStateException ignored) { }
     }
 }
