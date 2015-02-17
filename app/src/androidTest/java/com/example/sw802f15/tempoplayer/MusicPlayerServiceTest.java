@@ -124,6 +124,73 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     }
 
     @SmallTest
+    public void testPausePosition(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                final Intent pauseIntent = new Intent();
+                pauseIntent.setAction("Pause");
+                startService(pauseIntent);
+                final float currentPosition = getService().musicPlayer.getCurrentPosition();
+
+                new CountDownTimer(2000,1) {
+                    @Override
+                    public void onTick(long millisUntilFinished) { }
+                    @Override
+                    public void onFinish() {
+                        assertTrue(currentPosition == getService().musicPlayer.getCurrentPosition());
+                    }
+                }.start();
+            }
+        }.start();
+    }
+
+    @SmallTest
+    public void testUnPause(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                final Intent pauseIntent = new Intent();
+                pauseIntent.setAction("Pause");
+                startService(pauseIntent);
+                final float currentPosition = getService().musicPlayer.getCurrentPosition();
+                startService(playIntent);
+
+                new CountDownTimer(1000,1) {
+                    @Override
+                    public void onTick(long millisUntilFinished) { }
+                    @Override
+                    public void onFinish() {
+                        assertTrue(currentPosition < getService().musicPlayer.getCurrentPosition());
+                    }
+                }.start();
+            }
+        }.start();
+    }
+
+    @SmallTest
     public void testStop(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -189,5 +256,10 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                 assertFalse(getService().isPrepared);
             }
         }.start();
+    }
+
+    @SmallTest
+    public void testRepeat(){
+
     }
 }
