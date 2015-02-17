@@ -2,6 +2,7 @@ package com.example.sw802f15.tempoplayer;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -27,11 +28,10 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     protected void setUp() throws Exception {
         super.setUp();
         pathToMp3File = "";
-
-        testSongValid = new Song(1, "Tristram", "Matt",  Environment.getExternalStorageDirectory() +
-                "/" + Environment.DIRECTORY_MUSIC + "/music_sample.mp3", 460);
-        testSongInvalid = new Song(1, "Tristram", "Matt", Environment.getExternalStorageDirectory() +
-                "/" + Environment.DIRECTORY_MUSIC + "/music_sample.", 460);
+        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
+                + "/music_sample.mp3";
+        testSongValid = new Song(1, "Tristram", "Matt", Uri.parse(path), 460);
+        testSongInvalid = new Song(1, "Tristram", "Matt", Uri.parse(path.substring(6)), 460);
     }
 
     //Tests set up of test
@@ -41,6 +41,10 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 
     @SmallTest
     public void testPlaySong(){
+        Intent startIntent = new Intent();
+        startService(startIntent);
+        getService().loadSong(testSongValid);
+
 
     }
 
@@ -52,20 +56,28 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         getService().loadSong(testSongValid);
         try {
             getService().musicPlayer.prepare();
-        } catch (IOException | IllegalStateException ignored) {
+        } catch (IllegalStateException ignored) {
             Assert.fail();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         getService().loadSong(testSongInvalid);
         try {
             getService().musicPlayer.prepare();
             Assert.fail();
-        } catch (IOException | IllegalStateException ignored) {}
+        } catch (IllegalStateException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         getService().loadSong(null);
         try {
             getService().musicPlayer.prepare();
             Assert.fail();
-        } catch (IOException | IllegalStateException ignored) {}
+        } catch (IllegalStateException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

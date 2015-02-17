@@ -2,11 +2,15 @@ package com.example.sw802f15.tempoplayer;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.File;
 
 
 public class MusicPlayerActivity extends ActionBarActivity {
@@ -44,12 +48,17 @@ public class MusicPlayerActivity extends ActionBarActivity {
     }
 
     private void DRIVER_MusicPlayerService(){
-        play();
+        //play();
     }
 
-    public void play(){
+    public void play(Song song){
         Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
         musicPlayerService.setAction("Play");
+
+        musicPlayerService.setDataAndType(song.getPath(), "mp3");
+
         startService(musicPlayerService);
     }
+
+
 }
