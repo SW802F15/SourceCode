@@ -1,12 +1,15 @@
 package com.example.sw802f15.tempoplayer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -47,6 +50,36 @@ public class MusicPlayerActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        int key = event.getKeyCode();
+
+        if(key == KeyEvent.KEYCODE_VOLUME_UP && event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            volumeUp();
+            return true;
+        }
+        else if(key == KeyEvent.KEYCODE_VOLUME_DOWN && event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            volumeDown();
+            return true;
+        }else
+        {
+            return super.dispatchKeyEvent(event);
+        }
+    }
+
     private void DRIVER_MusicPlayerService(){
         //play();
     }
@@ -60,5 +93,35 @@ public class MusicPlayerActivity extends ActionBarActivity {
         startService(musicPlayerService);
     }
 
+    public void volumeUp()
+    {
+        AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        final int curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
 
+        if(curVol == am.getStreamMaxVolume(AudioManager.STREAM_MUSIC))
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }else
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol + 1,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }
+    }
+
+    public void volumeDown()
+    {
+        AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        final int curVol = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        if(curVol == 0)
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }else
+        {
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol - 1,
+                    AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        }
+    }
 }

@@ -30,6 +30,7 @@ public class Song {
         _bpm = songBpm;
     }   
 
+
     public long getID() {return _id;}
 
     public String getTitle() {return _title;}
@@ -41,5 +42,4 @@ public class Song {
     public Uri getUri() {return _uri;}
 
     public int getDurationInSec() {return _durationInSec;}
-
 }
