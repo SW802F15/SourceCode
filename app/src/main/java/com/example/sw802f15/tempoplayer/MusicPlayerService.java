@@ -60,6 +60,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             case "Previous":
 
                 break;
+            case "Repeat":
+                musicPlayer.setLooping(!musicPlayer.isLooping());
+                break;
 
             default:
                 break;

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.test.ServiceTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.MediumTest;
 
 import junit.framework.Assert;
 
@@ -32,10 +32,10 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     }
 
     //Tests set up of test
-    @SmallTest
+    @MediumTest
     public void testPrecondition(){}
 
-    @SmallTest
+    @MediumTest
     public void testPlaySong(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -75,7 +75,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testLoadSong(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -94,7 +94,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         assertFalse(getService().isLoaded);
     }
 
-    @SmallTest
+    @MediumTest
     public void testPause(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -123,7 +123,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testPausePosition(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -142,7 +142,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                 final Intent pauseIntent = new Intent();
                 pauseIntent.setAction("Pause");
                 startService(pauseIntent);
-                final float currentPosition = getService().musicPlayer.getCurrentPosition();
+                final int currentPosition = getService().musicPlayer.getCurrentPosition();
 
                 new CountDownTimer(2000,1) {
                     @Override
@@ -156,7 +156,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testUnPause(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -190,7 +190,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testStop(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -218,7 +218,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testPrepareSong(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
@@ -258,8 +258,74 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @SmallTest
+    @MediumTest
     public void testRepeat(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
 
+        final int startPos = (7*60+38)*1000;
+        getService().musicPlayer.seekTo(startPos);
+
+        final Intent repeatIntent = new Intent();
+        repeatIntent.setAction("Repeat");
+        startService(repeatIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        new CountDownTimer(5000, 1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertTrue(getService().musicPlayer.isPlaying() &&
+                           getService().musicPlayer.isLooping() &&
+                           getService().musicPlayer.getCurrentPosition() < startPos);
+            }
+        }.start();
+    }
+
+    @MediumTest
+    public void testUnRepeat(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        final int startPos = (7*60+38)*1000;
+        getService().musicPlayer.seekTo(startPos);
+
+        final Intent repeatIntent = new Intent();
+        repeatIntent.setAction("Repeat");
+        startService(repeatIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        new CountDownTimer(5000, 1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                final Intent repeatIntent = new Intent();
+                repeatIntent.setAction("Repeat");
+                startService(repeatIntent);
+            }
+        }.start();
+
+        new CountDownTimer(7000, 1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertTrue(getService().musicPlayer.isPlaying() &&
+                           !getService().musicPlayer.isLooping() &&
+                           getService().musicPlayer.getCurrentPosition() < startPos);
+            }
+        }.start();
     }
 }
