@@ -19,6 +19,7 @@ import java.net.URI;
 public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener{
 
     MediaPlayer musicPlayer;
+    Boolean isLoaded = false;
 
     public IBinder onBind(Intent intent) {
         return null;
@@ -88,6 +89,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void loadSong(Uri uri) {
+        isLoaded = false;
         if (uri == null || !new File(uri.getPath()).exists()){
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
             return;
@@ -96,12 +98,11 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         musicPlayer.reset();
         try {
             musicPlayer.setDataSource(this, uri);
+            isLoaded = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("loadSong", e.getStackTrace().toString());
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
         musicPlayer.prepareAsync();
-
     }
-
 }

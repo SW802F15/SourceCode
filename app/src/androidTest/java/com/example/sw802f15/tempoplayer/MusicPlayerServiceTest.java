@@ -1,15 +1,11 @@
 package com.example.sw802f15.tempoplayer;
 
-import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import junit.framework.Assert;
-
-import java.io.IOException;
 
 public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 {
@@ -48,28 +44,19 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     @SmallTest
     public void testLoadSong(){
         Intent startIntent = new Intent();
-        startIntent.setAction("load");
+        startIntent.setAction("Load");
         startIntent.setDataAndType(testSongValid.getUri(), "mp3");
         startService(startIntent);
+        assertTrue(getService().isLoaded);
 
-        /*
-        getService().loadSong(testSongValid);
-        try {
-            getService().musicPlayer.start();
-        } catch (IllegalStateException ignored) {
-            Assert.fail();
-        }
+        startIntent.setAction("Load");
+        startIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        startService(startIntent);
+        assertFalse(getService().isLoaded);
 
-        getService().loadSong(testSongInvalid);
-        try {
-            getService().musicPlayer.start();
-            Assert.fail();
-        } catch (IllegalStateException ignored) { }
-
-        getService().loadSong(null);
-        try {
-            getService().musicPlayer.start();
-            Assert.fail();
-        } catch (IllegalStateException ignored) { }*/
+        startIntent.setAction("Load");
+        startIntent.setDataAndType(null, "mp3");
+        startService(startIntent);
+        assertFalse(getService().isLoaded);
     }
 }
