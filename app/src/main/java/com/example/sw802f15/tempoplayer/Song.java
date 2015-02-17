@@ -2,8 +2,6 @@ package com.example.sw802f15.tempoplayer;
 
 import android.net.Uri;
 
-import java.net.URI;
-
 /**
  * Created by Draegert on 16-02-2015.
  */
@@ -12,22 +10,22 @@ public class Song {
     private String _title;
     private  String _artist;
     private float _bpm;
-    private Uri _path;
+    private Uri _uri;
     private int _durationInSec;
 
-    public Song(long songId, String songTitle, String songArtist, Uri songPath, int songDurationInSec){
+    public Song(long songId, String songTitle, String songArtist, Uri songUri, int songDurationInSec){
         _id = songId;
         _title = songTitle;
         _artist = songArtist;
-        _path = songPath;
+        _uri = songUri;
         _durationInSec = songDurationInSec;
     }
 
-    public Song(long songId, String songTitle, String songArtist, Uri songPath, int songDurationInSec, float songBpm){
+    public Song(long songId, String songTitle, String songArtist, Uri songUri, int songDurationInSec, float songBpm){
         _id = songId;
         _title = songTitle;
         _artist = songArtist;
-        _path = songPath;
+        _uri = songUri;
         _durationInSec = songDurationInSec;
         _bpm = songBpm;
     }   
@@ -40,7 +38,7 @@ public class Song {
 
     public float getBpm() {return _bpm;}
 
-    public Uri getPath() {return _path;}
+    public Uri getUri() {return _uri;}
 
     public int getDurationInSec() {return _durationInSec;}
 
