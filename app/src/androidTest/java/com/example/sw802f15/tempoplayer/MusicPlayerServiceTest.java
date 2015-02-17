@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import junit.framework.Assert;
+
 
 public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 {
@@ -32,7 +34,6 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     //Tests set up of test
     @SmallTest
     public void testPrecondition(){}
-
 
     @SmallTest
     public void testPlaySong(){
@@ -91,5 +92,62 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         loadIntent.setDataAndType(null, "mp3");
         startService(loadIntent);
         assertFalse(getService().isLoaded);
+    }
+
+    @SmallTest
+    public void testPause(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        Intent pauseIntent = new Intent();
+        pauseIntent.setAction("Pause");
+        startService(pauseIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertFalse(getService().musicPlayer.isPlaying());
+                try {
+                    startService(playIntent);
+                } catch (IllegalStateException ignored){
+                    Assert.fail();
+                }
+            }
+        }.start();
+    }
+
+    @SmallTest
+    public void testStop(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        final Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+
+        Intent stopIntent = new Intent();
+        stopIntent.setAction("Stop");
+        startService(stopIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertFalse(getService().musicPlayer.isPlaying());
+                try {
+                    startService(playIntent);
+                    Assert.fail();
+                } catch (IllegalStateException ignored){ }
+            }
+        }.start();
     }
 }
