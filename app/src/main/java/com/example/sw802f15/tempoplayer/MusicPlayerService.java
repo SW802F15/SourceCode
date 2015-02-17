@@ -20,6 +20,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     MediaPlayer musicPlayer;
     Boolean isLoaded = false;
+    Boolean isPrepared = false;
 
     public IBinder onBind(Intent intent) {
         return null;
@@ -69,6 +70,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void onPrepared(MediaPlayer player) {
         //musicPlayer.start();
         Log.d("LogCat", "MusicPlayer Playing.");
+        isPrepared = true;
     }
 
     private void initialiseMusicPlayer(){
@@ -90,6 +92,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void loadSong(Uri uri) {
+        isPrepared = false;
         isLoaded = false;
         if (uri == null || !new File(uri.getPath()).exists()){
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();

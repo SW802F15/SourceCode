@@ -92,4 +92,44 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         startService(loadIntent);
         assertFalse(getService().isLoaded);
     }
+
+    @SmallTest
+    public void testPrepareSong(){
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertTrue(getService().isPrepared);
+            }
+        }.start();
+
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        startService(loadIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertFalse(getService().isPrepared);
+            }
+        }.start();
+
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(null, "mp3");
+        startService(loadIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertFalse(getService().isPrepared);
+            }
+        }.start();
+    }
 }
