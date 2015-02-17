@@ -3,12 +3,14 @@ package com.example.sw802f15.tempoplayer;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by Draegert on 16-02-2015.
@@ -35,11 +37,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
         switch (intent.getAction()){
             case "Play":
-                //musicPlayer.prepareAsync();
+                musicPlayer.start();
                 Log.d("LogCat", "MusicPlayer started.");
                 break;
             case "Pause":
                 musicPlayer.pause();
+                Log.d("LogCat", "MusicPlayer paused.");
                 break;
             case "Stop":
                 musicPlayer.stop();
@@ -60,7 +63,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void onPrepared(MediaPlayer player) {
-        musicPlayer.start();
+        //musicPlayer.start();
         Log.d("LogCat", "MusicPlayer Playing.");
     }
 
@@ -82,18 +85,19 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
-    public void loadSong(Song song){
-        if (song == null || !new File(song.getPath()).exists()){
+    public void loadSong(Song song) {
+        if (song == null || song.getPath().getPath().isEmpty()){
             return;
         }
+
+        musicPlayer.reset();
         try {
-            musicPlayer.reset();
-            musicPlayer.setDataSource(song.getPath());
+            musicPlayer.setDataSource(this, song.getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        musicPlayer.prepareAsync();
+
     }
-
-
 
 }
