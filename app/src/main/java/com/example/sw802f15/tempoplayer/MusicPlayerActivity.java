@@ -59,17 +59,21 @@ public class MusicPlayerActivity extends ActionBarActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
-        switch(event.getKeyCode())
-        {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                volumeUp();
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                volumeDown();
-            default:
-                int x = 0;
-        }
+        int key = event.getKeyCode();
 
-        return super.dispatchKeyEvent(event);
+        if(key == KeyEvent.KEYCODE_VOLUME_UP && event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            volumeUp();
+            return true;
+        }
+        else if(key == KeyEvent.KEYCODE_VOLUME_DOWN && event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            volumeDown();
+            return true;
+        }else
+        {
+            return super.dispatchKeyEvent(event);
+        }
     }
 
     private void DRIVER_MusicPlayerService(){

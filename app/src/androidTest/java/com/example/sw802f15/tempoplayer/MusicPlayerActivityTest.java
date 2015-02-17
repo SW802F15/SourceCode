@@ -1,6 +1,7 @@
 package com.example.sw802f15.tempoplayer;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
@@ -23,28 +24,38 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
     protected void setUp() throws Exception
     {
         super.setUp();
+        setActivityInitialTouchMode(false);
+
         _ac = getActivity();
         Context ctx = _ac.getApplicationContext();
         //_mpa = new MusicPlayerActivity();
         //Context ctx = _mpa.getApplicationContext();
         _am = (AudioManager)ctx.getSystemService(Context.AUDIO_SERVICE);
+        _am.setStreamVolume(AudioManager.STREAM_MUSIC, 6,
+                AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
     }
 
     @SmallTest
     public void testVolumeUp()
     {
-        final int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
         MusicPlayerActivity v = (MusicPlayerActivity)_ac;
         v.volumeUp();
-        final int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
-        final int expectedVolume = initialVolume + 1;
+        int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int expectedVolume = initialVolume + 1;
         assertEquals(expectedVolume, endVolume);
     }
 
     @SmallTest
     public void testVolumeDown()
     {
-        final int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int initialVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
         MusicPlayerActivity v = (MusicPlayerActivity)_ac;
         v.volumeDown();
         final int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
