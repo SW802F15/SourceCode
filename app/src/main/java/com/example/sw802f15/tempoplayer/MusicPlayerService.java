@@ -39,18 +39,19 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         switch (intent.getAction()){
             case "Load":
                 loadSong(intent.getData());
+                Log.d("onStartCommand", "Song loaded.");
                 break;
             case "Play":
                 musicPlayer.start();
-                Log.d("LogCat", "MusicPlayer started.");
+                Log.d("onStartCommand", "MusicPlayer started.");
                 break;
             case "Pause":
                 musicPlayer.pause();
-                Log.d("LogCat", "MusicPlayer paused.");
+                Log.d("onStartCommand", "MusicPlayer paused.");
                 break;
             case "Stop":
                 musicPlayer.stop();
-                Log.d("LogCat", "MusicPlayer stopped.");
+                Log.d("onStartCommand", "MusicPlayer stopped.");
                 break;
             case "Next":
 

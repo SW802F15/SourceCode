@@ -2,6 +2,7 @@ package com.example.sw802f15.tempoplayer;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -35,28 +36,60 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 
     @SmallTest
     public void testPlaySong(){
-        Intent startIntent = new Intent();
-        startService(startIntent);
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
+
+        Intent playIntent = new Intent();
+        playIntent.setAction("Play");
+        startService(playIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertTrue(getService().musicPlayer.isPlaying());
+            }
+        }.start();
 
 
+        Intent stopIntent = new Intent();
+        stopIntent.setAction("Stop");
+        startService(stopIntent);
+
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        startService(loadIntent);
+
+        playIntent.setAction("Play");
+        startService(playIntent);
+        new CountDownTimer(2000,1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                assertFalse(getService().musicPlayer.isPlaying());
+            }
+        }.start();
     }
 
     @SmallTest
     public void testLoadSong(){
-        Intent startIntent = new Intent();
-        startIntent.setAction("Load");
-        startIntent.setDataAndType(testSongValid.getUri(), "mp3");
-        startService(startIntent);
+        Intent loadIntent = new Intent();
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        startService(loadIntent);
         assertTrue(getService().isLoaded);
 
-        startIntent.setAction("Load");
-        startIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
-        startService(startIntent);
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        startService(loadIntent);
         assertFalse(getService().isLoaded);
 
-        startIntent.setAction("Load");
-        startIntent.setDataAndType(null, "mp3");
-        startService(startIntent);
+        loadIntent.setAction("Load");
+        loadIntent.setDataAndType(null, "mp3");
+        startService(loadIntent);
         assertFalse(getService().isLoaded);
     }
 }
