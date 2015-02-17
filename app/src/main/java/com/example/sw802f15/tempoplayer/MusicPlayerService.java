@@ -32,11 +32,13 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public int onStartCommand(Intent intent, int flags, int startId){
-
         if (intent.getAction() == null){
             return 0;
         }
         switch (intent.getAction()){
+            case "Load":
+                loadSong(intent.getData());
+                break;
             case "Play":
                 musicPlayer.start();
                 Log.d("LogCat", "MusicPlayer started.");
@@ -59,7 +61,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             default:
                 break;
         }
-
         return 1;
     }
 
@@ -86,15 +87,15 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
-    public void loadSong(Song song) {
-        if (song == null || song.getUri().getPath().isEmpty()){
+    private void loadSong(Uri uri) {
+        if (uri == null || !new File(uri.getPath()).exists()){
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         musicPlayer.reset();
         try {
-            musicPlayer.setDataSource(this, song.getUri());
+            musicPlayer.setDataSource(this, uri);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
