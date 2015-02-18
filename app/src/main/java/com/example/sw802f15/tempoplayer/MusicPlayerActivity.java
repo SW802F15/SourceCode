@@ -154,6 +154,8 @@ public class MusicPlayerActivity extends Activity{
         final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
         coverFlow.setAdapter(coverImageAdapter);
+        coverFlow.setSpacing(-10);
+        coverFlow.setMaxZoom(-200);
     }
 
 }

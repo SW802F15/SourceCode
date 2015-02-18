@@ -269,6 +269,7 @@ public class CoverFlow extends Gallery {
             if (Math.abs(rotationAngle) > mMaxRotationAngle) {
                 rotationAngle = rotationAngle < 0 ? -mMaxRotationAngle : mMaxRotationAngle;
             }
+
             transformImageBitmap((ImageView) child, t, rotationAngle);
         }
 
