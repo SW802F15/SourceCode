@@ -1,10 +1,12 @@
 package com.example.sw802f15.tempoplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,11 +14,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import java.io.File;
 
 
-public class MusicPlayerActivity extends ActionBarActivity {
+public class MusicPlayerActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +84,26 @@ public class MusicPlayerActivity extends ActionBarActivity {
     }
 
     private void DRIVER_MusicPlayerService(){
-        //play();
+        play(new Song(1, "", "", Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), 2));
     }
 
     public void play(Song song){
         Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
-        musicPlayerService.setAction("Play");
-
+        musicPlayerService.setAction("Load");
         musicPlayerService.setDataAndType(song.getUri(), "mp3");
+        new CountDownTimer(1000, 1) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+            @Override
+            public void onFinish() {
+                Intent playIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+                playIntent.setAction("Play");
+                startService(playIntent);
 
+            }
+        }.start();
         startService(musicPlayerService);
+
     }
 
     public void volumeUp()

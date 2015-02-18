@@ -45,7 +45,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         Intent playIntent = new Intent();
         playIntent.setAction("Play");
         startService(playIntent);
-        new CountDownTimer(2000,1) {
+        new CountDownTimer(1000,1) {
             @Override
             public void onTick(long millisUntilFinished) { }
             @Override
