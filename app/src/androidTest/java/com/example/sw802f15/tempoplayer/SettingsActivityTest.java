@@ -17,8 +17,9 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<Setti
     }
 
     @SmallTest
-    public void testStuff(){
-
+    public void testPrecondition(){
+        assertTrue(true);
     }
+
 
 }
