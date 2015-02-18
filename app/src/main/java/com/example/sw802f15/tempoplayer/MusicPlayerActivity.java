@@ -161,7 +161,7 @@ public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFa
 
 
 
-        Gallery gallery = (Gallery) findViewById(R.id.gallery);
+       /* Gallery gallery = (Gallery) findViewById(R.id.gallery);
         CustomGallery adapter = new CustomGallery(this);
         adapter.addImageToGallery(R.drawable.lonely_island_wack_album);
         adapter.addImageToGallery(R.drawable.ic_launcher);
@@ -170,7 +170,7 @@ public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFa
         adapter.addImageToGallery(R.drawable.dark_side);
         gallery.setAdapter(adapter);
 
-
+*/
 
 
 
