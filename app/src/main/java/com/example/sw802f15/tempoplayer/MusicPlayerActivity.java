@@ -189,12 +189,12 @@ public class MusicPlayerActivity extends Activity {
         imgNextNext.setMaxHeight((int)widthInDp / small);
 
 
-        imgPrevPrev.setImageResource(R.drawable.ic_launcher);
-        imgPrev.setImageResource(R.drawable.ic_launcher);
+        imgPrevPrev.setImageResource(R.drawable.lonely_island_wack_album);
+        imgPrev.setImageResource(R.drawable.lonely_island_wack_album);
 
-        imgCurrent.setImageResource(R.drawable.ic_launcher);
+        imgCurrent.setImageResource(R.drawable.lonely_island_wack_album);
 
-        imgNext.setImageResource(R.drawable.ic_launcher);
-        imgNextNext.setImageResource(R.drawable.ic_launcher);
+        imgNext.setImageResource(R.drawable.lonely_island_wack_album);
+        imgNextNext.setImageResource(R.drawable.lonely_island_wack_album);
     }
 }
