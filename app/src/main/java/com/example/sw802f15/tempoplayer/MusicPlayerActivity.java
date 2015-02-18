@@ -4,17 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.ImageView;
 
 import java.io.File;
 
@@ -25,6 +29,8 @@ public class MusicPlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+
+        testGUI();
     }
 
 
@@ -136,5 +142,59 @@ public class MusicPlayerActivity extends Activity {
             am.setStreamVolume(AudioManager.STREAM_MUSIC, curVol - 1,
                     AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
         }
+    }
+
+
+    private void testGUI(){
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+        float density = getResources().getDisplayMetrics().density;
+        float heightInDp = displayMetrics.heightPixels / density;
+        float widthInDp = displayMetrics.widthPixels / density;
+
+        ImageView imgPrevPrev = (ImageView) findViewById(R.id.imageView_PreviousPrevious);
+        ImageView imgPrev = (ImageView) findViewById(R.id.imageView_Previous);
+        ImageView imgCurrent = (ImageView) findViewById(R.id.imageView_Current);
+        ImageView imgNext = (ImageView) findViewById(R.id.imageView_Next);
+        ImageView imgNextNext = (ImageView) findViewById(R.id.imageView_NextNext);
+
+        int small = 3;
+        int med = 2;
+        int large = 1;
+
+        imgPrevPrev.setMinimumWidth((int)widthInDp / small);
+        imgPrevPrev.setMaxWidth((int)widthInDp / small);
+        imgPrevPrev.setMinimumHeight((int)widthInDp / small);
+        imgPrevPrev.setMaxHeight((int)widthInDp / small);
+
+        imgPrev.setMinimumWidth((int)widthInDp / med);
+        imgPrev.setMaxWidth((int)widthInDp / med);
+        imgPrev.setMinimumHeight((int)widthInDp / med);
+        imgPrev.setMaxHeight((int)widthInDp / med);
+
+        imgCurrent.setMinimumWidth((int)widthInDp / large);
+        imgCurrent.setMaxWidth((int)widthInDp / large);
+        imgCurrent.setMinimumHeight((int)widthInDp / large);
+        imgCurrent.setMaxHeight((int)widthInDp / large);
+
+        imgNext.setMinimumWidth((int)widthInDp / med);
+        imgNext.setMaxWidth((int)widthInDp / med);
+        imgNext.setMinimumHeight((int)widthInDp / med);
+        imgNext.setMaxHeight((int)widthInDp / med);
+
+        imgNextNext.setMinimumWidth((int)widthInDp / small);
+        imgNextNext.setMaxWidth((int)widthInDp / small);
+        imgNextNext.setMinimumHeight((int)widthInDp / small);
+        imgNextNext.setMaxHeight((int)widthInDp / small);
+
+
+        imgPrevPrev.setImageResource(R.drawable.ic_launcher);
+        imgPrev.setImageResource(R.drawable.ic_launcher);
+
+        imgCurrent.setImageResource(R.drawable.ic_launcher);
+
+        imgNext.setImageResource(R.drawable.ic_launcher);
+        imgNextNext.setImageResource(R.drawable.ic_launcher);
     }
 }
