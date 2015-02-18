@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.Assert;
 
@@ -32,7 +33,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     }
 
     //Tests set up of test
-    @MediumTest
+    @SmallTest
     public void testPrecondition(){}
 
     @MediumTest

@@ -9,7 +9,7 @@ public class Song {
     private long _id;
     private String _title;
     private  String _artist;
-    private float _bpm;
+    private int _bpm;
     private Uri _uri;
     private int _durationInSec;
 
@@ -21,7 +21,7 @@ public class Song {
         _durationInSec = songDurationInSec;
     }
 
-    public Song(long songId, String songTitle, String songArtist, Uri songUri, int songDurationInSec, float songBpm){
+    public Song(long songId, String songTitle, String songArtist, Uri songUri, int songDurationInSec, int songBpm){
         _id = songId;
         _title = songTitle;
         _artist = songArtist;
@@ -37,7 +37,7 @@ public class Song {
 
     public String getArtist() {return _artist;}
 
-    public float getBpm() {return _bpm;}
+    public int getBpm() {return _bpm;}
 
     public Uri getUri() {return _uri;}
 
