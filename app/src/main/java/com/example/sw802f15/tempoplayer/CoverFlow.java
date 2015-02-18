@@ -369,10 +369,10 @@ public class CoverFlow extends Gallery {
             reflectionGap = 4;
             setSpacing(-15);*/
             imageWidth = a.getDimension(R.styleable.CoverFlow_imageWidth, 480);
-            imageHeight = a.getDimension(R.styleable.CoverFlow_imageHeight[0], 320);
-            withReflection = a.getBoolean(R.styleable.CoverFlow_withReflection[0], false);
-            imageReflectionRatio = a.getFloat(R.styleable.CoverFlow_imageReflectionRatio[0], 0.2f);
-            reflectionGap = a.getDimension(R.styleable.CoverFlow_reflectionGap[0], 4);
+            imageHeight = a.getDimension(R.styleable.CoverFlow_imageHeight, 320);
+            withReflection = a.getBoolean(R.styleable.CoverFlow_withReflection, false);
+            imageReflectionRatio = a.getFloat(R.styleable.CoverFlow_imageReflectionRatio, 0.2f);
+            reflectionGap = a.getDimension(R.styleable.CoverFlow_reflectionGap, 4);
             setSpacing(-15);
         } finally {
             a.recycle();
