@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
+
+import com.example.sw802f15.tempoplayer.R;
 
 /**
  * This class is an adapter that provides images from a fixed set of resource

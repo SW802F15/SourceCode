@@ -18,7 +18,7 @@
         android:layout_alignParentStart="true"
         android:id="@+id/covers">
 
-        <com.example.sw802f15.tempoplayer.CoverFlow
+        <com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.CoverFlow
             xmlns:coverflow="http://schemas.android.com/apk/res-auto"
             coverflow:imageWidth="175dp"
             coverflow:imageHeight="250dp"

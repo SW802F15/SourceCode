@@ -1,37 +1,29 @@
 package com.example.sw802f15.tempoplayer;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.Image;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ViewSwitcher;
+
+import com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.CoverFlow;
+import com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.ReflectingImageAdapter;
+import com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.ResourceImageAdapter;
 
 import java.io.File;
 
 
-public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFactory{
+public class MusicPlayerActivity extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,50 +151,9 @@ public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFa
 
 
     private void testGUI(){
-        final CoverFlow coverFlow1 = (CoverFlow) findViewById(R.id.coverflow);
-        setupCoverFlow(coverFlow1, true);
-
+        final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
+        coverFlow.setAdapter(coverImageAdapter);
     }
 
-
-    private void setupCoverFlow(final CoverFlow mCoverFlow, final boolean reflect) {
-        BaseAdapter coverImageAdapter;
-        if (reflect) {
-            coverImageAdapter = new ReflectingImageAdapter(new ResourceImageAdapter(this));
-        } else {
-            coverImageAdapter = new ResourceImageAdapter(this);
-        }
-        mCoverFlow.setAdapter(coverImageAdapter);
-        mCoverFlow.setSelection(2, true);
-        setupListeners(mCoverFlow);
-    }
-    private void setupListeners(final CoverFlow mCoverFlow) {
-        mCoverFlow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView< ? > parent, final View view, final int position, final long id) {
-                //textView.setText("Item clicked! : " + id);
-            }
-
-        });
-        mCoverFlow.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(final AdapterView< ? > parent, final View view, final int position, final long id) {
-                //textView.setText("Item selected! : " + id);
-            }
-
-            @Override
-            public void onNothingSelected(final AdapterView< ? > parent) {
-                //textView.setText("Nothing clicked!");
-            }
-        });
-    }
-
-
-
-
-
-    @Override
-    public View makeView() {
-        return null;
-    }
 }

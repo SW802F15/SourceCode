@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.animation.Transformation;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SpinnerAdapter;
+
+import com.example.sw802f15.tempoplayer.R;
 
 /**
  * Cover Flow implementation.
