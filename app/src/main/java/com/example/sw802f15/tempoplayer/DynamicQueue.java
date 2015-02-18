@@ -2,20 +2,15 @@ package com.example.sw802f15.tempoplayer;
 
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class DynamicQueue {
-
     private class StepCounterStub {
         public int getCurrnetSPM() {
             return 42;
@@ -34,17 +29,86 @@ public class DynamicQueue {
             }
         }
     }
-    StepCounterStub sc = new StepCounterStub();
-    DatabaseStub db = new DatabaseStub();
+    private StepCounterStub sc = new StepCounterStub();
+    private DatabaseStub db = new DatabaseStub();
 
+    private List<Song> nextSongs = new ArrayList<Song>();
+    private List<Song> prevSongs = new ArrayList<Song>();
+    private Song currentSong;
+    private int _prevSize;
+    private int _lookAheadSize;
+    private int _thresholdBMP;
+
+    public DynamicQueue(int prevSize, int lookAheadSize, int thresholdBMP){
+        if(prevSize < 1 || lookAheadSize < 1 || thresholdBMP < 0){
+            Log.e("DynamicQueue", "Illegal Arguments");
+            throw new IllegalArgumentException();
+        }
+        _prevSize = prevSize;
+        _lookAheadSize = lookAheadSize;
+        _thresholdBMP = thresholdBMP;
+    }
+
+    public Song getCurrentSong() {
+        return currentSong;
+    }
+
+    public List<Song> getNextSongs() {
+        return nextSongs;
+    }
+
+    public List<Song> getPrevSongs() {
+        return prevSongs;
+    }
+
+    public void selectNextSong() {
+        if (nextSongs == null || nextSongs.size() == 0) {
+            nextSongs = getMatchingSongs(_lookAheadSize, _thresholdBMP);
+        }
+        if (nextSongs.size() == 0){
+            throw new IllegalStateException("No songs available");
+        }
+
+        if (currentSong != null){
+            prevSongs.add(currentSong);
+            if (prevSongs.size() > _prevSize){
+                prevSongs.remove(0);
+            }
+        }
+        currentSong = nextSongs.get(0);
+        nextSongs.remove(0);
+        nextSongs.add(getMatchingSongs(1, _thresholdBMP).get(0));
+    }
+
+    public void selectPrevSong() {
+        if (prevSongs.size() == 0) {
+            Log.e("selectPrevSong", "No previously played songs.");
+            return;
+        }
+
+        nextSongs.add(0, currentSong);
+        if (nextSongs.size() > _lookAheadSize){
+            nextSongs.remove(nextSongs.size()-1);
+        }
+
+        currentSong = prevSongs.get(prevSongs.size()-1);
+        prevSongs.remove(currentSong);
+        prevSongs.remove(null);
+    }
 
     public List<Song> getMatchingSongs(int num, int thresholdBMP){
         if (num < 1 || thresholdBMP < 0){
-            Log.d("getMatchingSongs", "Bad parameters");
+            Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
         final int BMP = sc.getCurrnetSPM();
         List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
+
+        for (Song song : songs){
+            if(prevSongs.contains(song)){
+                prevSongs.remove(song);
+            }
+        }
 
         Collections.sort(songs, new Comparator<Song>() {
             @Override

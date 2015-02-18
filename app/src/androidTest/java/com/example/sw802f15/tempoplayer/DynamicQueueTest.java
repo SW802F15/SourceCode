@@ -1,11 +1,11 @@
 package com.example.sw802f15.tempoplayer;
 
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DynamicQueueTest extends TestCase {
@@ -14,7 +14,7 @@ public class DynamicQueueTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-         dq = new DynamicQueue();
+         dq = new DynamicQueue(2,2,30);
     }
 
     public void tearDown() throws Exception {
@@ -27,7 +27,7 @@ public class DynamicQueueTest extends TestCase {
         assertTrue(true);
     }
 
-    @SmallTest
+    @MediumTest
     public void testGetMatchingSongs(){
         List<Integer> values = new ArrayList<Integer>() {{
             add(Integer.MAX_VALUE);
@@ -70,5 +70,43 @@ public class DynamicQueueTest extends TestCase {
         }
     }
 
+    @MediumTest
+    public void testSelectNextSong(){
+        dq.selectNextSong();
+        Song formerSong = dq.getCurrentSong();
+        dq.selectNextSong();
+        Song newSong = dq.getCurrentSong();
 
+        assertTrue(formerSong.getID() != newSong.getID());
+        assertTrue(newSong.getID() == dq.getCurrentSong().getID());
+
+        List<Song> nextSongs = dq.getNextSongs();
+        assertFalse(nextSongs.contains(formerSong));
+        assertFalse(nextSongs.contains(newSong));
+
+        List<Song> prevSongs = dq.getPrevSongs();
+        assertTrue(prevSongs.contains(formerSong));
+        assertFalse(prevSongs.contains(newSong));
+        assertTrue(prevSongs.size() == 1);
+    }
+    @MediumTest
+    public void testSelectPrevSong(){
+        dq.selectNextSong();
+        dq.selectNextSong();
+        Song formerSong = dq.getCurrentSong();
+        dq.selectPrevSong();
+        Song newSong = dq.getCurrentSong();
+
+        assertTrue(formerSong.getID() != newSong.getID());
+        assertTrue(newSong.getID() == dq.getCurrentSong().getID());
+
+        List<Song> nextSongs = dq.getNextSongs();
+        assertTrue(nextSongs.contains(formerSong));
+        assertFalse(nextSongs.contains(newSong));
+
+        List<Song> prevSongs = dq.getPrevSongs();
+        assertFalse(prevSongs.contains(formerSong));
+        assertFalse(prevSongs.contains(newSong));
+        assertTrue(prevSongs.size() == 0);
+    }
 }
