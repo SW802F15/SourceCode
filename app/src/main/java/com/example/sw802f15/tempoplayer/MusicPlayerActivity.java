@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -157,85 +159,47 @@ public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFa
 
 
     private void testGUI(){
+        final CoverFlow coverFlow1 = (CoverFlow) findViewById(R.id.coverflow);
+        setupCoverFlow(coverFlow1, true);
 
-
-
-
-       /* Gallery gallery = (Gallery) findViewById(R.id.gallery);
-        CustomGallery adapter = new CustomGallery(this);
-        adapter.addImageToGallery(R.drawable.lonely_island_wack_album);
-        adapter.addImageToGallery(R.drawable.ic_launcher);
-        adapter.addImageToGallery(R.drawable.adele_21);
-        adapter.addImageToGallery(R.drawable.nirvananevermindalbumco);
-        adapter.addImageToGallery(R.drawable.dark_side);
-        gallery.setAdapter(adapter);
-
-*/
-
-
-
-
-
-
-
-
-
-/*        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        display.getMetrics(displayMetrics);
-        float density = getResources().getDisplayMetrics().density;
-        float heightInDp = displayMetrics.heightPixels / density;
-        float widthInDp = displayMetrics.widthPixels / density;
-
-        ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
-
-
-
-
-        ImageView imgPrevPrev = (ImageView) findViewById(R.id.imageView_PreviousPrevious);
-        ImageView imgPrev = (ImageView) findViewById(R.id.imageView_Previous);
-        ImageView imgCurrent = (ImageView) findViewById(R.id.imageView_Current);
-        ImageView imgNext = (ImageView) findViewById(R.id.imageView_Next);
-        ImageView imgNextNext = (ImageView) findViewById(R.id.imageView_NextNext);
-
-        int small = 3;
-        int med = 2;
-        int large = 1;
-
-        imgPrevPrev.setMinimumWidth((int)widthInDp / small);
-        imgPrevPrev.setMaxWidth((int)widthInDp / small);
-        imgPrevPrev.setMinimumHeight((int)widthInDp / small);
-        imgPrevPrev.setMaxHeight((int)widthInDp / small);
-
-        imgPrev.setMinimumWidth((int)widthInDp / med);
-        imgPrev.setMaxWidth((int)widthInDp / med);
-        imgPrev.setMinimumHeight((int)widthInDp / med);
-        imgPrev.setMaxHeight((int)widthInDp / med);
-
-        imgCurrent.setMinimumWidth((int)widthInDp / large);
-        imgCurrent.setMaxWidth((int)widthInDp / large);
-        imgCurrent.setMinimumHeight((int)widthInDp / large);
-        imgCurrent.setMaxHeight((int)widthInDp / large);
-
-        imgNext.setMinimumWidth((int)widthInDp / med);
-        imgNext.setMaxWidth((int)widthInDp / med);
-        imgNext.setMinimumHeight((int)widthInDp / med);
-        imgNext.setMaxHeight((int)widthInDp / med);
-
-        imgNextNext.setMinimumWidth((int)widthInDp / small);
-        imgNextNext.setMaxWidth((int)widthInDp / small);
-        imgNextNext.setMinimumHeight((int)widthInDp / small);
-        imgNextNext.setMaxHeight((int)widthInDp / small);
-
-
-        imgPrevPrev.setImageResource(R.drawable.lonely_island_wack_album);
-        imgPrev.setImageResource(R.drawable.lonely_island_wack_album);
-
-        imgCurrent.setImageResource(R.drawable.lonely_island_wack_album);
-
-        imgNext.setImageResource(R.drawable.lonely_island_wack_album);
-        imgNextNext.setImageResource(R.drawable.lonely_island_wack_album);*/
     }
+
+
+    private void setupCoverFlow(final CoverFlow mCoverFlow, final boolean reflect) {
+        BaseAdapter coverImageAdapter;
+        if (reflect) {
+            coverImageAdapter = new ReflectingImageAdapter(new ResourceImageAdapter(this));
+        } else {
+            coverImageAdapter = new ResourceImageAdapter(this);
+        }
+        mCoverFlow.setAdapter(coverImageAdapter);
+        mCoverFlow.setSelection(2, true);
+        setupListeners(mCoverFlow);
+    }
+    private void setupListeners(final CoverFlow mCoverFlow) {
+        mCoverFlow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView< ? > parent, final View view, final int position, final long id) {
+                //textView.setText("Item clicked! : " + id);
+            }
+
+        });
+        mCoverFlow.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView< ? > parent, final View view, final int position, final long id) {
+                //textView.setText("Item selected! : " + id);
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView< ? > parent) {
+                //textView.setText("Nothing clicked!");
+            }
+        });
+    }
+
+
+
+
 
     @Override
     public View makeView() {

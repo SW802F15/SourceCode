@@ -1,23 +1,3 @@
-/*
- * Copyright (C) 2010 Neil Davies
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * This code is base on the Android Gallery widget and was Created
- * by Neil Davies neild001 'at' gmail dot com to be a Coverflow widget
- *
- * @author Neil Davies
- */
 package com.example.sw802f15.tempoplayer;
 
 import android.content.Context;
@@ -359,15 +339,6 @@ public class CoverFlow extends Gallery {
     private void parseAttributes(final Context context, final AttributeSet attrs) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CoverFlow);
         try {
-/*
-            LinearLayout covers = (LinearLayout) findViewById(R.id.covers);
-
-            imageHeight = 200;
-            imageWidth = 200;
-            withReflection = false;
-            imageReflectionRatio = 0.2f;
-            reflectionGap = 4;
-            setSpacing(-15);*/
             imageWidth = a.getDimension(R.styleable.CoverFlow_imageWidth, 480);
             imageHeight = a.getDimension(R.styleable.CoverFlow_imageHeight, 320);
             withReflection = a.getBoolean(R.styleable.CoverFlow_withReflection, false);
