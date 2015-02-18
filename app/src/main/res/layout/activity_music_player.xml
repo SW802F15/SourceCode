@@ -7,72 +7,24 @@
     android:id="@+id/relativeLayout">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="235dp"
+        android:layout_height="260dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/covers">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <Gallery
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/gallery"
+            android:layout_gravity="bottom|center_horizontal" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView_PreviousPrevious"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView_Previous"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher"
-                android:layout_gravity="center"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/imageView_PreviousPrevious"
-                android:layout_toEndOf="@+id/imageView_PreviousPrevious" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView_Current"
-                android:scaleType="fitCenter"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_launcher"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView_Next"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher"
-                android:layout_gravity="center"
-                android:layout_alignTop="@+id/imageView_Previous"
-                android:layout_toLeftOf="@+id/imageView_NextNext"
-                android:layout_toStartOf="@+id/imageView_NextNext" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView_NextNext"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher"
-                android:layout_gravity="center"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
-
-            </RelativeLayout>
+        <ImageSwitcher
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageSwitcher" />
     </LinearLayout>
 
     <LinearLayout
@@ -81,12 +33,12 @@
         android:layout_height="30dp"
         android:layout_below="@+id/covers"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/title">
+        android:id="@+id/title"
+        android:layout_above="@+id/covers">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Song Title"
             android:id="@+id/textView_title"

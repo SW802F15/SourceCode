@@ -1,5 +1,6 @@
 package com.example.sw802f15.tempoplayer;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,13 +18,18 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Gallery;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import java.io.File;
 
 
-public class MusicPlayerActivity extends Activity {
+public class MusicPlayerActivity extends Activity implements ViewSwitcher.ViewFactory{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,20 @@ public class MusicPlayerActivity extends Activity {
 
         testGUI();
     }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+     //   LinearLayout covers = (LinearLayout) findViewById(R.id.covers);
+     //   covers.setLayoutParams(new ActionBar.LayoutParams(covers.getWidth(), covers.getWidth()));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
 
 
     @Override
@@ -59,15 +79,6 @@ public class MusicPlayerActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
@@ -146,12 +157,40 @@ public class MusicPlayerActivity extends Activity {
 
 
     private void testGUI(){
-        Display display = getWindowManager().getDefaultDisplay();
+
+
+
+
+        Gallery gallery = (Gallery) findViewById(R.id.gallery);
+        CustomGallery adapter = new CustomGallery(this);
+        adapter.addImageToGallery(R.drawable.lonely_island_wack_album);
+        adapter.addImageToGallery(R.drawable.ic_launcher);
+        adapter.addImageToGallery(R.drawable.adele_21);
+        adapter.addImageToGallery(R.drawable.nirvananevermindalbumco);
+        adapter.addImageToGallery(R.drawable.dark_side);
+        gallery.setAdapter(adapter);
+
+
+
+
+
+
+
+
+
+
+
+/*        Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);
         float density = getResources().getDisplayMetrics().density;
         float heightInDp = displayMetrics.heightPixels / density;
         float widthInDp = displayMetrics.widthPixels / density;
+
+        ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
+
+
+
 
         ImageView imgPrevPrev = (ImageView) findViewById(R.id.imageView_PreviousPrevious);
         ImageView imgPrev = (ImageView) findViewById(R.id.imageView_Previous);
@@ -195,6 +234,11 @@ public class MusicPlayerActivity extends Activity {
         imgCurrent.setImageResource(R.drawable.lonely_island_wack_album);
 
         imgNext.setImageResource(R.drawable.lonely_island_wack_album);
-        imgNextNext.setImageResource(R.drawable.lonely_island_wack_album);
+        imgNextNext.setImageResource(R.drawable.lonely_island_wack_album);*/
+    }
+
+    @Override
+    public View makeView() {
+        return null;
     }
 }
