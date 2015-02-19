@@ -63,8 +63,6 @@ public class SongDatabase extends SQLiteOpenHelper
             //TODO: Display error message
             return false;
         }
-
-
     }
 
     public Song insertSong(Song song) throws SQLiteException
@@ -91,7 +89,7 @@ public class SongDatabase extends SQLiteOpenHelper
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        long rowId = db.insert(TABLE_NAME, null, values);
+        long rowId = db.insertOrThrow(TABLE_NAME, null, values);
 
         db.close();
 
@@ -100,5 +98,4 @@ public class SongDatabase extends SQLiteOpenHelper
         return song;
 
     }
-
 }

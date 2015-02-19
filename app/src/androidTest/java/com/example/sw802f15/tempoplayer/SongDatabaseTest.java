@@ -15,6 +15,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     {
         super.setUp();
         _db = new SongDatabase(getContext());
+        _db.onCreate(_db.getWritableDatabase());
     }
 
     @Override
@@ -105,6 +106,4 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testReadEntryNotExists(){}
-
-
 }
