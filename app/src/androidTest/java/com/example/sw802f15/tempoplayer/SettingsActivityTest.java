@@ -22,4 +22,6 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<Setti
     }
 
 
+
+
 }
