@@ -1,7 +1,9 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.Settings;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.example.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 
 public class SettingsActivityTest extends ActivityInstrumentationTestCase2<SettingsActivity> {

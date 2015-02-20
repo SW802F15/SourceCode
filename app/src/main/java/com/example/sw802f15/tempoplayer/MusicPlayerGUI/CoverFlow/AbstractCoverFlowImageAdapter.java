@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer.GUI.CoverFlow;
+package com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

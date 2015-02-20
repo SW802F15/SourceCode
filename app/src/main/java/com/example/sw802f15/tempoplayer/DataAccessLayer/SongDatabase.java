@@ -1,12 +1,12 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.DataAccessLayer;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.CalendarContract;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 /**
  * Created by Dan on 18-02-2015.

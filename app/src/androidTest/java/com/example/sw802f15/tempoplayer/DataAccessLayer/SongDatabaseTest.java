@@ -1,9 +1,12 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.DataAccessLayer;
 
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 
 import junit.framework.Assert;
 

@@ -1,8 +1,10 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.Settings;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
+
+import com.example.sw802f15.tempoplayer.R;
 
 public class SettingsActivity extends Activity{
 

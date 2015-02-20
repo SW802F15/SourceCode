@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -7,6 +7,9 @@ import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.MusicPlayer.MusicPlayerService;
 
 import junit.framework.Assert;
 

@@ -1,11 +1,11 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
-import com.example.sw802f15.tempoplayer.MusicPlayerActivity;
+import com.example.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import android.view.KeyEvent;
 
 public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<MusicPlayerActivity>

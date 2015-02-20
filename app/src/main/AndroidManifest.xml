@@ -11,7 +11,7 @@
         android:launchMode="singleTop"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MusicPlayerActivity"
+            android:name=".MusicPlayer.MusicPlayerActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -21,11 +21,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".Settings.SettingsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
-        <service android:name=".MusicPlayerService"  android:enabled="true"></service>
+        <service android:name=".MusicPlayer.MusicPlayerService"  android:enabled="true"></service>
     </application>
 
 </manifest>

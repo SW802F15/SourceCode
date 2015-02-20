@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.app.Service;
 import android.content.Intent;

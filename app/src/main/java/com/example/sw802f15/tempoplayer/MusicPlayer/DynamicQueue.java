@@ -1,8 +1,10 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 import java.io.File;
 import java.util.ArrayList;

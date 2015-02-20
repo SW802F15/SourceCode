@@ -1,7 +1,10 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
 
 import junit.framework.TestCase;
 

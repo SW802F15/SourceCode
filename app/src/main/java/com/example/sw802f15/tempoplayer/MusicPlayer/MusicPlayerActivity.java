@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer;
+package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
 
-import com.example.sw802f15.tempoplayer.GUI.CoverFlow.CoverFlow;
-import com.example.sw802f15.tempoplayer.GUI.CoverFlow.ResourceImageAdapter;
+import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
+import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
+import com.example.sw802f15.tempoplayer.R;
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 import java.io.File;
 
