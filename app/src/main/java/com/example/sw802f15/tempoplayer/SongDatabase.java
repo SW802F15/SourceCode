@@ -55,6 +55,7 @@ public class SongDatabase extends SQLiteOpenHelper
         {
             SQLiteDatabase db = this.getWritableDatabase();
             db.execSQL(SQL_DELETE_ENTRIES);
+            db.execSQL(SQL_CREATE_ENTRIES);
             db.close();
             return true;
         }
