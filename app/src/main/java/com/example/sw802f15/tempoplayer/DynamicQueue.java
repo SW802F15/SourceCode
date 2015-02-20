@@ -22,9 +22,11 @@ public class DynamicQueue {
             if (BMP != 42) return null;
             else {
                 List<Song> res = new ArrayList<Song>();
-                res.add(new Song(1, "title1", "1", Uri.fromFile(new File(filepath)), 1, 42+11));
-                res.add(new Song(2, "title2", "2", Uri.fromFile(new File(filepath)), 2, 42+2));
-                res.add(new Song(3, "title3", "3", Uri.fromFile(new File(filepath)), 3, 42+3));
+               // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
+                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), 1));
+                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), 1));
+                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), 1));
+
                 return res;
             }
         }

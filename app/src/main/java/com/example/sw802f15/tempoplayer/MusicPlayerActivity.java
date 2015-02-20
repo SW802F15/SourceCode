@@ -91,7 +91,7 @@ public class MusicPlayerActivity extends Activity{
     }
 
     private void DRIVER_MusicPlayerService(){
-        play(new Song(1, "", "", Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), 2));
+        play(new Song(1, "", "", "", Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), 2));
     }
 
     public void play(Song song){
