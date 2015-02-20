@@ -1,4 +1,4 @@
-package com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow;
+package com.example.sw802f15.tempoplayer.GUI.CoverFlow;
 
 import android.content.Context;
 import android.content.res.TypedArray;

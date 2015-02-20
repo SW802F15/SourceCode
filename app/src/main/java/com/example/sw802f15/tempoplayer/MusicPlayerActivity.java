@@ -13,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
 
-import com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.CoverFlow;
-import com.example.sw802f15.tempoplayer.com.example.sw802f15.CoverFlow.ResourceImageAdapter;
+import com.example.sw802f15.tempoplayer.GUI.CoverFlow.CoverFlow;
+import com.example.sw802f15.tempoplayer.GUI.CoverFlow.ResourceImageAdapter;
 
 import java.io.File;
 
