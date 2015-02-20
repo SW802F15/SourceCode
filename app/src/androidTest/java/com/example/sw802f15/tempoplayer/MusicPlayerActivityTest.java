@@ -1,7 +1,6 @@
 package com.example.sw802f15.tempoplayer;
 
 import android.app.Activity;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
