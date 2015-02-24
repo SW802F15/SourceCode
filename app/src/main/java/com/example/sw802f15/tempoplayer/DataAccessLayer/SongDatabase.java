@@ -28,8 +28,8 @@ public class SongDatabase extends SQLiteOpenHelper
             "artist TEXT NOT NULL," +
             "album TEXT NOT NULL,"+
             "bpm INTEGER," +
-            "path TEXT UNIQUE" +
-            "duration INTEGER," +
+            "path TEXT UNIQUE," +
+            "duration INTEGER" +
             ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -86,6 +86,7 @@ public class SongDatabase extends SQLiteOpenHelper
         values.put("album", song.getAlbum());
         values.put("bpm", song.getBpm());
         values.put("path", song.getUri().toString());
+        values.put("duration", song.getDurationInSec());
 
 //        SQLiteDatabase db1 = this.getReadableDatabase();
 
@@ -133,24 +134,25 @@ public class SongDatabase extends SQLiteOpenHelper
         try{
             SQLiteDatabase db = this.getReadableDatabase();
 
-            String[] arr = new String[]{songId + ""};
-
-            Cursor cursor = db.query(TABLE_NAME, new String[]{"*"}, "ROWID", arr, null, null, null);
-
+            Cursor cursor = db.query(TABLE_NAME, new String[] {"*"}, "ROWID" + "=?",
+                    new String[] { String.valueOf(songId) }, null, null, null, null);
+            if (cursor != null)
+                cursor.moveToFirst();
             if(cursor != null && cursor.moveToFirst())
             {
-                resultSong = new Song(cursor.getLong(cursor.getColumnIndex("ROWID")),
-                                           cursor.getString(cursor.getColumnIndex("title")),
-                                           cursor.getString(cursor.getColumnIndex("artist")),
-                                           cursor.getString(cursor.getColumnIndex("album")),
-                                           cursor.getInt(cursor.getColumnIndex("bpm")),
-                                           Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
-                                           cursor.getInt(cursor.getColumnIndex("duration")));
+                cursor.moveToFirst();
+                resultSong = new Song(songId,
+                           cursor.getString(cursor.getColumnIndex("title")),
+                           cursor.getString(cursor.getColumnIndex("artist")),
+                           cursor.getString(cursor.getColumnIndex("album")),
+                           cursor.getInt(cursor.getColumnIndex("bpm")),
+                           Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
+                           cursor.getInt(cursor.getColumnIndex("duration")));
                 cursor.close();
+            }else {
+                throw new SQLiteException();
             }
-
             db.close();
-
 
         }catch (SQLiteException ex)
         {
