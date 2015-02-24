@@ -45,7 +45,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Song Title"
             android:id="@+id/textView_title"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textColor="#ffffffff"/>
     </LinearLayout>
 
     <LinearLayout
@@ -63,7 +64,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Artist Name(s)"
             android:id="@+id/textView_artist"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textColor="#ffffffff"/>
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +83,8 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Album Name"
             android:id="@+id/textView_album"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textColor="#ffffffff"/>
     </LinearLayout>
 
     <LinearLayout
@@ -105,7 +108,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="01:03"
                 android:id="@+id/textView_currentPosition"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:textColor="#ffffffff"/>
         </LinearLayout>
 
         <SeekBar
@@ -126,7 +130,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="07:40"
                 android:id="@+id/textView_songDuration"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:textColor="#ffffffff"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -169,7 +174,8 @@
                             android:text="102"
                             android:id="@+id/textView_bpm"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="5dp" />
+                            android:layout_marginRight="5dp"
+                            android:textColor="#ffffffff" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -184,7 +190,8 @@
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="BPM"
                             android:id="@+id/textView"
-                            android:layout_gravity="center" />
+                            android:layout_gravity="center"
+                            android:textColor="#ffffffff"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -208,7 +215,8 @@
                             android:text="108"
                             android:id="@+id/textView_spm"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="5dp" />
+                            android:layout_marginRight="5dp"
+                            android:textColor="#ffffffff"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -224,7 +232,8 @@
                             android:text="SPM"
                             android:id="@+id/textView3"
                             android:layout_gravity="center"
-                            android:singleLine="false" />
+                            android:singleLine="false"
+                            android:textColor="#ffffffff"/>
                     </LinearLayout>
                 </LinearLayout>
 
