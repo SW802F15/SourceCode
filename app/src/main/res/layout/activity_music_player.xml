@@ -156,7 +156,7 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="85dp"
+                        android:layout_width="60dp"
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical|right"
                         android:gravity="right">
@@ -195,7 +195,7 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="85dp"
+                        android:layout_width="60dp"
                         android:layout_height="fill_parent"
                         android:layout_gravity="center_vertical|right"
                         android:gravity="right" >
@@ -250,7 +250,8 @@
                     android:layout_rowSpan="2"
                     android:onClick="setContentView"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginTop="25dp" />
+                    android:layout_marginTop="25dp"
+                    android:layout_marginRight="7dp" />
             </LinearLayout>
 
         </LinearLayout>
