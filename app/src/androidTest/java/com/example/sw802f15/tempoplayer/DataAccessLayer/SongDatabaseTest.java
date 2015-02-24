@@ -5,20 +5,21 @@ import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
-import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
-
 import junit.framework.Assert;
+
+import java.sql.SQLClientInfoException;
 
 public class SongDatabaseTest extends AndroidTestCase {
 
     private SongDatabase _db = null;
+    private Song _song = null;
 
     @Override
     protected void setUp() throws Exception
     {
         super.setUp();
         _db = new SongDatabase(getContext());
+        _song = new Song("TestSong", "TestArtist", "TestAlbum", Uri.parse("TestFilePath"), 2);
     }
 
     @Override
@@ -45,12 +46,10 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testInsertValid()
     {
-        Song song = new Song("TestSong", "TestArtist", "TestAlbum", Uri.parse("TestFilePath"), 2);
-
         //Insert song in db
         try
         {
-            song = _db.insertSong(song);
+            _song = _db.insertSong(_song);
         }
         catch (SQLiteException e)
         {
@@ -58,21 +57,18 @@ public class SongDatabaseTest extends AndroidTestCase {
         }
 
         //The updated song should have an id.
-        assertEquals(1, song.getID());
-        assertTrue(song.getID() >= 0);
+        assertEquals(1, _song.getID());
+        assertTrue(_song.getID() >= 0);
 
     }
 
     @MediumTest
     public void testInsertInvalid()
     {
-        Song song = new Song("TestSong", "TestArtist", "TestAlbum", Uri.parse("TestFilePath"), 2);
-
-
         //Insert song in db
         try
         {
-            song = _db.insertSong(song);
+            _song = _db.insertSong(_song);
 
         }
         catch (SQLiteException e)
@@ -83,7 +79,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         //Try to insert again. Expect error.
         try
         {
-            _db.insertSong(song);
+            _db.insertSong(_song);
             Assert.fail("Expected SQLiteException, got none.");
         }
         catch (SQLiteException e)
@@ -93,10 +89,21 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @MediumTest
-    public void testDeleteExists(){}
+    public void testDeleteExists(){
+        Song tempSong = _db.insertSong(_song);
+        assertEquals(0, _db.deleteSong(tempSong));
+    }
 
     @MediumTest
-    public void testDeleteNotExists(){}
+    public void testDeleteNotExists(){
+        try {
+            _db.deleteSong(_song);
+            Assert.fail();
+        }catch (SQLiteException ex)
+        {
+            // do nothing
+        }
+    }
 
     @MediumTest
     public void testDropDatabaseExists()
@@ -106,8 +113,26 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @MediumTest
-    public void testReadEntryExists(){}
+    public void testReadEntryExists(){
+
+        long songId = _db.insertSong(_song).getID();
+
+        Song song = _db.readEntryById(songId);
+
+        assertTrue(song != null);
+
+        assertTrue(_song.getTitle().equals(song.getTitle()));
+    }
 
     @MediumTest
-    public void testReadEntryNotExists(){}
+    public void testReadEntryNotExists(){
+        try{
+            Song song = _db.readEntryById(12312);
+            Assert.fail();
+        }catch (SQLiteException ex)
+        {
+           // do nothing
+        }
+
+    }
 }
