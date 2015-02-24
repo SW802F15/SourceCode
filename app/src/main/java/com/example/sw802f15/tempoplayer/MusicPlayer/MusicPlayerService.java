@@ -55,15 +55,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                 Log.d("onStartCommand", "MusicPlayer stopped.");
                 break;
             case "Next":
-
                 break;
             case "Previous":
-
                 break;
             case "Repeat":
                 musicPlayer.setLooping(!musicPlayer.isLooping());
                 break;
-
             default:
                 break;
         }
@@ -87,6 +84,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         if (musicPlayer != null) {
             musicPlayer.stop();
             musicPlayer.release();
@@ -111,4 +109,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
         musicPlayer.prepareAsync();
     }
+
+
 }

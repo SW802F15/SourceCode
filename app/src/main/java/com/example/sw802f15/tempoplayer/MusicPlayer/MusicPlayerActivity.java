@@ -47,6 +47,14 @@ public class MusicPlayerActivity extends Activity{
 
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
+        //musicPlayerService.setAction("Quit");
+        stopService(musicPlayerService);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_music_player, menu);
