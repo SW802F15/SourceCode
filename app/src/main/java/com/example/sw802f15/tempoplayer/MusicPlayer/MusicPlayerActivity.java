@@ -1,6 +1,8 @@
 package com.example.sw802f15.tempoplayer.MusicPlayer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -9,10 +11,15 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Toast;
 
+import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
@@ -22,6 +29,8 @@ import java.io.File;
 
 
 public class MusicPlayerActivity extends Activity{
+
+    public Song testSongValid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +117,9 @@ public class MusicPlayerActivity extends Activity{
                 Intent playIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
                 playIntent.setAction("Play");
                 startService(playIntent);
-
             }
         }.start();
         startService(musicPlayerService);
-
     }
 
     public void volumeUp()
@@ -154,6 +161,15 @@ public class MusicPlayerActivity extends Activity{
         coverFlow.setAdapter(coverImageAdapter);
         coverFlow.setSpacing(-10);
         coverFlow.setMaxZoom(-200);
+
+
+        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
+                + "/music_sample.mp3";
+        testSongValid = new Song(1, "Tristram", "Matt", "Diablo", Uri.parse(path), 460);
+
     }
+
+
+
 
 }
