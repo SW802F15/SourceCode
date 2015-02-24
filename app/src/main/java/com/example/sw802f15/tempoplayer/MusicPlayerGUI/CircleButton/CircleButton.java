@@ -8,10 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.ImageView;
 
-import com.example.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import com.example.sw802f15.tempoplayer.R;
 
 

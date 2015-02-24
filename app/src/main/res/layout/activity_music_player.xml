@@ -7,7 +7,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MusicPlayer"
-    android:id="@+id/relativeLayout">
+    android:id="@+id/relativeLayout"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:orientation="vertical"
@@ -280,7 +281,8 @@
                 android:layout_columnSpan="2"
                android:layout_marginTop="25dp"
                android:layout_gravity="left|bottom"
-               android:layout_marginLeft="10dp" />
+               android:layout_marginLeft="10dp"
+               android:padding="20dp" />
 
             <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -339,7 +341,9 @@
                 android:layout_marginRight="35dp"
                 android:layout_gravity="bottom|right"
                 android:layout_marginTop="0dp"
-                android:layout_marginBottom="35dp" />
+                android:layout_marginBottom="35dp"
+                android:adjustViewBounds="false"
+                android:paddingLeft="10dp" />
         </GridLayout>
 
     </LinearLayout>
