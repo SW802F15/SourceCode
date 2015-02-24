@@ -65,8 +65,6 @@ public class CircleButton extends ImageView {
 
         if (pressed) {
             showPressedRing();
-            MusicPlayerActivity musicPlayerActivity = (MusicPlayerActivity) getContext();
-            musicPlayerActivity.play(musicPlayerActivity.testSongValid);
         } else {
             hidePressedRing();
         }
