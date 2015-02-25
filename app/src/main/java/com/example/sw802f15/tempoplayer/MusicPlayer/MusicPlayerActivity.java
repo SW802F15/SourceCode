@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
@@ -28,11 +30,14 @@ import com.example.sw802f15.tempoplayer.R;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 import java.io.File;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 
 public class MusicPlayerActivity extends Activity{
 
     public Song testSongValid;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +179,9 @@ public class MusicPlayerActivity extends Activity{
                 + "/music_sample.mp3";
         testSongValid = new Song(1, "Tristram", "Matt", "Diablo", Uri.parse(path), 460);
 
+
+        setBPMText(52);
+        setSPMText(85);
     }
 
 
@@ -261,4 +269,61 @@ public class MusicPlayerActivity extends Activity{
 
         });
     }
+
+    public void setBPMText(int bpm) {
+        TextView BPMTextView = (TextView) findViewById(R.id.textView_bpm);
+        String BPM = Integer.toString(bpm);
+        BPMTextView.setText(BPM);
+    }
+
+    public void setSPMText(int spm) {
+        TextView SPMTextView = (TextView) findViewById(R.id.textView_spm);
+        String SPM = Integer.toString(spm);
+        SPMTextView.setText(SPM);
+    }
+
+    private void initializeSeekBar() {
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+    }
+
+
+    private void setSeekBarForCurrentSong(int songDuration) {
+        seekBar.setMax(songDuration);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    Intent seekToIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+                    seekToIntent.setAction("SeekTo");
+                    seekToIntent.setFlags(progress);
+                    startService(seekToIntent);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
+    }
+
+    private void updateSeekBar() {
+        Intent currentPositionIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        currentPositionIntent.setAction("GetCurrentPosition");
+        startService(currentPositionIntent);
+
+
+    }
+
+    Runnable seekBarUpdater = new Runnable() {
+        @Override
+        public void run() {
+            updateSeekBar();
+        }
+    };
+
+
+
 }
