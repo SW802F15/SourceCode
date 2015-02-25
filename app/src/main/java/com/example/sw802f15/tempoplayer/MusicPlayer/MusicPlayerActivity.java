@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
@@ -36,6 +38,8 @@ public class MusicPlayerActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+        initializeOnClickListeners();
+
 
         testGUI();
     }
@@ -122,6 +126,10 @@ public class MusicPlayerActivity extends Activity{
         startService(musicPlayerService);
     }
 
+    public void stop() {
+
+    }
+
     public void volumeUp()
     {
         AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -154,7 +162,9 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+////                    DELETE THIS AFTER TESTS                                           ////
+//////////////////////////////////////////////////////////////////////////////////////////////
     private void testGUI(){
         final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
@@ -172,4 +182,71 @@ public class MusicPlayerActivity extends Activity{
 
 
 
+
+
+
+
+    private void initializeOnClickListeners() {
+        initializeOnClickPlay();
+        initializeOnClickStop();
+        initializeOnClickPrevious();
+        initializeOnClickNext();
+        initializeOnClickSettings();
+    }
+
+    private void initializeOnClickPlay() {
+        ImageView playButton = (ImageView) findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                play(DynamicQueue.getInstance().getCurrentSong());
+            }
+        });
+    }
+
+    private void initializeOnClickStop() {
+        ImageView stopButton = (ImageView) findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                stop();
+            }
+        });
+    }
+
+    private void initializeOnClickPrevious() {
+        ImageView previousButton = (ImageView) findViewById(R.id.previousButton);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                play(DynamicQueue.getInstance().getPreviousSong());
+            }
+        });
+    }
+
+    private void initializeOnClickNext() {
+        ImageView nextButton = (ImageView) findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                play(DynamicQueue.getInstance().getNextSong());
+            }
+        });
+    }
+
+    private void initializeOnClickSettings() {
+        ImageView settingsButton = (ImageView) findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Start settings activity
+            }
+
+        });
+    }
 }
