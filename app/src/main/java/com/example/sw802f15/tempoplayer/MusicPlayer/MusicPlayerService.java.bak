@@ -61,10 +61,14 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             case "Repeat":
                 musicPlayer.setLooping(!musicPlayer.isLooping());
                 break;
+<<<<<<< HEAD
+
             case "SeekTo":
                 musicPlayer.seekTo(intent.getFlags());
                 break;
 
+=======
+>>>>>>> origin/master
             default:
                 break;
         }
@@ -114,4 +118,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         musicPlayer.prepareAsync();
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 }

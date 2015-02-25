@@ -10,39 +10,25 @@ public class Song {
     private String _title;
     private  String _artist;
     private String _album;
-    private int _bpm;
+    private Integer _bpm;
     private Uri _uri;
     private int _durationInSec;
+    private Uri _albumUri;
 
-    public Song(String songTitle, String songArtist, String songAlbum, Uri uri, int durationInSec){
-        _id = -2;
-        _title = songTitle;
-        _artist = songArtist;
-        _album = songAlbum;
-        _uri = uri;
-        _durationInSec = durationInSec;
-    }
-
-    public Song(String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec){
+    public Song(String songTitle, String songArtist, String songAlbum, Integer songBpm, Uri uri,
+                Uri albumUri, int durationInSec){
         _id = -2;
         _title = songTitle;
         _artist = songArtist;
         _album = songAlbum;
         _bpm = songBpm;
         _uri = uri;
+        _albumUri = albumUri;
         _durationInSec = durationInSec;
     }
 
-    public Song(long songId, String songTitle, String songArtist, String songAlbum, Uri uri, int durationInSec){
-        _id = songId;
-        _title = songTitle;
-        _artist = songArtist;
-        _album = songAlbum;
-        _uri = uri;
-        _durationInSec = durationInSec;
-    }
-
-    public Song(long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec){
+    public Song(long songId, String songTitle, String songArtist, String songAlbum, Integer songBpm,
+                Uri uri, Uri albumUri, int durationInSec) {
         _id = songId;
         _title = songTitle;
         _artist = songArtist;
@@ -50,10 +36,11 @@ public class Song {
         _bpm = songBpm;
         _uri = uri;
         _durationInSec = durationInSec;
-    }   
+        _albumUri = albumUri;
+        }
 
 
-    public long getID() {return _id;}
+        public long getID() {return _id;}
 
     public void setID(long id)
     {
@@ -66,9 +53,16 @@ public class Song {
 
     public String getAlbum() {return _album;}
 
-    public int getBpm() {return _bpm;}
+    public Integer getBpm() {return _bpm;}
 
     public Uri getUri() {return _uri;}
 
     public int getDurationInSec() {return _durationInSec;}
+
+    public Uri getAlbumUri() {
+        return null;
+    }
+    public void setAlbumUri(Uri _albumUri) {
+        this._albumUri = _albumUri;
+    }
 }

@@ -67,6 +67,14 @@ public class MusicPlayerActivity extends Activity{
 
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
+        //musicPlayerService.setAction("Quit");
+        stopService(musicPlayerService);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_music_player, menu);
@@ -113,7 +121,7 @@ public class MusicPlayerActivity extends Activity{
     }
 
     private void DRIVER_MusicPlayerService(){
-        play(new Song(1, "", "", "", Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), 2));
+        play(new Song("", "", "", null,Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), null, 2));
     }
 
     public void play(Song song){

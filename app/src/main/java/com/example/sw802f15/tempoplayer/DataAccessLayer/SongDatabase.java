@@ -2,11 +2,13 @@ package com.example.sw802f15.tempoplayer.DataAccessLayer;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
-import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import java.io.File;
 
 /**
  * Created by Dan on 18-02-2015.
@@ -19,12 +21,14 @@ public class SongDatabase extends SQLiteOpenHelper
     public static final String TABLE_NAME = "Song";
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
-            //"id INTEGER PRIMARY KEY," +
+            //"songid INTEGER PRIMARY KEY," +
             "title TEXT NOT NULL," +
             "artist TEXT NOT NULL," +
             "album TEXT NOT NULL,"+
             "bpm INTEGER," +
-            "path TEXT UNIQUE" +
+            "path TEXT UNIQUE," +
+            "album_path TEXT," +
+            "duration INTEGER" +
             ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -81,6 +85,8 @@ public class SongDatabase extends SQLiteOpenHelper
         values.put("album", song.getAlbum());
         values.put("bpm", song.getBpm());
         values.put("path", song.getUri().toString());
+        if(song.getAlbumUri() != null) { values.put("album_path", song.getAlbumUri().toString()); }
+        values.put("duration", song.getDurationInSec());
 
 //        SQLiteDatabase db1 = this.getReadableDatabase();
 
@@ -98,5 +104,64 @@ public class SongDatabase extends SQLiteOpenHelper
 
         return song;
 
+    }
+
+    public int deleteSong(Song song) throws SQLiteException
+    {
+        //If song already exists
+        if (song.getID() == -2)
+        {
+            throw new SQLiteException("Song doesn't exist in database.");
+        }
+
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            db.delete(TABLE_NAME, "ROWID = " + song.getID(), null);
+
+            db.close();
+
+            return 0;
+        }catch (SQLiteException ex)
+        {
+            throw new SQLiteException();
+        }
+    }
+
+    public Song readEntryById(long songId) throws SQLiteException{
+        Song resultSong = null;
+
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+
+            Cursor cursor = db.query(TABLE_NAME, new String[] {"*"}, "ROWID" + "=?",
+                    new String[] { String.valueOf(songId) }, null, null, null, null);
+            if (cursor != null)
+                cursor.moveToFirst();
+            if(cursor != null && cursor.moveToFirst())
+            {
+                cursor.moveToFirst();
+                resultSong = new Song(songId,
+                       cursor.getString(cursor.getColumnIndex("title")),
+                       cursor.getString(cursor.getColumnIndex("artist")),
+                       cursor.getString(cursor.getColumnIndex("album")),
+                       cursor.getInt(cursor.getColumnIndex("bpm")),
+                       Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
+                       Uri.fromFile((cursor.getString(cursor.getColumnIndex("album_path")) != null)
+                               ? new File(cursor.getString(cursor.getColumnIndex("album_path")))
+                               : new File("")),
+                       cursor.getInt(cursor.getColumnIndex("duration")));
+                cursor.close();
+            }else {
+                throw new SQLiteException();
+            }
+            db.close();
+
+        }catch (SQLiteException ex)
+        {
+            throw new SQLiteException();
+        }
+
+        return resultSong;
     }
 }

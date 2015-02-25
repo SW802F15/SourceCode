@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DynamicQueue {
     private class StepCounterStub {
-        public int getCurrnetSPM() {
+        public int getCurrentSPM() {
             return 42;
         }
     }
@@ -25,9 +25,9 @@ public class DynamicQueue {
             else {
                 List<Song> res = new ArrayList<Song>();
                // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
-                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), 1));
-                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), 1));
-                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), 1));
+                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), null, 1));
+                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), null, 1));
+                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), null, 1));
 
                 return res;
             }
@@ -39,18 +39,25 @@ public class DynamicQueue {
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
-    private int _prevSize;
-    private int _lookAheadSize;
-    private int _thresholdBMP;
+    private int _prevSize = 2;
+    private int _lookAheadSize = 3;
+    private int _BPMDeviation = 10;
 
-    public DynamicQueue(int prevSize, int lookAheadSize, int thresholdBMP){
-        if(prevSize < 1 || lookAheadSize < 1 || thresholdBMP < 0){
-            Log.e("DynamicQueue", "Illegal Arguments");
-            throw new IllegalArgumentException();
+    private static DynamicQueue instance = null;
+
+    protected DynamicQueue(){
+        //Empty because singleton
+    }
+
+    public static DynamicQueue getInstance(){
+        if ( instance == null ){
+            instance = new DynamicQueue();
         }
-        _prevSize = prevSize;
-        _lookAheadSize = lookAheadSize;
-        _thresholdBMP = thresholdBMP;
+        return instance;
+    }
+
+    public static void clearInstance(){
+        instance = null;
     }
 
     public Song getCurrentSong() {
@@ -67,7 +74,7 @@ public class DynamicQueue {
 
     public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
-            nextSongs = getMatchingSongs(_lookAheadSize, _thresholdBMP);
+            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
         if (nextSongs.size() == 0){
             throw new IllegalStateException("No songs available");
@@ -81,7 +88,7 @@ public class DynamicQueue {
         }
         currentSong = nextSongs.get(0);
         nextSongs.remove(0);
-        nextSongs.add(getMatchingSongs(1, _thresholdBMP).get(0));
+        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
     }
 
     public void selectPrevSong() {
@@ -105,7 +112,7 @@ public class DynamicQueue {
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
-        final int BMP = sc.getCurrnetSPM();
+        final int BMP = sc.getCurrentSPM();
         List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
 
         for (Song song : songs){

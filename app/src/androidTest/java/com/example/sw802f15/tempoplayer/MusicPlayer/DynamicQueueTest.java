@@ -17,7 +17,8 @@ public class DynamicQueueTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-         dq = new DynamicQueue(2,2,30);
+        DynamicQueue.clearInstance();
+        dq = DynamicQueue.getInstance();
     }
 
     public void tearDown() throws Exception {
