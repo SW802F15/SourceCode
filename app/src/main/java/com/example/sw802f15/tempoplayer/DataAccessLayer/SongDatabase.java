@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
-import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
-
 import java.io.File;
 
 /**
@@ -29,6 +27,7 @@ public class SongDatabase extends SQLiteOpenHelper
             "album TEXT NOT NULL,"+
             "bpm INTEGER," +
             "path TEXT UNIQUE," +
+            "album_path TEXT," +
             "duration INTEGER" +
             ")";
     private static final String SQL_DELETE_ENTRIES =
@@ -86,6 +85,7 @@ public class SongDatabase extends SQLiteOpenHelper
         values.put("album", song.getAlbum());
         values.put("bpm", song.getBpm());
         values.put("path", song.getUri().toString());
+        if(song.getAlbumUri() != null) { values.put("album_path", song.getAlbumUri().toString()); }
         values.put("duration", song.getDurationInSec());
 
 //        SQLiteDatabase db1 = this.getReadableDatabase();
@@ -142,12 +142,15 @@ public class SongDatabase extends SQLiteOpenHelper
             {
                 cursor.moveToFirst();
                 resultSong = new Song(songId,
-                           cursor.getString(cursor.getColumnIndex("title")),
-                           cursor.getString(cursor.getColumnIndex("artist")),
-                           cursor.getString(cursor.getColumnIndex("album")),
-                           cursor.getInt(cursor.getColumnIndex("bpm")),
-                           Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
-                           cursor.getInt(cursor.getColumnIndex("duration")));
+                       cursor.getString(cursor.getColumnIndex("title")),
+                       cursor.getString(cursor.getColumnIndex("artist")),
+                       cursor.getString(cursor.getColumnIndex("album")),
+                       cursor.getInt(cursor.getColumnIndex("bpm")),
+                       Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
+                       Uri.fromFile((cursor.getString(cursor.getColumnIndex("album_path")) != null)
+                               ? new File(cursor.getString(cursor.getColumnIndex("album_path")))
+                               : new File("")),
+                       cursor.getInt(cursor.getColumnIndex("duration")));
                 cursor.close();
             }else {
                 throw new SQLiteException();

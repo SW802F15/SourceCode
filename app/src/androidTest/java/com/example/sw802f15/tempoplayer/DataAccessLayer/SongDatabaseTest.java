@@ -19,7 +19,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     {
         super.setUp();
         _db = new SongDatabase(getContext());
-        _song = new Song("TestSong", "TestArtist", "TestAlbum", Uri.parse("TestFilePath"), 2);
+        _song = new Song("TestSong", "TestArtist", "TestAlbum", null, Uri.parse("TestFilePath"), null, 2);
     }
 
     @Override
