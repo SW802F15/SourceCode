@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DynamicQueue {
     private class StepCounterStub {
-        public int getCurrnetSPM() {
+        public int getCurrentSPM() {
             return 42;
         }
     }
@@ -25,9 +25,9 @@ public class DynamicQueue {
             else {
                 List<Song> res = new ArrayList<Song>();
                // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
-                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), 1));
-                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), 1));
-                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), 1));
+                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), null, 1));
+                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), null, 1));
+                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), null, 1));
 
                 return res;
             }
@@ -105,7 +105,7 @@ public class DynamicQueue {
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
-        final int BMP = sc.getCurrnetSPM();
+        final int BMP = sc.getCurrentSPM();
         List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
 
         for (Song song : songs){
