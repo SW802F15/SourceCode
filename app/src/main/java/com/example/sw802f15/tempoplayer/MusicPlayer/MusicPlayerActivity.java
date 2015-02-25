@@ -129,7 +129,9 @@ public class MusicPlayerActivity extends Activity{
     }
 
     public void stop() {
-
+        Intent stopIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        stopIntent.setAction("Stop");
+        startService(stopIntent);
     }
 
     public void volumeUp()
@@ -230,7 +232,8 @@ public class MusicPlayerActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                play(DynamicQueue.getInstance().getPreviousSong());
+                DynamicQueue.getInstance().selectPrevSong();
+                play(DynamicQueue.getInstance().getCurrentSong());
             }
         });
     }
@@ -241,7 +244,8 @@ public class MusicPlayerActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                play(DynamicQueue.getInstance().getNextSong());
+                DynamicQueue.getInstance().selectNextSong();
+                play(DynamicQueue.getInstance().getCurrentSong());
             }
         });
     }
