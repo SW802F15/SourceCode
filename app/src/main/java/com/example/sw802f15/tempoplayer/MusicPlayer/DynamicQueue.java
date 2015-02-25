@@ -39,18 +39,25 @@ public class DynamicQueue {
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
-    private int _prevSize;
-    private int _lookAheadSize;
-    private int _thresholdBMP;
+    private int _prevSize = 2;
+    private int _lookAheadSize = 3;
+    private int _BPMDeviation = 10;
 
-    public DynamicQueue(int prevSize, int lookAheadSize, int thresholdBMP){
-        if(prevSize < 1 || lookAheadSize < 1 || thresholdBMP < 0){
-            Log.e("DynamicQueue", "Illegal Arguments");
-            throw new IllegalArgumentException();
+    private static DynamicQueue instance = null;
+
+    protected DynamicQueue(){
+        //Empty because singleton
+    }
+
+    public static DynamicQueue getInstance(){
+        if ( instance == null ){
+            instance = new DynamicQueue();
         }
-        _prevSize = prevSize;
-        _lookAheadSize = lookAheadSize;
-        _thresholdBMP = thresholdBMP;
+        return instance;
+    }
+
+    public static void clearInstance(){
+        instance = null;
     }
 
     public Song getCurrentSong() {
@@ -67,7 +74,7 @@ public class DynamicQueue {
 
     public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
-            nextSongs = getMatchingSongs(_lookAheadSize, _thresholdBMP);
+            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
         if (nextSongs.size() == 0){
             throw new IllegalStateException("No songs available");
@@ -81,7 +88,7 @@ public class DynamicQueue {
         }
         currentSong = nextSongs.get(0);
         nextSongs.remove(0);
-        nextSongs.add(getMatchingSongs(1, _thresholdBMP).get(0));
+        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
     }
 
     public void selectPrevSong() {
