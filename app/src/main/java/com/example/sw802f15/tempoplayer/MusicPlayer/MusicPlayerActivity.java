@@ -38,6 +38,8 @@ public class MusicPlayerActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+
+        initializeCoverFlow();
         initializeOnClickListeners();
 
 
@@ -166,13 +168,6 @@ public class MusicPlayerActivity extends Activity{
 ////                    DELETE THIS AFTER TESTS                                           ////
 //////////////////////////////////////////////////////////////////////////////////////////////
     private void testGUI(){
-        final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
-        BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
-        coverFlow.setAdapter(coverImageAdapter);
-        coverFlow.setSpacing(-10);
-        coverFlow.setMaxZoom(-200);
-
-
         String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
                 + "/music_sample.mp3";
         testSongValid = new Song(1, "Tristram", "Matt", "Diablo", Uri.parse(path), 460);
@@ -185,6 +180,19 @@ public class MusicPlayerActivity extends Activity{
 
 
 
+
+
+
+
+
+
+    private void initializeCoverFlow() {
+        final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
+        coverFlow.setAdapter(coverImageAdapter);
+        coverFlow.setSpacing(-10);
+        coverFlow.setMaxZoom(-200);
+    }
 
     private void initializeOnClickListeners() {
         initializeOnClickPlay();
