@@ -46,17 +46,14 @@ public class MusicPlayerActivity extends Activity{
 
         initializeCoverFlow();
         initializeOnClickListeners();
-
+        initializeSeekBar();
 
         testGUI();
     }
 
     @Override
     protected void onResume() {
-
         super.onResume();
-     //   LinearLayout covers = (LinearLayout) findViewById(R.id.covers);
-     //   covers.setLayoutParams(new ActionBar.LayoutParams(covers.getWidth(), covers.getWidth()));
     }
 
     @Override
@@ -185,7 +182,7 @@ public class MusicPlayerActivity extends Activity{
     private void testGUI(){
         String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
                 + "/music_sample.mp3";
-        testSongValid = new Song(1, "Tristram", "Matt", "Diablo", Uri.parse(path), 460);
+        testSongValid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path), null, 460);
 
 
         setBPMText(52);
@@ -318,19 +315,8 @@ public class MusicPlayerActivity extends Activity{
     }
 
     private void updateSeekBar() {
-        Intent currentPositionIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-        currentPositionIntent.setAction("GetCurrentPosition");
-        startService(currentPositionIntent);
-
 
     }
-
-    Runnable seekBarUpdater = new Runnable() {
-        @Override
-        public void run() {
-            updateSeekBar();
-        }
-    };
 
 
 
