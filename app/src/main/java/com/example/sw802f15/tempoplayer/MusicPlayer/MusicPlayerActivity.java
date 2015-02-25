@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +48,7 @@ public class MusicPlayerActivity extends Activity{
         initializeCoverFlow();
         initializeOnClickListeners();
         initializeSeekBar();
+        initializeDynamicQueue();
 
         testGUI();
     }
@@ -185,6 +187,7 @@ public class MusicPlayerActivity extends Activity{
         testSongValid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path), null, 460);
 
 
+
         setBPMText(52);
         setSPMText(85);
     }
@@ -197,9 +200,10 @@ public class MusicPlayerActivity extends Activity{
 
 
 
-
-
-
+    private void initializeDynamicQueue() {
+        DynamicQueue.getInstance().selectNextSong();
+        setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
+    }
 
     private void initializeCoverFlow() {
         final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
@@ -224,6 +228,7 @@ public class MusicPlayerActivity extends Activity{
             @Override
             public void onClick(View v) {
                 play(DynamicQueue.getInstance().getCurrentSong());
+                Toast.makeText(getApplicationContext(), "MAKE MY PAUSE!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -246,6 +251,7 @@ public class MusicPlayerActivity extends Activity{
             @Override
             public void onClick(View v) {
                 DynamicQueue.getInstance().selectPrevSong();
+                setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
                 play(DynamicQueue.getInstance().getCurrentSong());
             }
         });
@@ -258,6 +264,7 @@ public class MusicPlayerActivity extends Activity{
             @Override
             public void onClick(View v) {
                 DynamicQueue.getInstance().selectNextSong();
+                setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
                 play(DynamicQueue.getInstance().getCurrentSong());
             }
         });
@@ -285,6 +292,28 @@ public class MusicPlayerActivity extends Activity{
         TextView SPMTextView = (TextView) findViewById(R.id.textView_spm);
         String SPM = Integer.toString(spm);
         SPMTextView.setText(SPM);
+    }
+
+    public void setSongDurationText(int duration) {
+        TextView songDurationTextView = (TextView) findViewById(R.id.textView_songDuration);
+        Time time = new Time();
+        if (duration >= 3600) {
+            time.hour = duration / 3600;
+            duration = duration % 3600;
+        }
+        if (duration >= 60) {
+            time.minute = duration / 60;
+            duration = duration % 60;
+        }
+        time.second = duration;
+
+        String durationString = time.format("%M:%S");
+
+        if (time.hour > 0) {
+            durationString = time.format("%H:%M:%S");
+        }
+
+        songDurationTextView.setText(durationString);
     }
 
     private void initializeSeekBar() {
