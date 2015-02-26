@@ -228,7 +228,7 @@ public class MusicPlayerActivity extends Activity{
             @Override
             public void onClick(View v) {
                 play(DynamicQueue.getInstance().getCurrentSong());
-                Toast.makeText(getApplicationContext(), "MAKE MY PAUSE!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "MAKE ME PAUSE!", Toast.LENGTH_LONG).show();
             }
         });
     }
