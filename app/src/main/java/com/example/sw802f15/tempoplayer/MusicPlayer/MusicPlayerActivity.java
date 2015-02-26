@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -287,7 +288,12 @@ public class MusicPlayerActivity extends Activity{
     }
 
     private void updateSeekBar() {
-
+        if (mService != null && mService.musicPlayer != null && mService.musicPlayer.isPlaying()){
+            int progress = mService.musicPlayer.getCurrentPosition() / 1000;
+            seekBar.setProgress(progress); //todo use const
+        }else {
+            Log.d("updateSeekBar", "Not playing song");
+        }
     }
 
 
