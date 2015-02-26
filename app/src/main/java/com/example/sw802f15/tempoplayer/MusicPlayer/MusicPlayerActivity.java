@@ -52,10 +52,13 @@ public class MusicPlayerActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
 
-        initializeCoverFlow();
-        initializeOnClickListeners();
+        Initializers initializers = new Initializers(this);
+        initializers.initializeOnClickListeners();
+        initializers.initializeCoverFlow();
+        initializers.initializeDynamicQueue();
+
         initializeSeekBar();
-        initializeDynamicQueue();
+
 
         testGUI();
     }
@@ -142,35 +145,8 @@ public class MusicPlayerActivity extends Activity{
     }
 
 
-    public void play(){
-        if (mService.isPrepared) {
-            mService.musicPlayer.start();
-        }
-        else {
-            mService.loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
 
-            new CountDownTimer(1000, 1) {
-                @Override
-                public void onTick(long millisUntilFinished) { }
-                @Override
-                public void onFinish() {
-                    mService.musicPlayer.start();
-                }
-            }.start();
-        }
-    }
 
-    public void stop() {
-        Intent stopIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-        stopIntent.setAction("Stop");
-        startService(stopIntent);
-    }
-
-    public void pause() {
-        Intent pauseIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-        pauseIntent.setAction("Pause");
-        startService(pauseIntent);
-    }
 
     public void volumeUp()
     {
@@ -237,122 +213,17 @@ public class MusicPlayerActivity extends Activity{
 
 
 
-    private void initializeDynamicQueue() {
-        DynamicQueue.getInstance().selectNextSong();
-        setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
-    }
 
-    private void initializeCoverFlow() {
-        final CoverFlow coverFlow = (CoverFlow) findViewById(R.id.coverflow);
-        BaseAdapter coverImageAdapter = new ResourceImageAdapter(this);
-        coverFlow.setAdapter(coverImageAdapter);
-        coverFlow.setSpacing(-10);
-        coverFlow.setMaxZoom(-200);
-    }
 
-    private void initializeOnClickListeners() {
-        initializeOnClickPlay();
-        initializeOnClickPause();
-        initializeOnClickStop();
-        initializeOnClickPrevious();
-        initializeOnClickNext();
-        initializeOnClickSettings();
-    }
 
-    private void initializeOnClickPlay() {
-        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
-        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
 
-        playButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                play();
-                playButton.setVisibility(View.GONE);
-                pauseButton.setVisibility(View.VISIBLE);
-            }
-        });
-    }
 
-    private void initializeOnClickPause() {
-        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
-        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
 
-        pauseButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                pause();
-                pauseButton.setVisibility(View.GONE);
-                playButton.setVisibility(View.VISIBLE);
-            }
-        });
-    }
 
-    private void initializeOnClickStop() {
-        ImageView stopButton = (ImageView) findViewById(R.id.stopButton);
-        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
-        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
-        stopButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                stop();
-                if (playButton.getVisibility() == View.GONE) {
-                    pauseButton.setVisibility(View.GONE);
-                    playButton.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-    }
 
-    private void initializeOnClickPrevious() {
-        ImageView previousButton = (ImageView) findViewById(R.id.previousButton);
-        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
-        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
-
-        previousButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                DynamicQueue.getInstance().selectPrevSong();
-                setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
-                play();
-                playButton.setVisibility(View.GONE);
-                pauseButton.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void initializeOnClickNext() {
-        ImageView nextButton = (ImageView) findViewById(R.id.nextButton);
-        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
-        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                DynamicQueue.getInstance().selectNextSong();
-                setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
-                play();
-                playButton.setVisibility(View.GONE);
-                pauseButton.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void initializeOnClickSettings() {
-        ImageView settingsButton = (ImageView) findViewById(R.id.settingsButton);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //Start settings activity
-            }
-
-        });
-    }
 
     public void setBPMText(int bpm) {
         TextView BPMTextView = (TextView) findViewById(R.id.textView_bpm);

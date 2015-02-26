@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
@@ -129,4 +130,53 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         musicPlayer.prepareAsync();
     }
 
+
+    public void play(){
+        if (isPrepared) {
+            musicPlayer.start();
+        }
+        else {
+            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+
+            new CountDownTimer(1000, 1) {
+                @Override
+                public void onTick(long millisUntilFinished) { }
+                @Override
+                public void onFinish() {
+                    musicPlayer.start();
+                }
+            }.start();
+        }
+    }
+
+    public void stop() {
+        musicPlayer.stop();
+        isPrepared = false;
+    }
+
+    public void pause() {
+        musicPlayer.pause();
+    }
+
+    public void next() {
+        if (musicPlayer.isPlaying()) {
+            DynamicQueue.getInstance().selectNextSong();
+            play();
+        }
+        else {
+            DynamicQueue.getInstance().selectNextSong();
+            pause();
+        }
+    }
+
+    public void previous() {
+        if (musicPlayer.isPlaying()) {
+            DynamicQueue.getInstance().selectPrevSong();
+            play();
+        }
+        else {
+            DynamicQueue.getInstance().selectPrevSong();
+            pause();
+        }
+    }
 }
