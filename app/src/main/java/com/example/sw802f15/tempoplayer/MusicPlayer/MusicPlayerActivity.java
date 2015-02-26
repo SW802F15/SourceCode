@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.media.Image;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
@@ -170,6 +171,12 @@ public class MusicPlayerActivity extends Activity{
         startService(stopIntent);
     }
 
+    public void pause() {
+        Intent pauseIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        pauseIntent.setAction("Pause");
+        startService(pauseIntent);
+    }
+
     public void volumeUp()
     {
         AudioManager am = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -257,6 +264,7 @@ public class MusicPlayerActivity extends Activity{
 
     private void initializeOnClickListeners() {
         initializeOnClickPlay();
+        initializeOnClickPause();
         initializeOnClickStop();
         initializeOnClickPrevious();
         initializeOnClickNext();
@@ -264,30 +272,59 @@ public class MusicPlayerActivity extends Activity{
     }
 
     private void initializeOnClickPlay() {
-        ImageView playButton = (ImageView) findViewById(R.id.playButton);
+        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
+
         playButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 play(DynamicQueue.getInstance().getCurrentSong());
-                Toast.makeText(getApplicationContext(), "MAKE ME PAUSE!", Toast.LENGTH_LONG).show();
+                playButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Play loads song every time.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initializeOnClickPause() {
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
+        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                pause();
+                pauseButton.setVisibility(View.GONE);
+                playButton.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Make runnable that checks if MusicPlayer is playing, then show/gone play/pause buttons.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initializeOnClickStop() {
         ImageView stopButton = (ImageView) findViewById(R.id.stopButton);
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
+        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 stop();
+                if (playButton.getVisibility() == View.GONE) {
+                    pauseButton.setVisibility(View.GONE);
+                    playButton.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
 
     private void initializeOnClickPrevious() {
         ImageView previousButton = (ImageView) findViewById(R.id.previousButton);
+        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
+
         previousButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -295,12 +332,17 @@ public class MusicPlayerActivity extends Activity{
                 DynamicQueue.getInstance().selectPrevSong();
                 setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
                 play(DynamicQueue.getInstance().getCurrentSong());
+                playButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
             }
         });
     }
 
     private void initializeOnClickNext() {
         ImageView nextButton = (ImageView) findViewById(R.id.nextButton);
+        final ImageView playButton = (ImageView) findViewById(R.id.playButton);
+        final ImageView pauseButton = (ImageView) findViewById(R.id.pauseButton);
+
         nextButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -308,6 +350,8 @@ public class MusicPlayerActivity extends Activity{
                 DynamicQueue.getInstance().selectNextSong();
                 setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
                 play(DynamicQueue.getInstance().getCurrentSong());
+                playButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
             }
         });
     }
