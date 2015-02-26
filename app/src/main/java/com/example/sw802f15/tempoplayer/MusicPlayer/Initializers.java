@@ -109,7 +109,7 @@ public class Initializers {
     }
 
     private void changePlayPauseButton(){
-        new CountDownTimer(1000, 1) {
+        new CountDownTimer(50, 1) {
             @Override
             public void onTick(long millisUntilFinished) { }
             @Override

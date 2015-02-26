@@ -138,7 +138,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         else {
             loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
 
-            new CountDownTimer(1000, 1) {
+            new CountDownTimer(10, 1) {
                 @Override
                 public void onTick(long millisUntilFinished) { }
                 @Override
@@ -161,10 +161,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void next() {
         if (musicPlayer.isPlaying()) {
             DynamicQueue.getInstance().selectNextSong();
+            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
             play();
         }
         else {
             DynamicQueue.getInstance().selectNextSong();
+            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
             pause();
         }
     }
@@ -172,10 +174,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void previous() {
         if (musicPlayer.isPlaying()) {
             DynamicQueue.getInstance().selectPrevSong();
+            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
             play();
         }
         else {
             DynamicQueue.getInstance().selectPrevSong();
+            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
             pause();
         }
     }
