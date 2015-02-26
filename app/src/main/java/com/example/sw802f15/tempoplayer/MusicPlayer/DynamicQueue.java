@@ -19,15 +19,16 @@ public class DynamicQueue {
         }
     }
     private class DatabaseStub {
-        private String filepath = Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3";
+        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
+                + "/music_sample.mp3";
         public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
             if (BMP != 42) return null;
             else {
                 List<Song> res = new ArrayList<Song>();
                // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
-                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.fromFile(new File(filepath)), null, 354));
-                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.fromFile(new File(filepath)), null, 720));
-                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.fromFile(new File(filepath)), null, 142));
+                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.parse(path), null, 354));
+                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.parse(path), null, 720));
+                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.parse(path), null, 142));
 
                 return res;
             }
