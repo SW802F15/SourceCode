@@ -110,7 +110,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
-    private void loadSong(Uri uri) {
+    public void loadSong(Uri uri) {
         isPrepared = false;
         isLoaded = false;
         if (uri == null || !new File(uri.getPath()).exists()){

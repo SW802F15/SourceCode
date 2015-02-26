@@ -35,13 +35,13 @@ import com.example.sw802f15.tempoplayer.R;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 
 public class MusicPlayerActivity extends Activity{
 
-    public Song testSongValid;
     private SeekBar seekBar;
     MusicPlayerService mService;
     boolean mBound = false;
@@ -114,9 +114,6 @@ public class MusicPlayerActivity extends Activity{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            //////////////////////////////////////////////
-            DRIVER_MusicPlayerService();
-            //////////////////////////////////////////////
             return true;
         }
 
@@ -144,25 +141,23 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-    private void DRIVER_MusicPlayerService(){
-        play(new Song("", "", "", null,Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/Music/music_sample.mp3")), null, 2));
-    }
 
-    public void play(Song song){
-        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
-        musicPlayerService.setAction("Load");
-        musicPlayerService.setDataAndType(song.getUri(), "mp3");
-        new CountDownTimer(1000, 1) {
-            @Override
-            public void onTick(long millisUntilFinished) { }
-            @Override
-            public void onFinish() {
-                Intent playIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-                playIntent.setAction("Play");
-                startService(playIntent);
-            }
-        }.start();
-        startService(musicPlayerService);
+    public void play(){
+        if (mService.isPrepared) {
+            mService.musicPlayer.start();
+        }
+        else {
+            mService.loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+
+            new CountDownTimer(1000, 1) {
+                @Override
+                public void onTick(long millisUntilFinished) { }
+                @Override
+                public void onFinish() {
+                    mService.musicPlayer.start();
+                }
+            }.start();
+        }
     }
 
     public void stop() {
@@ -231,16 +226,9 @@ public class MusicPlayerActivity extends Activity{
 ////                    DELETE THIS AFTER TESTS                                           ////
 //////////////////////////////////////////////////////////////////////////////////////////////
     private void testGUI(){
-        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
-                + "/music_sample.mp3";
-        testSongValid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path), null, 460);
-
-
-
         setBPMText(52);
         setSPMText(85);
     }
-
 
 
 
@@ -279,10 +267,9 @@ public class MusicPlayerActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                play(DynamicQueue.getInstance().getCurrentSong());
+                play();
                 playButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(), "Play loads song every time.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -298,7 +285,6 @@ public class MusicPlayerActivity extends Activity{
                 pause();
                 pauseButton.setVisibility(View.GONE);
                 playButton.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(), "Make runnable that checks if MusicPlayer is playing, then show/gone play/pause buttons.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -331,7 +317,7 @@ public class MusicPlayerActivity extends Activity{
             public void onClick(View v) {
                 DynamicQueue.getInstance().selectPrevSong();
                 setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
-                play(DynamicQueue.getInstance().getCurrentSong());
+                play();
                 playButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
             }
@@ -349,7 +335,7 @@ public class MusicPlayerActivity extends Activity{
             public void onClick(View v) {
                 DynamicQueue.getInstance().selectNextSong();
                 setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
-                play(DynamicQueue.getInstance().getCurrentSong());
+                play();
                 playButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
             }
