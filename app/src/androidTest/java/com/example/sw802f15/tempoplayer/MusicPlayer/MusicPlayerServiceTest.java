@@ -30,7 +30,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     protected void setUp() throws Exception {
         super.setUp();
         String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
-                + "/music_sample.mp3";
+                + "/music_sample_1.mp3";
         testSongValid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path), null, 460);
         testSongInvalid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path.substring(6)), null, 460);
     }

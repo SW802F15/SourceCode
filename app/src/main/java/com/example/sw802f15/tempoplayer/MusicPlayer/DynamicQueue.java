@@ -20,7 +20,7 @@ public class DynamicQueue {
     }
     private class DatabaseStub {
         String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
-                + "/music_sample.mp3";
+                + "/music_sample_1.mp3";
         public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
             if (BMP != 42) return null;
             else {
