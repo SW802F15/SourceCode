@@ -2,14 +2,21 @@ package com.example.sw802f15.tempoplayer.MusicPlayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
+
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -139,6 +146,24 @@ public class Initializers {
         coverFlow.setAdapter(coverImageAdapter);
         coverFlow.setSpacing(-10);
         coverFlow.setMaxZoom(-200);
+
+
+
+        ResourceImageAdapter coverFlowResources = new ResourceImageAdapter(_activity);
+
+        SongDatabase songDatabase = new SongDatabase(_activity);
+        int[] defaultImageIDs;
+
+        for (Iterator<Long> id = _activity.songIDsInDatabase.iterator(); id.hasNext();) {
+            Integer i = 0;
+            Bitmap tempBitmap = BitmapFactory.decodeFile(          songDatabase.readEntryById(id.next()).getAlbumUri().toString()        );
+            WeakReference<Bitmap> tempReference = new WeakReference<Bitmap>(tempBitmap);
+            coverFlowResources.bitmapMap.put(i, tempReference);
+            i++;
+        }
+
+
+        //coverFlowResources.setResources();
     }
 
 }
