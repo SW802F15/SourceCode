@@ -29,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
@@ -37,6 +38,8 @@ import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -46,6 +49,7 @@ public class MusicPlayerActivity extends Activity{
     private SeekBar seekBar;
     MusicPlayerService mService;
     boolean mBound = false;
+    public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
 
 
     @Override
@@ -203,12 +207,53 @@ public class MusicPlayerActivity extends Activity{
 ////                    DELETE THIS AFTER TESTS                                           ////
 //////////////////////////////////////////////////////////////////////////////////////////////
     private void testGUI(){
-        setBPMText(52);
-        setSPMText(85);
+
     }
 
 
 
+    private void initializeTestSongs() {
+        String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/";
+        String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/";
+
+        Song test_1 = new Song("Tristram", "Matt Uemen", //Title, Artist
+                               "Diablo SoundTrack", null,  //Album , BPM
+                               Uri.parse(initMusicPath + "music_sample_1.mp3"), Uri.parse(initCoverPath + "cover_sample_1.jpg"), //SongUri, CoverUri
+                               7*60 + 40);
+
+        Song test_2 = new Song("Let It Go", "Idina Menzel", //Title, Artist
+                "Frozen SoundTrack", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_2.mp3"), Uri.parse(initCoverPath + "cover_sample_2.jpg"), //SongUri, CoverUri
+                3*60 + 40);
+
+        Song test_3 = new Song("Runnin'", "Adam Lambert", //Title, Artist
+                "Trespassing", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_3.mp3"), Uri.parse(initCoverPath + "cover_sample_3.jpg"), //SongUri, CoverUri
+                3*60 + 48);
+
+        Song test_4 = new Song("Sex on Fire", "Kings of Leon", //Title, Artist
+                "Only by the Night", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_4.mp3"), Uri.parse(initCoverPath + "cover_sample_4.jpg"), //SongUri, CoverUri
+                3*60 + 26);
+
+        Song test_5 = new Song("T.N.T.", "AC/DC", //Title, Artist
+                "T.N.T.", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_5.mp3"), Uri.parse(initCoverPath + "cover_sample_5.jpg"), //SongUri, CoverUri
+                3*60 + 34);
+
+        Song test_6 = new Song("Still Counting", "Volbeat", //Title, Artist
+                "Guitar Gangstars & Cadillac Blood", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_6.mp3"), Uri.parse(initCoverPath + "cover_sample_6.jpg"), //SongUri, CoverUri
+                4*60 + 21);
+
+        SongDatabase songDatabase = new SongDatabase(getApplicationContext());
+        songIDsInDatabase.add(      songDatabase.insertSong(test_1).getID()            );
+        songIDsInDatabase.add(      songDatabase.insertSong(test_2).getID()            );
+        songIDsInDatabase.add(      songDatabase.insertSong(test_3).getID()            );
+        songIDsInDatabase.add(      songDatabase.insertSong(test_4).getID()            );
+        songIDsInDatabase.add(      songDatabase.insertSong(test_5).getID()            );
+        songIDsInDatabase.add(      songDatabase.insertSong(test_6).getID()            );
+    }
 
 
 
