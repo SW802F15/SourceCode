@@ -65,4 +65,19 @@ public class Song {
     public void setAlbumUri(Uri _albumUri) {
         this._albumUri = _albumUri;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Song)) return false;
+
+        Song song = (Song) o;
+
+        return _id == song._id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (_id ^ (_id >>> 32));
+    }
 }

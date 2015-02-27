@@ -116,9 +116,9 @@ public class DynamicQueue {
         final int BMP = sc.getCurrentSPM();
         List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
 
-        for (Song song : songs){
-            if(prevSongs.contains(song)){
-                prevSongs.remove(song);
+        for (Song song : prevSongs){
+            if(songs.contains(song)){
+                songs.remove(song);
             }
         }
 
