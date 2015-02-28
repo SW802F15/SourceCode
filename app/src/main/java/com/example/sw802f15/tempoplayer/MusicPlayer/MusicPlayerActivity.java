@@ -247,12 +247,12 @@ public class MusicPlayerActivity extends Activity{
                 4*60 + 21);
 
         SongDatabase songDatabase = new SongDatabase(getApplicationContext());
-        songIDsInDatabase.add(      songDatabase.insertSong(test_1).getID()            );
-        songIDsInDatabase.add(      songDatabase.insertSong(test_2).getID()            );
-        songIDsInDatabase.add(      songDatabase.insertSong(test_3).getID()            );
-        songIDsInDatabase.add(      songDatabase.insertSong(test_4).getID()            );
-        songIDsInDatabase.add(      songDatabase.insertSong(test_5).getID()            );
-        songIDsInDatabase.add(      songDatabase.insertSong(test_6).getID()            );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_1).getID()             );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_2).getID()             );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_3).getID()             );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_4).getID()             );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_5).getID()             );
+        songIDsInDatabase.add(             songDatabase.insertSong(test_6).getID()             );
     }
 
 
