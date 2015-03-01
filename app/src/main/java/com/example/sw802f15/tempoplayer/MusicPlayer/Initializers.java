@@ -174,6 +174,22 @@ public class Initializers {
         coverFlow.setAdapter(coverImageAdapter);
     }
 
+    private void nextAlbumCover() {
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        BaseAdapter coverImageAdapter = (BaseAdapter) coverFlow.getAdapter();
+        List<Bitmap> newBitmapList = new ArrayList<>();
+        newBitmapList.add((Bitmap) coverImageAdapter.getItem(2));
+        newBitmapList.add((Bitmap) coverImageAdapter.getItem(3));
+        newBitmapList.add((Bitmap) coverImageAdapter.getItem(4));
+        newBitmapList.add((Bitmap) coverImageAdapter.getItem(5));
+
+        ((ResourceImageAdapter) coverImageAdapter).setResources(newBitmapList);
+
+
+        coverFlow.setAdapter(coverImageAdapter);
+        //coverFlow.getChildAt(0).scrollTo(300,0);
+
+    }
 
 
     private Bitmap getBitmapFromUri(Uri albumUri) {
