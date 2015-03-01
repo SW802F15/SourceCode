@@ -1,6 +1,7 @@
 package com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 
 import com.example.sw802f15.tempoplayer.R;
+
+import java.util.ResourceBundle;
 
 /**
  * Cover Flow implementation.
@@ -101,7 +104,11 @@ public class CoverFlow extends Gallery {
 
         if (childCenter == coverflowCenter) {
             transformImageBitmap((ImageView) child, t, 0);
-        } else {
+        }
+        else if (childCenter+(childWidth/2) >= coverflowCenter && childCenter-(childWidth/2) <= coverflowCenter) {
+            transformImageBitmap((ImageView) child, t, 0);
+        }
+        else {
             rotationAngle = (int) ((float) (coverflowCenter - childCenter) / childWidth * maxRotationAngle);
             if (Math.abs(rotationAngle) > maxRotationAngle) {
                 rotationAngle = rotationAngle < 0 ? -maxRotationAngle : maxRotationAngle;
@@ -109,6 +116,7 @@ public class CoverFlow extends Gallery {
 
             transformImageBitmap((ImageView) child, t, rotationAngle);
         }
+
 
         return true;
     }
@@ -121,6 +129,7 @@ public class CoverFlow extends Gallery {
 
     private void transformImageBitmap(final ImageView child, final Transformation t, final int rotationAngle) {
         camera.save();
+
         final Matrix imageMatrix = t.getMatrix();
 
         final int height = child.getLayoutParams().height;
@@ -140,6 +149,7 @@ public class CoverFlow extends Gallery {
         camera.getMatrix(imageMatrix);
         imageMatrix.preTranslate(-(width / 2.0f), -(height / 2.0f));
         imageMatrix.postTranslate((width / 2.0f), (height / 2.0f));
+
         camera.restore();
     }
 
