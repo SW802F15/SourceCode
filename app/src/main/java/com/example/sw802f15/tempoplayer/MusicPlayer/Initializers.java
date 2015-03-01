@@ -5,11 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
@@ -149,21 +151,18 @@ public class Initializers {
 
 
 
-        ResourceImageAdapter coverFlowResources = new ResourceImageAdapter(_activity);
-
-        SongDatabase songDatabase = new SongDatabase(_activity);
-        int[] defaultImageIDs;
-
-        for (Iterator<Long> id = _activity.songIDsInDatabase.iterator(); id.hasNext();) {
-            Integer i = 0;
-            Bitmap tempBitmap = BitmapFactory.decodeFile(          songDatabase.readEntryById(id.next()).getAlbumUri().toString()        );
-            WeakReference<Bitmap> tempReference = new WeakReference<Bitmap>(tempBitmap);
-            coverFlowResources.bitmapMap.put(i, tempReference);
-            i++;
-        }
+        setCoverFlowImages();
+    }
 
 
-        //coverFlowResources.setResources();
+
+    private void setCoverFlowImages() {
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
+
+        ((ResourceImageAdapter) coverImageAdapter).setResources(_activity.allSongsShouldBeDeleted.subList(0,3));
+
+        coverFlow.setAdapter(coverImageAdapter);
     }
 
 }
