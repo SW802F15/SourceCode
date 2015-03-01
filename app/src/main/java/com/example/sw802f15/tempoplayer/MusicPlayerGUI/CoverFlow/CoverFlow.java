@@ -26,7 +26,7 @@ public class CoverFlow extends Gallery {
      * Graphics Camera used for transforming the matrix of ImageViews.
      */
     private final Camera camera = new Camera();
-    private int maxRotationAngle = 60;
+    private int maxRotationAngle = 45;
     private int maxZoom = -120;
     private int coverflowCenter;
     private float imageHeight;
@@ -110,9 +110,10 @@ public class CoverFlow extends Gallery {
         }
         else {
             rotationAngle = (int) ((float) (coverflowCenter - childCenter) / childWidth * maxRotationAngle);
-            if (Math.abs(rotationAngle) > maxRotationAngle) {
+            rotationAngle = rotationAngle < 0 ? -maxRotationAngle : maxRotationAngle;
+            /*if (Math.abs(rotationAngle) > maxRotationAngle) {
                 rotationAngle = rotationAngle < 0 ? -maxRotationAngle : maxRotationAngle;
-            }
+            }*/
 
             transformImageBitmap((ImageView) child, t, rotationAngle);
         }
