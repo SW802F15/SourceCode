@@ -69,12 +69,6 @@ public class CoverFlow extends Gallery {
         this.setStaticTransformationsEnabled(true);
     }
 
-    /**
-     * Sets the.
-     *
-     * @param adapter
-     *            the new adapter
-     */
     @Override
     public void setAdapter(final SpinnerAdapter adapter) {
         if (!(adapter instanceof AbstractCoverFlowImageAdapter)) {
@@ -95,11 +89,6 @@ public class CoverFlow extends Gallery {
         return view.getLeft() + view.getWidth() / 2;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see #setStaticTransformationsEnabled(boolean)
-     */
     @Override
     protected boolean getChildStaticTransformation(final View child, final Transformation t) {
 
@@ -124,36 +113,12 @@ public class CoverFlow extends Gallery {
         return true;
     }
 
-    /**
-     * This is called during layout when the size of this view has changed. If
-     * you were just added to the view hierarchy, you're called with the old
-     * values of 0.
-     *
-     * @param w
-     *            Current width of this view.
-     * @param h
-     *            Current height of this view.
-     * @param oldw
-     *            Old width of this view.
-     * @param oldh
-     *            Old height of this view.
-     */
     @Override
     protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         coverflowCenter = getCenterOfCoverflow();
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    /**
-     * Transform the Image Bitmap by the Angle passed.
-     *
-     * @param imageView
-     *            ImageView the ImageView whose bitmap we want to rotate
-     * @param t
-     *            transformation
-     * @param rotationAngle
-     *            the Angle by which to rotate the Bitmap
-     */
     private void transformImageBitmap(final ImageView child, final Transformation t, final int rotationAngle) {
         camera.save();
         final Matrix imageMatrix = t.getMatrix();
@@ -178,14 +143,6 @@ public class CoverFlow extends Gallery {
         camera.restore();
     }
 
-    /**
-     * Parses the attributes.
-     *
-     * @param context
-     *            the context
-     * @param attrs
-     *            the attrs
-     */
     private void parseAttributes(final Context context, final AttributeSet attrs) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CoverFlow);
         try {
@@ -196,5 +153,4 @@ public class CoverFlow extends Gallery {
             a.recycle();
         }
     }
-
 }
