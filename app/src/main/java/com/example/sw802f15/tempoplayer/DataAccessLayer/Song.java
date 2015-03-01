@@ -60,8 +60,9 @@ public class Song {
     public int getDurationInSec() {return _durationInSec;}
 
     public Uri getAlbumUri() {
-        return null;
+        return _albumUri;
     }
+
     public void setAlbumUri(Uri _albumUri) {
         this._albumUri = _albumUri;
     }
