@@ -52,10 +52,19 @@ public class MusicPlayerActivity extends Activity{
     public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
 
 
+    public ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+
+        Toast.makeText(this, "DynamicQueue should use songs from Database as test data.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Application crashes when adding already existing song.", Toast.LENGTH_SHORT).show();
+
+
+        initializeTestSongs();
+
 
         Initializers initializers = new Initializers(this);
         initializers.initializeOnClickListeners();
@@ -246,13 +255,26 @@ public class MusicPlayerActivity extends Activity{
                 Uri.parse(initMusicPath + "music_sample_6.mp3"), Uri.parse(initCoverPath + "cover_sample_6.jpg"), //SongUri, CoverUri
                 4*60 + 21);
 
-        SongDatabase songDatabase = new SongDatabase(getApplicationContext());
-        songIDsInDatabase.add(             songDatabase.insertSong(test_1).getID()             );
-        songIDsInDatabase.add(             songDatabase.insertSong(test_2).getID()             );
-        songIDsInDatabase.add(             songDatabase.insertSong(test_3).getID()             );
-        songIDsInDatabase.add(             songDatabase.insertSong(test_4).getID()             );
-        songIDsInDatabase.add(             songDatabase.insertSong(test_5).getID()             );
-        songIDsInDatabase.add(             songDatabase.insertSong(test_6).getID()             );
+       // SongDatabase songDatabase = new SongDatabase(getApplicationContext());
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_1).getID()             );
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_2).getID()             );
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_3).getID()             );
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_4).getID()             );
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_5).getID()             );
+       // songIDsInDatabase.add(             songDatabase.insertSong(test_6).getID()             );
+
+
+
+
+
+
+        allSongsShouldBeDeleted.add(test_1);
+        allSongsShouldBeDeleted.add(test_2);
+        allSongsShouldBeDeleted.add(test_3);
+        allSongsShouldBeDeleted.add(test_4);
+        allSongsShouldBeDeleted.add(test_5);
+        allSongsShouldBeDeleted.add(test_6);
+
     }
 
 
