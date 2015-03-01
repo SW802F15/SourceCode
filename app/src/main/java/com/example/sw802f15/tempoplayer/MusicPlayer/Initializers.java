@@ -10,6 +10,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
@@ -18,7 +19,9 @@ import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAd
 import com.example.sw802f15.tempoplayer.R;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -101,6 +104,7 @@ public class Initializers {
                 _activity.mService.next();
                 _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
+                nextAlbumCover();
             }
         });
     }
@@ -154,15 +158,32 @@ public class Initializers {
         setCoverFlowImages();
     }
 
-
-
     private void setCoverFlowImages() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
 
-        ((ResourceImageAdapter) coverImageAdapter).setResources(_activity.allSongsShouldBeDeleted.subList(0,3));
+
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
+        for (Song song : _activity.allSongsShouldBeDeleted)
+        {
+            allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        ((ResourceImageAdapter) coverImageAdapter).setResources(allAlbumCovers);
 
         coverFlow.setAdapter(coverImageAdapter);
     }
 
+
+
+    private Bitmap getBitmapFromUri(Uri albumUri) {
+        try {
+            return BitmapFactory.decodeFile(albumUri.toString());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(_activity, "Should return default album cover for unknown albums.", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
 }
