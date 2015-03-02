@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="01:03"
+                android:text="00:00"
                 android:id="@+id/textView_currentPosition"
                 android:layout_gravity="center"
                 android:textColor="#ffffffff"/>
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="07:40"
+                android:text="00:00"
                 android:id="@+id/textView_songDuration"
                 android:layout_gravity="center"
                 android:textColor="#ffffffff"/>
