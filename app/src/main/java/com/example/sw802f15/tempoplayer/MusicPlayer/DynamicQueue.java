@@ -28,7 +28,7 @@ public class DynamicQueue {
     private Song currentSong;
     private int _prevSize = 10;
     private int _lookAheadSize = 3;
-    private int _BPMDeviation = 30;
+    private int _BPMDeviation = 45;
     private static Context _context;
 
     private static DynamicQueue instance = null;
