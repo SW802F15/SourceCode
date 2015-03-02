@@ -338,10 +338,7 @@ public class MusicPlayerActivity extends Activity{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    Intent seekToIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-                    seekToIntent.setAction("SeekTo");
-                    seekToIntent.setFlags(progress);
-                    startService(seekToIntent);
+                    mService.musicPlayer.seekTo(progress);
                 }
             }
 
