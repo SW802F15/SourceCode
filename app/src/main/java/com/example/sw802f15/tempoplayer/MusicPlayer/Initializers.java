@@ -276,6 +276,8 @@ public class Initializers {
 
             resourceImageAdapter.setResources(resources);
         }
+        Toast.makeText(_activity, "Problem when you exceed prevSize. " +
+                                  "Then a album cover too much is removed.", Toast.LENGTH_SHORT).show();//ToDo
     }
 
     private Bitmap getBitmapFromUri(Uri albumUri) {
