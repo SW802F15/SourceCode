@@ -47,34 +47,20 @@ import java.util.logging.LogRecord;
 
 public class MusicPlayerActivity extends Activity{
 
-    private SeekBar seekBar;
     MusicPlayerService mService;
     boolean mBound = false;
-    public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
-
-
-    public static ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
 
-        Toast.makeText(this, "DynamicQueue should use songs from Database as test data.", Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Application crashes when adding already existing song.", Toast.LENGTH_SHORT).show();
-
-
         initializeTestSongs();
 
-
         Initializers initializers = new Initializers(this);
+        initializers.initializeDynamicQueue();
         initializers.initializeOnClickListeners();
         initializers.initializeCoverFlow();
-        initializers.initializeDynamicQueue();
-
-
-
-        testGUI();
     }
 
     @Override
@@ -210,15 +196,6 @@ public class MusicPlayerActivity extends Activity{
             mBound = false;
         }
     };
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-////                    DELETE THIS AFTER TESTS                                           ////
-//////////////////////////////////////////////////////////////////////////////////////////////
-    private void testGUI(){
-
-    }
-
 
 
     private void initializeTestSongs() {

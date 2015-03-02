@@ -193,7 +193,14 @@ public class Initializers {
 
 
         List<Bitmap> allAlbumCovers = new ArrayList<>();
-        for (Song song : _activity.allSongsShouldBeDeleted)
+        for (Song song : DynamicQueue.getInstance(_activity).getPrevSongs())
+        {
+            allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        allAlbumCovers.add(getBitmapFromUri(DynamicQueue.getInstance(_activity).getCurrentSong().getAlbumUri()));
+
+        for (Song song : DynamicQueue.getInstance(_activity).getNextSongs())
         {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
         }
@@ -204,19 +211,26 @@ public class Initializers {
     }
 
     private void nextAlbumCover() {
-        /*final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
-        BaseAdapter coverImageAdapter = (BaseAdapter) coverFlow.getAdapter();
-        List<Bitmap> newBitmapList = new ArrayList<>();
-        newBitmapList.add((Bitmap) coverImageAdapter.getItem(2));
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        //BaseAdapter coverImageAdapter = (BaseAdapter) coverFlow.getAdapter();
+        /*List<Bitmap> newBitmapList = new ArrayList<>();
+
+        for (int i = 0; i < coverImageAdapter.getCount(); i++) {
+
+        }
+
+        newBitmapList.add((Bitmap) coverImageAdapter.getItem());
         newBitmapList.add((Bitmap) coverImageAdapter.getItem(3));
         newBitmapList.add((Bitmap) coverImageAdapter.getItem(4));
         newBitmapList.add((Bitmap) coverImageAdapter.getItem(5));
 
-        ((ResourceImageAdapter) coverImageAdapter).setResources(newBitmapList);
+        ((ResourceImageAdapter) coverImageAdapter).setResources(newBitmapList);*/
+
+        coverFlow.scrollTo(0, coverFlow.getBottom());
 
 
-        coverFlow.setAdapter(coverImageAdapter);
-        //coverFlow.getChildAt(0).scrollTo(300,0);*/
+        //coverFlow.setAdapter(coverImageAdapter);
+
 
     }
 
