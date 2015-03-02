@@ -3,15 +3,16 @@ package com.example.sw802f15.tempoplayer.DataAccessLayer;
 import android.content.ContentResolver;
 import android.net.Uri;
 
+import com.example.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import com.example.sw802f15.tempoplayer.R;
 
 /**
  * Created by Draegert on 16-02-2015.
  */
 public class Song {
-    private static final Uri DEFAULTALBUMPATH = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+    private static final Uri DEFAULTALBUMPATH = Uri.parse("android.resource" + "://" +
                                                           "com." + "example." + "sw802f15." + "tempoplayer" +
-                                                          "/" + R.drawable.defaultalbumcover);
+                                                          "/" + "drawable" + "/" + "defaultalbumcover.png");
     private long _id;
     private String _title;
     private  String _artist;
@@ -86,4 +87,10 @@ public class Song {
     public int hashCode() {
         return (int) (_id ^ (_id >>> 32));
     }
+
+
+
+
+
+
 }

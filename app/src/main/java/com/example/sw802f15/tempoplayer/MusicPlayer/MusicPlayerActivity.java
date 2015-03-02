@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -227,7 +228,8 @@ public class MusicPlayerActivity extends Activity{
 
         Song test_1 = new Song("Tristram", "Matt Uemen", //Title, Artist
                                "Diablo SoundTrack", null,  //Album , BPM
-                               Uri.parse(initMusicPath + "music_sample_1.mp3"), Uri.parse(initCoverPath + "cover_sample_1.jpg"), //SongUri, CoverUri
+                               Uri.parse(initMusicPath + "music_sample_1.mp3"),
+                               null, //SongUri, CoverUri
                                7*60 + 40);
 
         Song test_2 = new Song("Let It Go", "Idina Menzel", //Title, Artist
@@ -276,12 +278,6 @@ public class MusicPlayerActivity extends Activity{
         allSongsShouldBeDeleted.add(test_6);
 
     }
-
-
-
-
-
-
 
 
 
