@@ -96,6 +96,7 @@ public class Initializers {
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 previousAlbumCover();
+                removeLastAlbumCover();
             }
         });
     }
@@ -257,6 +258,23 @@ public class Initializers {
         }
         else {
             Toast.makeText(_activity, "No previous song.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void removeLastAlbumCover(){
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+
+        int previousPosition = coverFlow.getSelectedItemPosition() - 1;
+
+        if (coverFlow.getItemAtPosition(previousPosition) != null) {
+            ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
+
+            List<Bitmap> resources = new ArrayList<>();
+            for (int i = 0; i < resourceImageAdapter.getCount() -1; i++) {
+                resources.add(resourceImageAdapter.getItem(i));
+            }
+
+            resourceImageAdapter.setResources(resources);
         }
     }
 

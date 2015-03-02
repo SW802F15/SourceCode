@@ -80,6 +80,7 @@ public class DynamicQueue {
         }
         currentSong = nextSongs.get(0);
         nextSongs.remove(0);
+
         nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
     }
 
