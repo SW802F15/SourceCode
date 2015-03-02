@@ -91,25 +91,27 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
+            updateSeekBarAndLabels();
         } catch (IOException e) {
             Log.e("loadSong", e.getStackTrace().toString());
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
 
         musicPlayer.prepareAsync();
-        updateSeekBarAndLabels();
     }
 
     public void updateSeekBarAndLabels()
     {
-        SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
-        Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
-        sb.setMax(song.getDurationInSec());
+        if(Initializers._activity != null) {
+            SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
+            Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
+            sb.setMax(song.getDurationInSec());
 
-        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
-        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
-        minLabel.setText("00:00");
-        maxLabel.setText(song.getDurationInMinAndSec());
+            TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+            TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+            minLabel.setText("00:00");
+            maxLabel.setText(song.getDurationInMinAndSec());
+        }
     }
 
     public void play(){
