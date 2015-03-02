@@ -78,7 +78,8 @@ public class DynamicQueue {
             }
         }
         currentSong = nextSongs.get(0);
-        nextSongs = getMatchingSongs(1, _BPMDeviation);
+        nextSongs.remove(0);
+        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
     }
 
     public void selectPrevSong() {
@@ -103,9 +104,14 @@ public class DynamicQueue {
             return new ArrayList<>();
         }
         final int BMP = sc.getCurrentSPM();
-        List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
+        final List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
 
         for (Song song : prevSongs){
+            if(songs.contains(song)){
+                songs.remove(song);
+            }
+        }
+        for (Song song : nextSongs){
             if(songs.contains(song)){
                 songs.remove(song);
             }
@@ -122,6 +128,11 @@ public class DynamicQueue {
         });
         if (num > songs.size()){
             num = songs.size();
+        }
+        if (songs.size() == 0){
+            final Song song = prevSongs.get(0);
+            prevSongs.remove(0);
+            return new ArrayList<Song>() {{ add(song); }};
         }
         return songs.subList(0, num);
     }
