@@ -261,13 +261,11 @@ public class Initializers {
 
     private Runnable updateSeekBarTime = new Runnable() {
         public void run() {
-
             int timeElapsed = _activity.mService.musicPlayer.getCurrentPosition() / 1000;
             SeekBar sb = (SeekBar) _activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
             _activity.setSongProgressText(timeElapsed);
             durationHandler.postDelayed(this, POLL_RATE);
-
         }
     };
 
