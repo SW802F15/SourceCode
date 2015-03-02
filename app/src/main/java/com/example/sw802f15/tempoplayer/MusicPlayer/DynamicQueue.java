@@ -27,7 +27,7 @@ public class DynamicQueue {
                 List<Song> res = new ArrayList<Song>();
                // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
                 res.add(new Song(1, "title1", "1", "a", 42+11, Uri.parse(path), null, 354));
-                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.parse(path), null, 720));
+                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.parse(path), null, 460));
                 res.add(new Song(3, "title3", "3", "c", 42+111, Uri.parse(path), null, 142));
 
                 return res;

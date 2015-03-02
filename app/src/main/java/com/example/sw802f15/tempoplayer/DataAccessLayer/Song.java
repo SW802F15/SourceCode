@@ -81,4 +81,20 @@ public class Song {
     public int hashCode() {
         return (int) (_id ^ (_id >>> 32));
     }
+
+    public String getDurationInMinAndSec() {
+        int durationOriginal = getDurationInSec();
+
+        String leftSide = (int)Math.floor((double)durationOriginal / 60) + "";
+        String rightSide;
+
+        int remainder = (durationOriginal % 60);
+
+        if(remainder < 10){
+            rightSide = "0" + remainder;
+        }else{
+            rightSide = "" + remainder;
+        }
+        return leftSide + ":" + rightSide;
+    }
 }

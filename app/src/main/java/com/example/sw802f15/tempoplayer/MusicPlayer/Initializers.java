@@ -25,8 +25,9 @@ import java.util.List;
  */
 public class Initializers {
 
-    MusicPlayerActivity _activity;
-
+    public static MusicPlayerActivity _activity;
+    private boolean _isPlaying = false;
+    private final int POLL_RATE = 100;
 
     public Initializers(MusicPlayerActivity activity) {
         _activity = activity;
@@ -143,6 +144,7 @@ public class Initializers {
 
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance().selectNextSong();
+//        _activity.mService.loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
         _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
     }
 
@@ -156,6 +158,7 @@ public class Initializers {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                _isPlaying = _activity.mService.musicPlayer.isPlaying();
                 _activity.mService.musicPlayer.pause();
             }
 
@@ -163,7 +166,7 @@ public class Initializers {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
 
-                if(_activity.mService.musicPlayer.isPlaying()) {
+                if(_isPlaying) {
                     _activity.mService.musicPlayer.start();
                 }else{
                     _activity.mService.musicPlayer.pause();
@@ -232,7 +235,7 @@ public class Initializers {
 
     private void startSeekBarPoll()
     {
-        durationHandler.postDelayed(updateSeekBarTime, 1000);
+        durationHandler.postDelayed(updateSeekBarTime, POLL_RATE);
     }
 
     Handler durationHandler = new Handler();
@@ -243,7 +246,7 @@ public class Initializers {
             SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
             _activity.setSongProgressText(timeElapsed);
-            durationHandler.postDelayed(this, 100);
+            durationHandler.postDelayed(this, POLL_RATE);
         }
     };
 

@@ -10,8 +10,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 import com.example.sw802f15.tempoplayer.R;
 
 import java.io.File;
@@ -94,10 +96,21 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
 
-
         musicPlayer.prepareAsync();
+        updateSeekBarAndLabels();
     }
 
+    public void updateSeekBarAndLabels()
+    {
+        SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
+        Song song = DynamicQueue.getInstance().getCurrentSong();
+        sb.setMax(song.getDurationInSec());
+
+        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+        minLabel.setText("00:00");
+        maxLabel.setText(song.getDurationInMinAndSec());
+    }
 
     public void play(){
         if (isPrepared) {
