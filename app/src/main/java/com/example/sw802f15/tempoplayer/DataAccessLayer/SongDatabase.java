@@ -7,9 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Dan on 18-02-2015.
@@ -17,6 +20,7 @@ import java.util.List;
 public class SongDatabase extends SQLiteOpenHelper
 {
     // If you change the database schema, you must increment the database version.
+    Context _context;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "TempoPlayer.db";
     public static final String TABLE_NAME = "Song";
@@ -28,7 +32,7 @@ public class SongDatabase extends SQLiteOpenHelper
             "album TEXT NOT NULL,"+
             "bpm INTEGER," +
             "path TEXT UNIQUE," +
-            "album_path TEXT," +
+            "album_path TEXT NOT NULL," +
             "duration INTEGER" +
             ")";
     private static final String SQL_DELETE_ENTRIES =
@@ -37,6 +41,7 @@ public class SongDatabase extends SQLiteOpenHelper
     public SongDatabase(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        _context = context;
     }
 
     public void onCreate(SQLiteDatabase db)
@@ -76,18 +81,27 @@ public class SongDatabase extends SQLiteOpenHelper
         //If song already exists
         if (song.getID() >= 0)
         {
-            throw new SQLiteException("Song already exists in database.");
+            Toast.makeText(_context, "Song already exist.", Toast.LENGTH_SHORT).show();
+            song = readEntryById(song.getID());
+            return song;
         }
 
         //Otherwise insert in db and return new song.
         ContentValues values = new ContentValues();
-        values.put("title", song.getTitle());
-        values.put("artist", song.getArtist());
-        values.put("album", song.getAlbum());
-        values.put("bpm", song.getBpm());
-        values.put("path", song.getUri().toString());
-        if(song.getAlbumUri() != null) { values.put("album_path", song.getAlbumUri().toString()); }
-        values.put("duration", song.getDurationInSec());
+        try {
+            values.put("title", song.getTitle());
+            values.put("artist", song.getArtist());
+            values.put("album", song.getAlbum());
+            values.put("bpm", song.getBpm());
+            values.put("path", song.getUri().toString());
+            values.put("album_path", song.getAlbumUri().toString());
+            values.put("duration", song.getDurationInSec());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(_context, "Song not valid, not added to library.", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
 
 //        SQLiteDatabase db1 = this.getReadableDatabase();
 
@@ -97,14 +111,17 @@ public class SongDatabase extends SQLiteOpenHelper
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        long rowId = db.insertOrThrow(TABLE_NAME, null, values);
+        try{
+            long rowId = db.insertOrThrow(TABLE_NAME, null, values);
+            song.setID(rowId);
+        }catch (SQLiteException e){
+            Toast.makeText(_context, "Song already exist.", Toast.LENGTH_SHORT).show();
+            song = readBySongPath(song.getUri());
+        }
 
         db.close();
 
-        song.setID(rowId);
-
         return song;
-
     }
 
     public int deleteSong(Song song) throws SQLiteException
@@ -130,43 +147,65 @@ public class SongDatabase extends SQLiteOpenHelper
     }
 
     public Song readEntryById(long songId) throws SQLiteException{
+        return readSong("ROWID", songId);
+    }
+
+    public Song readBySongPath(Uri uri){
+        return readSong("path", uri);
+    }
+
+    private Song readSong(String searchRow, Object searchParameter) {
         Song resultSong = null;
 
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, searchRow + "=?",
+                new String[] { String.valueOf(searchParameter) }, null, null, null, null);
+
         try{
-            SQLiteDatabase db = this.getReadableDatabase();
-
-            Cursor cursor = db.query(TABLE_NAME, new String[] {"*"}, "ROWID" + "=?",
-                    new String[] { String.valueOf(songId) }, null, null, null, null);
-
-            if(cursor != null && cursor.moveToFirst())
-            {
-                cursor.moveToFirst();
-                resultSong = new Song(songId,
-                       cursor.getString(cursor.getColumnIndex("title")),
-                       cursor.getString(cursor.getColumnIndex("artist")),
-                       cursor.getString(cursor.getColumnIndex("album")),
-                       cursor.getInt(cursor.getColumnIndex("bpm")),
-                       Uri.fromFile(new File(cursor.getString(cursor.getColumnIndex("path")))),
-                       Uri.fromFile((cursor.getString(cursor.getColumnIndex("album_path")) != null)
-                               ? new File(cursor.getString(cursor.getColumnIndex("album_path")))
-                               : new File("")),
-                       cursor.getInt(cursor.getColumnIndex("duration")));
-                cursor.close();
-            }else {
-                throw new SQLiteException();
-            }
-            db.close();
-
-        }catch (SQLiteException ex)
-        {
-            throw new SQLiteException();
+            resultSong = constructSongListFromCursor(cursor).get(0);
         }
+        catch (IndexOutOfBoundsException ignored){
+            //No songs by that parameter.
+        }
+
+        db.close();
 
         return resultSong;
     }
 
     public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        return null;
+        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
+                new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
+                , null, null, null, null);
+
+        return constructSongListFromCursor(cursor);
+    }
+
+    private List<Song> constructSongListFromCursor(Cursor cursor){
+        List<Song> resultSongs = new ArrayList<>();
+
+        if(cursor != null)
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                resultSongs.add(new Song(
+                        cursor.getInt(cursor.getColumnIndex("rowid")),
+                        cursor.getString(cursor.getColumnIndex("title")),
+                        cursor.getString(cursor.getColumnIndex("artist")),
+                        cursor.getString(cursor.getColumnIndex("album")),
+                        cursor.getInt(cursor.getColumnIndex("bpm")),
+                        Uri.parse(cursor.getString(cursor.getColumnIndex("path"))),
+                        Uri.parse(cursor.getString(cursor.getColumnIndex("album_path"))),
+                        cursor.getInt(cursor.getColumnIndex("duration"))));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }else {
+            throw new SQLiteException();
+        }
+        return resultSongs;
     }
 }

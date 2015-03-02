@@ -1,11 +1,17 @@
 package com.example.sw802f15.tempoplayer.DataAccessLayer;
 
+import android.content.ContentResolver;
 import android.net.Uri;
+
+import com.example.sw802f15.tempoplayer.R;
 
 /**
  * Created by Draegert on 16-02-2015.
  */
 public class Song {
+    private static final Uri DEFAULTALBUMPATH = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                                                          "com." + "example." + "sw802f15." + "tempoplayer" +
+                                                          "/" + R.drawable.defaultalbumcover);
     private long _id;
     private String _title;
     private  String _artist;
@@ -18,29 +24,28 @@ public class Song {
     public Song(String songTitle, String songArtist, String songAlbum, Integer songBpm, Uri uri,
                 Uri albumUri, int durationInSec){
         _id = -2;
-        _title = songTitle;
-        _artist = songArtist;
-        _album = songAlbum;
-        _bpm = songBpm;
-        _uri = uri;
-        _albumUri = albumUri;
-        _durationInSec = durationInSec;
+        setValues(songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
     }
 
     public Song(long songId, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                 Uri uri, Uri albumUri, int durationInSec) {
         _id = songId;
-        _title = songTitle;
-        _artist = songArtist;
-        _album = songAlbum;
+        setValues(songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
+        }
+
+    private void setValues(String songTitle, String songArtist, String songAlbum, Integer songBpm,
+                           Uri uri, Uri albumUri, int durationInSec){
+        _title = songTitle != null ? songTitle : "Unknown" ;
+        _artist = songArtist != null ? songArtist : "Unknown" ;
+        _album = songAlbum != null ? songAlbum : "Unknown" ;
         _bpm = songBpm;
         _uri = uri;
         _durationInSec = durationInSec;
-        _albumUri = albumUri;
-        }
+        _albumUri = albumUri != null ? albumUri : DEFAULTALBUMPATH;
+    }
 
 
-        public long getID() {return _id;}
+    public long getID() {return _id;}
 
     public void setID(long id)
     {

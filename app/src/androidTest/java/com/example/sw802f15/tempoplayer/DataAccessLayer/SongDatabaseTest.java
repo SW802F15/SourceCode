@@ -8,7 +8,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 
 import junit.framework.Assert;
 
-import java.sql.SQLClientInfoException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,27 +126,17 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testInsertInvalid()
     {
-        //Insert song in db
-        try
-        {
-            _song = _db.insertSong(_song);
+        _song.setAlbumUri(null);
+        Song song = _db.insertSong(_song);
+        assertTrue(song == null);
+    }
 
-        }
-        catch (SQLiteException e)
-        {
-            Assert.fail("Got SQLiteException, expected none.");
-        }
-
-        //Try to insert again. Expect error.
-        try
-        {
-            _db.insertSong(_song);
-            Assert.fail("Expected SQLiteException, got none.");
-        }
-        catch (SQLiteException e)
-        {
-            //Do nothing
-        }
+    @MediumTest
+    public void testInsertMultiple()
+    {
+        Song song = _db.insertSong(_song);
+        _song = _db.insertSong(_song);
+        assertEquals(_song, song);
     }
 
     @MediumTest
@@ -183,31 +172,43 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         assertTrue(song != null);
 
-        assertTrue(_song.getTitle().equals(song.getTitle()));
+        assertEquals(_song, song);
     }
 
     @MediumTest
     public void testReadEntryNotExists(){
-        try{
-            Song song = _db.readEntryById(12312); //only 6 songs in test set
-            Assert.fail();
-        }catch (SQLiteException ex)
-        {
-           // do nothing
-        }
-
+        Song song = _db.readEntryById(12312); //only 6 songs in test set
+        assertTrue(song == null);
     }
+
+    @MediumTest
+    public void testReadBySongPathExist(){
+        _db.insertSong(_song);
+
+        Song song = _db.readBySongPath(_song.getUri());
+        assertTrue(song != null);
+
+        assertEquals(_song, song);
+    }
+
+    @MediumTest
+    public void testReadBySongPathNotExist(){
+
+        Song song = _db.readBySongPath(Uri.parse("5.")); //only 6 songs in test set
+        assertTrue(song == null);
+    }
+
     @MediumTest
     public void testGetSongsWithBPM(){
         //int BMP, int tresholdBMP
         List<Song> songs = _db.getSongsWithBPM(110, 30);
-        assertEquals(songs.size(), 5);
+        assertEquals(5, songs.size());
 
         songs = _db.getSongsWithBPM(80, 10);
-        assertEquals(songs.size(), 2);
+        assertEquals(2, songs.size());
 
         songs = _db.getSongsWithBPM(30, 5);
-        assertEquals(songs.size(), 0);
+        assertEquals(0, songs.size());
 
         try{
             for(Integer i : _intValues){
