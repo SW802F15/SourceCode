@@ -218,11 +218,7 @@ public class Initializers {
 
     private void updateAlbumCovers() {
         DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
-        if (dynamicQueue.getNextSongs().size() == 0) {
-
-        }
         Song newSong = dynamicQueue.getNextSongs().get(dynamicQueue.getNextSongs().size() -1);
-
 
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
