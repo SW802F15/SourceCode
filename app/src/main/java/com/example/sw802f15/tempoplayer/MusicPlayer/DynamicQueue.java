@@ -26,7 +26,7 @@ public class DynamicQueue {
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
-    private int _prevSize = 2;
+    private int _prevSize = 10;
     private int _lookAheadSize = 3;
     private int _BPMDeviation = 30;
     private static Context _context;
@@ -66,8 +66,9 @@ public class DynamicQueue {
         if (nextSongs == null || nextSongs.size() == 0) {
             nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
-        if (nextSongs.size() == 0){
-            throw new IllegalStateException("No songs available");
+        if (nextSongs.size() == 0 && prevSongs.size() > 0){
+            prevSongs.clear();
+            selectNextSong();
         }
 
         if (currentSong != null){
@@ -77,7 +78,7 @@ public class DynamicQueue {
             }
         }
         currentSong = nextSongs.get(0);
-        nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+        nextSongs = getMatchingSongs(1, _BPMDeviation);
     }
 
     public void selectPrevSong() {
