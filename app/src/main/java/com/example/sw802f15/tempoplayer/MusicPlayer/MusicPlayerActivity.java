@@ -225,57 +225,62 @@ public class MusicPlayerActivity extends Activity{
         String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/";
         String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/";
 
-        Song test_1 = new Song("Tristram", "Matt Uemen", //Title, Artist
-                               "Diablo SoundTrack", null,  //Album , BPM
-                               Uri.parse(initMusicPath + "music_sample_1.mp3"),
-                               null, //SongUri, CoverUri
-                               7*60 + 40);
+        Song test_1 = new Song("Tristram", //Title
+                               "Matt Uemen", //Artist
+                               "Diablo SoundTrack", //Album
+                                113, //BPM
+                               Uri.parse(initMusicPath + "music_sample_1.mp3"), //SongUri
+                               Uri.parse(initCoverPath + "cover_sample_1.jpg"), //CoverUri
+                               7*60 + 40); //Duration
 
-        Song test_2 = new Song("Let It Go", "Idina Menzel", //Title, Artist
-                "Frozen SoundTrack", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_2.mp3"), Uri.parse(initCoverPath + "cover_sample_2.jpg"), //SongUri, CoverUri
-                3*60 + 40);
+        Song test_2 = new Song("Let It Go",
+                               "Idina Menzel",
+                               "Frozen SoundTrack",
+                               135,
+                               Uri.parse(initMusicPath + "music_sample_2.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_2.jpg"),
+                               3*60 + 40);
 
-        Song test_3 = new Song("Runnin'", "Adam Lambert", //Title, Artist
-                "Trespassing", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_3.mp3"), Uri.parse(initCoverPath + "cover_sample_3.jpg"), //SongUri, CoverUri
-                3*60 + 48);
+        Song test_3 = new Song("Runnin'",
+                               "Adam Lambert",
+                               "Trespassing",
+                               81,
+                               Uri.parse(initMusicPath + "music_sample_3.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_3.jpg"),
+                               3*60 + 48);
 
-        Song test_4 = new Song("Sex on Fire", "Kings of Leon", //Title, Artist
-                "Only by the Night", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_4.mp3"), Uri.parse(initCoverPath + "cover_sample_4.jpg"), //SongUri, CoverUri
-                3*60 + 26);
+        Song test_4 = new Song("Sex on Fire",
+                               "Kings of Leon",
+                               "Only by the Night",
+                               153,
+                               Uri.parse(initMusicPath + "music_sample_4.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_4.jpg"),
+                               3*60 + 26);
 
-        Song test_5 = new Song("T.N.T.", "AC/DC", //Title, Artist
-                "T.N.T.", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_5.mp3"), Uri.parse(initCoverPath + "cover_sample_5.jpg"), //SongUri, CoverUri
-                3*60 + 34);
+        Song test_5 = new Song("T.N.T.",
+                               "AC/DC",
+                               "T.N.T.",
+                               131,
+                               Uri.parse(initMusicPath + "music_sample_5.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_5.jpg"),
+                               3*60 + 34);
 
-        Song test_6 = new Song("Still Counting", "Volbeat", //Title, Artist
-                "Guitar Gangstars & Cadillac Blood", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_6.mp3"), Uri.parse(initCoverPath + "cover_sample_6.jpg"), //SongUri, CoverUri
-                4*60 + 21);
-
-       // SongDatabase songDatabase = new SongDatabase(getApplicationContext());
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_1).getID()             );
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_2).getID()             );
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_3).getID()             );
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_4).getID()             );
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_5).getID()             );
-       // songIDsInDatabase.add(             songDatabase.insertSong(test_6).getID()             );
-
-
-
+        Song test_6 = new Song("Still Counting",
+                               "Volbeat",
+                               "Guitar Gangstars & Cadillac Blood",
+                               104,
+                               Uri.parse(initMusicPath + "music_sample_6.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_6.jpg"),
+                               4*60 + 21);
 
 
-
-        allSongsShouldBeDeleted.add(test_1);
-        allSongsShouldBeDeleted.add(test_2);
-        allSongsShouldBeDeleted.add(test_3);
-        allSongsShouldBeDeleted.add(test_4);
-        allSongsShouldBeDeleted.add(test_5);
-        allSongsShouldBeDeleted.add(test_6);
-
+        SongDatabase songDatabase = new SongDatabase(getApplicationContext());
+        songDatabase.insertSong(test_1);
+        songDatabase.insertSong(test_2);
+        songDatabase.insertSong(test_3);
+        songDatabase.insertSong(test_4);
+        songDatabase.insertSong(test_5);
+        songDatabase.insertSong(test_6);
     }
 
 

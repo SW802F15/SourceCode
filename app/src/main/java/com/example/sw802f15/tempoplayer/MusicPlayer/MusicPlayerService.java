@@ -103,7 +103,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void updateSeekBarAndLabels()
     {
         SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
-        Song song = DynamicQueue.getInstance().getCurrentSong();
+        Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
         sb.setMax(song.getDurationInSec());
 
         TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
