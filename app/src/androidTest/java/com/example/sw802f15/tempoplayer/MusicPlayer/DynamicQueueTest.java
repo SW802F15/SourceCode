@@ -1,17 +1,17 @@
 package com.example.sw802f15.tempoplayer.MusicPlayer;
 
+import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
-import com.example.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
-
-import junit.framework.TestCase;
+import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
+import com.example.sw802f15.tempoplayer.TestHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicQueueTest extends TestCase {
+public class DynamicQueueTest extends AndroidTestCase {
 
     private DynamicQueue dq;
 
@@ -19,6 +19,7 @@ public class DynamicQueueTest extends TestCase {
         super.setUp();
         DynamicQueue.clearInstance();
         dq = DynamicQueue.getInstance();
+        TestHelper.initializeTestSongs(new SongDatabase(getContext()));
     }
 
     public void tearDown() throws Exception {
@@ -41,9 +42,9 @@ public class DynamicQueueTest extends TestCase {
             add(-1);
             add(0);
             add(1);
-            add(3);  //stub data size
-            add(3 - 1);
-            add(3 + 1);
+            add(5);  //stub data size
+            add(5 - 1);
+            add(5 + 1);
             add(42);  //stub value
             add(42 - 1);
             add(42 + 1);
