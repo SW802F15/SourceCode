@@ -1,48 +1,28 @@
 package com.example.sw802f15.tempoplayer.MusicPlayer;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
-import android.media.Image;
 import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
-import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
-import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
-import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 
 public class MusicPlayerActivity extends Activity{
@@ -52,12 +32,14 @@ public class MusicPlayerActivity extends Activity{
     boolean mBound = false;
     public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
 
-
     public static ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
+    private Initializers _initializers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent(this, MusicPlayerService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         setContentView(R.layout.activity_music_player);
 
         Toast.makeText(this, "DynamicQueue should use songs from Database as test data.", Toast.LENGTH_SHORT).show();
@@ -67,12 +49,10 @@ public class MusicPlayerActivity extends Activity{
         initializeTestSongs();
 
 
-        Initializers initializers = new Initializers(this);
-        initializers.initializeOnClickListeners();
-        initializers.initializeCoverFlow();
-        initializers.initializeDynamicQueue();
-
-
+        _initializers = new Initializers(this);
+        _initializers.initializeOnClickListeners();
+        _initializers.initializeCoverFlow();
+        _initializers.initializeDynamicQueue();
 
         testGUI();
     }
@@ -80,39 +60,41 @@ public class MusicPlayerActivity extends Activity{
     @Override
     protected void onStart() {
         super.onStart();
-        // Bind to LocalService
-        Intent intent = new Intent(this, MusicPlayerService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
+//        if (mBound) {
+//            unbindService(mConnection);
+//            mBound = false;
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        _initializers.startSeekBarPoll();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        _initializers.stopSeekBarPoll();
     }
-
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
-        //musicPlayerService.setAction("Quit");
-        stopService(musicPlayerService);
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+
+//        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
+//        //musicPlayerService.setAction("Quit");
+//        stopService(musicPlayerService);
     }
 
     @Override
@@ -275,6 +257,7 @@ public class MusicPlayerActivity extends Activity{
 
 
         SongDatabase songDatabase = new SongDatabase(getApplicationContext());
+        songDatabase.clearDatabase();
         songDatabase.insertSong(test_1);
         songDatabase.insertSong(test_2);
         songDatabase.insertSong(test_3);

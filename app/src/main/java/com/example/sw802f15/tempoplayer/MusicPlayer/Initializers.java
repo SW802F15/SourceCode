@@ -232,24 +232,31 @@ public class Initializers {
         }
     }
 
-    private void startSeekBarPoll()
+    Handler durationHandler = new Handler();
+
+    public void startSeekBarPoll()
     {
         durationHandler.postDelayed(updateSeekBarTime, POLL_RATE);
     }
 
-    Handler durationHandler = new Handler();
-
     private Runnable updateSeekBarTime = new Runnable() {
         public void run() {
+
             int timeElapsed = _activity.mService.musicPlayer.getCurrentPosition() / 1000;
-            SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
+            SeekBar sb = (SeekBar) _activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
             _activity.setSongProgressText(timeElapsed);
             durationHandler.postDelayed(this, POLL_RATE);
+
         }
     };
 
     private void resetSeekBar() {
         _activity.mService.musicPlayer.seekTo(0);
+    }
+
+    public void stopSeekBarPoll()
+    {
+        durationHandler.removeCallbacks(updateSeekBarTime);
     }
 }
