@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
@@ -91,25 +92,36 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
+            updateSeekBarAndLabels();
         } catch (IOException e) {
             Log.e("loadSong", e.getStackTrace().toString());
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
 
         musicPlayer.prepareAsync();
-        updateSeekBarAndLabels();
     }
 
     public void updateSeekBarAndLabels()
     {
-        SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
-        Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
-        sb.setMax(song.getDurationInSec());
+        if(Initializers._activity != null) {
+            SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
+            final Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
+            sb.setMax(song.getDurationInSec());
 
-        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
-        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
-        minLabel.setText("00:00");
-        maxLabel.setText(song.getDurationInMinAndSec());
+            final TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+            final TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+
+            Handler handler = new Handler();
+
+            handler.post(new Runnable(){
+                public void run() {
+                    minLabel.setText("00:00");
+                    maxLabel.setText(song.getDurationInMinAndSec());
+                }
+            });
+
+
+        }
     }
 
     public void play(){

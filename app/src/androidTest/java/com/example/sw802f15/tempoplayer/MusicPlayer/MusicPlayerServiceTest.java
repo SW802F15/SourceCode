@@ -32,6 +32,9 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        Intent musicPlayerService = new Intent(getContext(), MusicPlayerService.class);
+        startService(musicPlayerService);
+
         String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
                 + "/music_sample_1.mp3";
         testSongValid = new Song(1, "Tristram", "Matt", "Diablo", null, Uri.parse(path), null, 460);
@@ -84,20 +87,13 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 
     @MediumTest
     public void testLoadSong(){
-        Intent loadIntent = new Intent();
-        loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
-        startService(loadIntent);
+        getService().loadSong(testSongValid.getUri());
         assertTrue(getService().isLoaded);
 
-        loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
-        startService(loadIntent);
+        getService().loadSong(testSongInvalid.getUri());
         assertFalse(getService().isLoaded);
 
-        loadIntent.setAction("Load");
-        loadIntent.setDataAndType(null, "mp3");
-        startService(loadIntent);
+        getService().loadSong(null);
         assertFalse(getService().isLoaded);
     }
 
@@ -336,15 +332,15 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
     }
 
-    @MediumTest
-    public void testSeekBarLabelsUpdated()
-    {
-        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
-        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
-
-        getService().loadSong(testSongValid.getUri());
-
-        assertEquals("07:40", minLabel.getText());
-        assertEquals("00:00", maxLabel.getText());
-    }
+//    @MediumTest
+//    public void testSeekBarLabelsUpdated()
+//    {
+//        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+//        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+//
+//        getService().loadSong(testSongValid.getUri());
+//
+//        assertEquals("07:40", minLabel.getText());
+//        assertEquals("00:00", maxLabel.getText());
+//    }
 }
