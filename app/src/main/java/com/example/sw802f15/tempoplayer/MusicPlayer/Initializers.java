@@ -148,19 +148,6 @@ public class Initializers {
 
     public void initializeOnClickSeekBar() {
         SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
-        
-        // DELETE FROM HERE
-        String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/";
-        String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/";
-
-        Song test_1 = new Song("Tristram", "Matt Uemen", //Title, Artist
-                "Diablo SoundTrack", null,  //Album , BPM
-                Uri.parse(initMusicPath + "music_sample_1.mp3"), Uri.parse(initCoverPath + "cover_sample_1.jpg"), //SongUri, CoverUri
-                7*60 + 40);
-
-        sb.setMax(test_1.getDurationInSec());
-
-        // TO HERE
 
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -175,7 +162,12 @@ public class Initializers {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
-                _activity.mService.musicPlayer.start();
+
+                if(_activity.mService.musicPlayer.isPlaying()) {
+                    _activity.mService.musicPlayer.start();
+                }else{
+                    _activity.mService.musicPlayer.pause();
+                }
             }
         });
     }
