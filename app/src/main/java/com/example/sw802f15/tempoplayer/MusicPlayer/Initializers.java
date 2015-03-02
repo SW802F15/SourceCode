@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -212,28 +215,31 @@ public class Initializers {
 
     private void nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
-        //BaseAdapter coverImageAdapter = (BaseAdapter) coverFlow.getAdapter();
-        /*List<Bitmap> newBitmapList = new ArrayList<>();
 
-        for (int i = 0; i < coverImageAdapter.getCount(); i++) {
+        int nextPosition = -2;
+        nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
+        if (nextPosition != -2 && coverFlow.getItemAtPosition(nextPosition) != null) {
+            coverFlow.setSelection(nextPosition);
         }
-
-        newBitmapList.add((Bitmap) coverImageAdapter.getItem());
-        newBitmapList.add((Bitmap) coverImageAdapter.getItem(3));
-        newBitmapList.add((Bitmap) coverImageAdapter.getItem(4));
-        newBitmapList.add((Bitmap) coverImageAdapter.getItem(5));
-
-        ((ResourceImageAdapter) coverImageAdapter).setResources(newBitmapList);*/
-
-        coverFlow.scrollTo(0, coverFlow.getBottom());
-
-
-        //coverFlow.setAdapter(coverImageAdapter);
-
-
+        else {
+            Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    private void previousAlbumCover() {
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+
+        int previousPosition = -2;
+        previousPosition = coverFlow.getSelectedItemPosition() - 1;
+
+        if (previousPosition != -2 && coverFlow.getItemAtPosition(previousPosition) != null) {
+            coverFlow.setSelection(previousPosition);
+        }
+        else {
+            Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private Bitmap getBitmapFromUri(Uri albumUri) {
         try {
