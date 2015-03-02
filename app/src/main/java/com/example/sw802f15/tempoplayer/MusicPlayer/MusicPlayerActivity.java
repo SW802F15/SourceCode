@@ -238,6 +238,38 @@ public class MusicPlayerActivity extends Activity{
                                Uri.parse(initCoverPath + "cover_sample_6.jpg"),
                                4*60 + 21);
 
+        Song test_7 = new Song("Riverside",
+                               "Agnes Obel",
+                               "Philharmonics",
+                               100,
+                               Uri.parse(initMusicPath + "music_sample_7.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_7.jpg"),
+                               3*60 + 49);
+
+        Song test_8 = new Song("In The End",
+                               "Linkin Park",
+                               "",
+                               105,
+                               Uri.parse(initMusicPath + "music_sample_8.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_8.png"),
+                               3*60 + 36);
+
+        Song test_9 = new Song("Hurt",
+                               "Johnny Cash",
+                               "American IV: The Man Comes Around",
+                               98,
+                               Uri.parse(initMusicPath + "music_sample_9.mp3"),
+                               Uri.parse(initCoverPath + "cover_sample_9.jpg"),
+                               3*60 + 38);
+
+        Song test_10 = new Song("War of Change",
+                                "Thousand Foot Krutch",
+                                "The End Is Where We Begin",
+                                104,
+                                Uri.parse(initMusicPath + "music_sample_10.mp3"),
+                                Uri.parse(initCoverPath + "cover_sample_10.jpg"),
+                                3*60 + 51);
+
 
         SongDatabase songDatabase = new SongDatabase(getApplicationContext());
         songDatabase.clearDatabase();
@@ -247,6 +279,10 @@ public class MusicPlayerActivity extends Activity{
         songDatabase.insertSong(test_4);
         songDatabase.insertSong(test_5);
         songDatabase.insertSong(test_6);
+        songDatabase.insertSong(test_7);
+        songDatabase.insertSong(test_8);
+        songDatabase.insertSong(test_9);
+        songDatabase.insertSong(test_10);
     }
 
 
