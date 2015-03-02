@@ -18,7 +18,7 @@ public class DynamicQueueTest extends AndroidTestCase {
     public void setUp() throws Exception {
         super.setUp();
         DynamicQueue.clearInstance();
-        dq = DynamicQueue.getInstance();
+        dq = DynamicQueue.getInstance(getContext());
         TestHelper.initializeTestSongs(new SongDatabase(getContext()));
     }
 

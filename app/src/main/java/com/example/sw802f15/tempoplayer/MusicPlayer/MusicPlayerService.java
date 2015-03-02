@@ -136,7 +136,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             musicPlayer.start();
         }
         else {
-            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
 
             new CountDownTimer(10, 1) {
                 @Override
@@ -160,26 +160,26 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void next() {
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance().selectNextSong();
-            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
+            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance().selectNextSong();
-            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
+            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
     }
 
     public void previous() {
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance().selectPrevSong();
-            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
+            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance().selectPrevSong();
-            loadSong(DynamicQueue.getInstance().getCurrentSong().getUri());
+            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
+            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
     }

@@ -89,7 +89,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mService.previous();
-                _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
+                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
             }
         });
@@ -102,7 +102,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mService.next();
-                _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
+                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 nextAlbumCover();
             }
@@ -142,8 +142,8 @@ public class Initializers {
     }
 
     public void initializeDynamicQueue() {
-        DynamicQueue.getInstance().selectNextSong();
-        _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
+        DynamicQueue.getInstance(_activity).selectNextSong();
+        _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
     }
 
     public void initializeCoverFlow() {
@@ -175,7 +175,7 @@ public class Initializers {
     }
 
     private void nextAlbumCover() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        /*final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = (BaseAdapter) coverFlow.getAdapter();
         List<Bitmap> newBitmapList = new ArrayList<>();
         newBitmapList.add((Bitmap) coverImageAdapter.getItem(2));
@@ -187,7 +187,7 @@ public class Initializers {
 
 
         coverFlow.setAdapter(coverImageAdapter);
-        //coverFlow.getChildAt(0).scrollTo(300,0);
+        //coverFlow.getChildAt(0).scrollTo(300,0);*/
 
     }
 

@@ -1,48 +1,34 @@
 package com.example.sw802f15.tempoplayer.MusicPlayer;
 
-import android.net.Uri;
-import android.os.Environment;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class DynamicQueue {
+
+
     private class StepCounterStub {
         public int getCurrentSPM() {
-            return 42;
+            return 110;
         }
     }
-    private class DatabaseStub {
-        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC
-                + "/music_sample_1.mp3";
-        public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
-            if (BMP != 42) return null;
-            else {
-                List<Song> res = new ArrayList<Song>();
-               // long songId, String songTitle, String songArtist, String songAlbum, int songBpm, Uri uri, int durationInSec)
-                res.add(new Song(1, "title1", "1", "a", 42+11, Uri.parse(path), null, 354));
-                res.add(new Song(2, "title2", "2", "b", 42+2, Uri.parse(path), null, 720));
-                res.add(new Song(3, "title3", "3", "c", 42+111, Uri.parse(path), null, 142));
 
-                return res;
-            }
-        }
-    }
     private StepCounterStub sc = new StepCounterStub();
-    private DatabaseStub db = new DatabaseStub();
+    private static SongDatabase db;
 
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
     private int _prevSize = 2;
     private int _lookAheadSize = 3;
-    private int _BPMDeviation = 10;
+    private int _BPMDeviation = 30;
 
     private static DynamicQueue instance = null;
 
@@ -50,8 +36,9 @@ public class DynamicQueue {
         //Empty because singleton
     }
 
-    public static DynamicQueue getInstance(){
+    public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
+            db = new SongDatabase(context);
             instance = new DynamicQueue();
         }
         return instance;
@@ -88,8 +75,7 @@ public class DynamicQueue {
             }
         }
         currentSong = nextSongs.get(0);
-        nextSongs.remove(0);
-        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
+        nextSongs = getMatchingSongs(1, _BPMDeviation);
     }
 
     public void selectPrevSong() {
@@ -120,6 +106,9 @@ public class DynamicQueue {
             if(songs.contains(song)){
                 songs.remove(song);
             }
+        }
+        if (songs.contains(currentSong)){
+            songs.remove(currentSong);
         }
 
         Collections.sort(songs, new Comparator<Song>() {
