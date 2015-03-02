@@ -7,9 +7,12 @@ import android.os.Environment;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 import com.example.sw802f15.tempoplayer.MusicPlayer.MusicPlayerService;
+import com.example.sw802f15.tempoplayer.R;
 
 import junit.framework.Assert;
 
@@ -331,5 +334,17 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                            getService().musicPlayer.getCurrentPosition() < startPos);
             }
         }.start();
+    }
+
+    @MediumTest
+    public void testSeekBarLabelsUpdated()
+    {
+        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+
+        getService().loadSong(testSongValid.getUri());
+
+        assertEquals("07:40", minLabel.getText());
+        assertEquals("00:00", maxLabel.getText());
     }
 }

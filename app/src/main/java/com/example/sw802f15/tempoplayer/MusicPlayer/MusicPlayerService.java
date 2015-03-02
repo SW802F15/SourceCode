@@ -9,7 +9,12 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +38,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public class LocalBinder extends Binder {
         MusicPlayerService getService() {
             // Return this instance of LocalService so clients can call public methods
+
             return MusicPlayerService.this;
         }
     }
@@ -47,44 +53,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         Log.d("LogCat", "MusicPlayerService started.");
         initialiseMusicPlayer();
         Log.d("LogCat", "MusicPlayer initialised.");
-    }
-
-    public int onStartCommand(Intent intent, int flags, int startId){
-        if (intent.getAction() == null){
-            return 0;
-        }
-        switch (intent.getAction()){
-            case "Load":
-                loadSong(intent.getData());
-                Log.d("onStartCommand", "Song loaded.");
-                break;
-            case "Play":
-                musicPlayer.start();
-                Log.d("onStartCommand", "MusicPlayer started.");
-                break;
-            case "Pause":
-                musicPlayer.pause();
-                Log.d("onStartCommand", "MusicPlayer paused.");
-                break;
-            case "Stop":
-                musicPlayer.stop();
-                Log.d("onStartCommand", "MusicPlayer stopped.");
-                break;
-            case "Next":
-                break;
-            case "Previous":
-                break;
-            case "Repeat":
-                musicPlayer.setLooping(!musicPlayer.isLooping());
-                break;
-            case "SeekTo":
-                musicPlayer.seekTo(intent.getFlags());
-                break;
-
-            default:
-                break;
-        }
-        return 1;
     }
 
     public void onPrepared(MediaPlayer player) {
@@ -127,9 +95,22 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             Log.e("loadSong", e.getStackTrace().toString());
             Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
         }
+
         musicPlayer.prepareAsync();
+        updateSeekBarAndLabels();
     }
 
+    public void updateSeekBarAndLabels()
+    {
+        SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
+        Song song = DynamicQueue.getInstance().getCurrentSong();
+        sb.setMax(song.getDurationInSec());
+
+        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
+        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+        minLabel.setText("00:00");
+        maxLabel.setText(song.getDurationInMinAndSec());
+    }
 
     public void play(){
         if (isPrepared) {

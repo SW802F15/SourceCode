@@ -53,7 +53,7 @@ public class MusicPlayerActivity extends Activity{
     public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
 
 
-    public ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
+    public static ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,6 @@ public class MusicPlayerActivity extends Activity{
         initializers.initializeCoverFlow();
         initializers.initializeDynamicQueue();
 
-        initializeSeekBar();
 
 
         testGUI();
@@ -323,42 +322,26 @@ public class MusicPlayerActivity extends Activity{
         songDurationTextView.setText(durationString);
     }
 
-    private void initializeSeekBar() {
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
-    }
-
-
-    private void setSeekBarForCurrentSong(int songDuration) {
-        seekBar.setMax(songDuration);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    Intent seekToIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
-                    seekToIntent.setAction("SeekTo");
-                    seekToIntent.setFlags(progress);
-                    startService(seekToIntent);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
-        });
-
-    }
-
-    private void updateSeekBar() {
-        if (mService != null && mService.musicPlayer != null && mService.musicPlayer.isPlaying()){
-            int progress = mService.musicPlayer.getCurrentPosition() / 1000;
-            seekBar.setProgress(progress); //todo use const
-        }else {
-            Log.d("updateSeekBar", "Not playing song");
+    public void setSongProgressText(int duration) {
+        TextView songDurationTextView = (TextView) findViewById(R.id.textView_currentPosition);
+        Time time = new Time();
+        if (duration >= 3600) {
+            time.hour = duration / 3600;
+            duration = duration % 3600;
         }
+        if (duration >= 60) {
+            time.minute = duration / 60;
+            duration = duration % 60;
+        }
+        time.second = duration;
+
+        String durationString = time.format("%M:%S");
+
+        if (time.hour > 0) {
+            durationString = time.format("%H:%M:%S");
+        }
+
+        songDurationTextView.setText(durationString);
     }
-
-
 
 }
