@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -49,7 +50,7 @@ public class Initializers {
             public void onClick(View v) {
                 _activity.mService.play();
                 changePlayPauseButton();
-                TestSeekBar();
+                startSeekBarPoll();
             }
         });
     }
@@ -147,9 +148,24 @@ public class Initializers {
 
     public void initializeOnClickSeekBar() {
         SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
+        
+        // DELETE FROM HERE
+        String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/";
+        String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/";
+
+        Song test_1 = new Song("Tristram", "Matt Uemen", //Title, Artist
+                "Diablo SoundTrack", null,  //Album , BPM
+                Uri.parse(initMusicPath + "music_sample_1.mp3"), Uri.parse(initCoverPath + "cover_sample_1.jpg"), //SongUri, CoverUri
+                7*60 + 40);
+
+        sb.setMax(test_1.getDurationInSec());
+
+        // TO HERE
+
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -222,9 +238,9 @@ public class Initializers {
         }
     }
 
-    private void TestSeekBar()
+    private void startSeekBarPoll()
     {
-        durationHandler.postDelayed(updateSeekBarTime, 100);
+        durationHandler.postDelayed(updateSeekBarTime, 1000);
     }
 
     Handler durationHandler = new Handler();

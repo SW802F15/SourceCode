@@ -52,7 +52,7 @@ public class MusicPlayerActivity extends Activity{
     public ArrayList<Long> songIDsInDatabase = new ArrayList<Long>();
 
 
-    public ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
+    public static ArrayList<Song> allSongsShouldBeDeleted = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
