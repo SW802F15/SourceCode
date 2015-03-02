@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class DynamicQueue {
 
@@ -26,8 +27,8 @@ public class DynamicQueue {
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
-    private int _prevSize = 10;
-    private int _lookAheadSize = 3;
+    private int _prevSize = 1;
+    private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private static Context _context;
 
@@ -120,12 +121,7 @@ public class DynamicQueue {
             songs.remove(currentSong);
         }
 
-        Collections.sort(songs, new Comparator<Song>() {
-            @Override
-            public int compare(Song lhs, Song rhs) {
-                return Math.abs(BMP - lhs.getBpm()) - Math.abs(BMP - rhs.getBpm());
-            }
-        });
+        Collections.shuffle(songs, new Random());
         if (num > songs.size()){
             num = songs.size();
         }
