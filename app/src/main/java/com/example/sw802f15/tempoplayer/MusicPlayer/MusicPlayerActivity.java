@@ -43,9 +43,9 @@ public class MusicPlayerActivity extends Activity{
 
 
         _initializers = new Initializers(this);
+        _initializers.initializeDynamicQueue();
         _initializers.initializeOnClickListeners();
         _initializers.initializeCoverFlow();
-        _initializers.initializeDynamicQueue();
     }
 
     @Override

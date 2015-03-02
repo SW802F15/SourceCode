@@ -87,7 +87,7 @@ public class Initializers {
     }
 
     private void initializeOnClickPrevious() {
-        ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
+        final ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
 
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +95,7 @@ public class Initializers {
                 _activity.mService.previous();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
+                previousAlbumCover();
             }
         });
     }
@@ -109,6 +110,7 @@ public class Initializers {
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 nextAlbumCover();
+                updateAlbumCovers();
             }
         });
     }
@@ -193,17 +195,17 @@ public class Initializers {
     private void setCoverFlowImages() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
-
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
         List<Bitmap> allAlbumCovers = new ArrayList<>();
-        for (Song song : DynamicQueue.getInstance(_activity).getPrevSongs())
+        for (Song song : dynamicQueue.getPrevSongs())
         {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
         }
 
-        allAlbumCovers.add(getBitmapFromUri(DynamicQueue.getInstance(_activity).getCurrentSong().getAlbumUri()));
+        allAlbumCovers.add(getBitmapFromUri(dynamicQueue.getCurrentSong().getAlbumUri()));
 
-        for (Song song : DynamicQueue.getInstance(_activity).getNextSongs())
+        for (Song song : dynamicQueue.getNextSongs())
         {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
         }
@@ -213,43 +215,70 @@ public class Initializers {
         coverFlow.setAdapter(coverImageAdapter);
     }
 
+
+    private void updateAlbumCovers() {
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
+        if (dynamicQueue.getNextSongs().size() == 0) {
+
+        }
+        Song newSong = dynamicQueue.getNextSongs().get(dynamicQueue.getNextSongs().size() -1);
+
+
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
+
+        List<Bitmap> resources = new ArrayList<>();
+        for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
+            resources.add(resourceImageAdapter.getItem(i));
+        }
+        Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
+        resources.add(newSongBitmap);
+
+        resourceImageAdapter.setResources(resources);
+    }
+
     private void nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
-        int nextPosition = -2;
-        nextPosition = coverFlow.getSelectedItemPosition() + 1;
+        int nextPosition = coverFlow.getSelectedItemPosition() + 1;
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
-        if (nextPosition != -2 && coverFlow.getItemAtPosition(nextPosition) != null) {
-            coverFlow.setSelection(nextPosition);
+        if (nextPosition <= coverFlow.getCount()) {
+            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
         }
         else {
-            Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(_activity, "No next song.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void previousAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
-        int previousPosition = -2;
-        previousPosition = coverFlow.getSelectedItemPosition() - 1;
+        int previousPosition = coverFlow.getSelectedItemPosition() - 1;
 
-        if (previousPosition != -2 && coverFlow.getItemAtPosition(previousPosition) != null) {
-            coverFlow.setSelection(previousPosition);
+        if (coverFlow.getItemAtPosition(previousPosition) != null) {
+            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
         }
         else {
-            Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(_activity, "No previous song.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private Bitmap getBitmapFromUri(Uri albumUri) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
         try {
-            return BitmapFactory.decodeFile(albumUri.toString());
+            BitmapFactory.decodeFile(albumUri.toString(), options);
         }
         catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(_activity, "Should return default album cover for unknown albums.", Toast.LENGTH_SHORT).show();
-            return null;
+            return BitmapFactory.decodeResource(_activity.getResources(), R.drawable.defaultalbumcover);
         }
+
+        BitmapFactory.Options optionsSecond = new BitmapFactory.Options();
+        optionsSecond.inSampleSize = calculateInSampleSize(options, 350, 350);
+        return BitmapFactory.decodeFile(albumUri.toString(), optionsSecond);
     }
 
     Handler durationHandler = new Handler();
@@ -273,8 +302,29 @@ public class Initializers {
         _activity.mService.musicPlayer.seekTo(0);
     }
 
-    public void stopSeekBarPoll()
-    {
+    public void stopSeekBarPoll(){
         durationHandler.removeCallbacks(updateSeekBarTime);
+    }
+    
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }
