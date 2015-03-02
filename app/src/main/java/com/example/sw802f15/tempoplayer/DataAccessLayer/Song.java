@@ -91,16 +91,23 @@ public class Song {
     public String getDurationInMinAndSec() {
         int durationOriginal = getDurationInSec();
 
-        String leftSide = (int)Math.floor((double)durationOriginal / 60) + "";
-        String rightSide;
+        String leftSide, rightSide;
 
-        int remainder = (durationOriginal % 60);
+        int right = (durationOriginal % 60);
+        int left = (int)Math.floor((double)durationOriginal / 60);
 
-        if(remainder < 10){
-            rightSide = "0" + remainder;
+        if(right < 10){
+            rightSide = "0" + right;
         }else{
-            rightSide = "" + remainder;
+            rightSide = "" + right;
         }
+
+        if(left < 10){
+            leftSide = "0" + left;
+        }else{
+            leftSide = "" + left;
+        }
+
         return leftSide + ":" + rightSide;
     }
 }
