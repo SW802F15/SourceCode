@@ -185,6 +185,7 @@ public class MusicPlayerActivity extends Activity{
             MusicPlayerService.LocalBinder binder = (MusicPlayerService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            mService.loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
         }
 
         @Override
