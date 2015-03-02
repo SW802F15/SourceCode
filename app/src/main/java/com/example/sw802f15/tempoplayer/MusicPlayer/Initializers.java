@@ -87,7 +87,7 @@ public class Initializers {
     }
 
     private void initializeOnClickPrevious() {
-        ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
+        final ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
 
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +95,7 @@ public class Initializers {
                 _activity.mService.previous();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
+                previousAlbumCover();
             }
         });
     }
@@ -109,6 +110,7 @@ public class Initializers {
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 nextAlbumCover();
+                addAlbumCoverToCoverFlow();
             }
         });
     }
@@ -213,14 +215,31 @@ public class Initializers {
         coverFlow.setAdapter(coverImageAdapter);
     }
 
+    public void addAlbumCoverToCoverFlow() {
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        ResourceImageAdapter coverImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
+
+        for (int i = 0; i < coverImageAdapter.getCount(); i++) {
+            allAlbumCovers.add(coverImageAdapter.getItem(i));
+        }
+
+        //allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
+
+        coverImageAdapter.setResources(allAlbumCovers);
+
+        coverFlow.setAdapter(coverImageAdapter);
+    }
+
     private void nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
-        int nextPosition = -2;
-        nextPosition = coverFlow.getSelectedItemPosition() + 1;
+        int nextPosition = coverFlow.getSelectedItemPosition() + 1;
+        int count = coverFlow.getCount();
+        int childCount = coverFlow.getChildCount();
 
-        if (nextPosition != -2 && coverFlow.getItemAtPosition(nextPosition) != null) {
-            coverFlow.setSelection(nextPosition);
+        if (nextPosition <= coverFlow.getCount()) {
+            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
         }
         else {
             Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
@@ -230,14 +249,13 @@ public class Initializers {
     private void previousAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
-        int previousPosition = -2;
-        previousPosition = coverFlow.getSelectedItemPosition() - 1;
+        int previousPosition = coverFlow.getSelectedItemPosition() - 1;
 
-        if (previousPosition != -2 && coverFlow.getItemAtPosition(previousPosition) != null) {
-            coverFlow.setSelection(previousPosition);
+        if (coverFlow.getItemAtPosition(previousPosition) != null) {
+            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
         }
         else {
-            Toast.makeText(_activity, "No next song!?!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(_activity, "No previous song!?!", Toast.LENGTH_SHORT).show();
         }
     }
 
