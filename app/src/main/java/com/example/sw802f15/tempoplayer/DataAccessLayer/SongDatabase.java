@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by Dan on 18-02-2015.
@@ -163,5 +164,9 @@ public class SongDatabase extends SQLiteOpenHelper
         }
 
         return resultSong;
+    }
+
+    public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
+        return null;
     }
 }
