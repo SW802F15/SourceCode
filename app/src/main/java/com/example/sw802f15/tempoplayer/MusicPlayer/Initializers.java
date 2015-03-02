@@ -1,26 +1,22 @@
 package com.example.sw802f15.tempoplayer.MusicPlayer;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
-import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,6 +38,7 @@ public class Initializers {
         initializeOnClickPrevious();
         initializeOnClickNext();
         initializeOnClickSettings();
+        initializeOnClickSeekBar();
     }
 
     private void initializeOnClickPlay() {
@@ -52,6 +49,7 @@ public class Initializers {
             public void onClick(View v) {
                 _activity.mService.play();
                 changePlayPauseButton();
+                TestSeekBar();
             }
         });
     }
@@ -76,6 +74,7 @@ public class Initializers {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetSeekBar();
                 _activity.mService.stop();
                 changePlayPauseButton();
             }
@@ -146,6 +145,25 @@ public class Initializers {
         _activity.setSongDurationText(DynamicQueue.getInstance().getCurrentSong().getDurationInSec());
     }
 
+    public void initializeOnClickSeekBar() {
+        SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {  }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                _activity.mService.musicPlayer.pause();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
+                _activity.mService.musicPlayer.start();
+            }
+        });
+    }
+
     public void initializeCoverFlow() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
@@ -154,9 +172,10 @@ public class Initializers {
         coverFlow.setMaxZoom(-200);
 
 
-
         setCoverFlowImages();
     }
+
+
 
     private void setCoverFlowImages() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
@@ -201,5 +220,26 @@ public class Initializers {
             Toast.makeText(_activity, "Should return default album cover for unknown albums.", Toast.LENGTH_SHORT).show();
             return null;
         }
+    }
+
+    private void TestSeekBar()
+    {
+        durationHandler.postDelayed(updateSeekBarTime, 100);
+    }
+
+    Handler durationHandler = new Handler();
+
+    private Runnable updateSeekBarTime = new Runnable() {
+        public void run() {
+            int timeElapsed = _activity.mService.musicPlayer.getCurrentPosition() / 1000;
+            SeekBar sb = (SeekBar)_activity.findViewById(R.id.seekBar);
+            sb.setProgress(timeElapsed);
+            _activity.setSongProgressText(timeElapsed);
+            durationHandler.postDelayed(this, 100);
+        }
+    };
+
+    private void resetSeekBar() {
+        _activity.mService.musicPlayer.seekTo(0);
     }
 }

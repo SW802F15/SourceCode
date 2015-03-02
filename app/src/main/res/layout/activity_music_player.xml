@@ -113,10 +113,9 @@
         </LinearLayout>
 
         <SeekBar
-            android:layout_width="fill_parent"
+            android:layout_width="230dp"
             android:layout_height="fill_parent"
             android:id="@+id/seekBar"
-            android:layout_weight="1"
             android:layout_gravity="center" />
 
         <LinearLayout
