@@ -137,8 +137,7 @@ public class SongDatabase extends SQLiteOpenHelper
 
             Cursor cursor = db.query(TABLE_NAME, new String[] {"*"}, "ROWID" + "=?",
                     new String[] { String.valueOf(songId) }, null, null, null, null);
-            if (cursor != null)
-                cursor.moveToFirst();
+
             if(cursor != null && cursor.moveToFirst())
             {
                 cursor.moveToFirst();
@@ -167,6 +166,7 @@ public class SongDatabase extends SQLiteOpenHelper
     }
 
     public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
+
         return null;
     }
 }
