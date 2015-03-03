@@ -115,7 +115,7 @@ public class Initializers {
                 updateAlbumCovers();
                 updateSongInfo();
                 previousButtonSetVisibility(true);
-                Toast.makeText(_activity, "If 'next' pressed multiple times while dynamic queue loads? an offset is created.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(_activity, "If 'next' pressed multiple times while dynamic queue loads? an offset is created.", Toast.LENGTH_SHORT).show(); //Todo
             }
         });
     }
