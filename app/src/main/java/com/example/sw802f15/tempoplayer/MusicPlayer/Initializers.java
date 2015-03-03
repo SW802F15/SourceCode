@@ -115,6 +115,7 @@ public class Initializers {
                 updateAlbumCovers();
                 updateSongInfo();
                 previousButtonSetVisibility(true);
+                Toast.makeText(_activity, "If 'next' pressed multiple times while dynamic queue loads? an offset is created.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -251,6 +252,8 @@ public class Initializers {
         List<Bitmap> resources = new ArrayList<>();
         for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
             resources.add(resourceImageAdapter.getItem(i));
+            //ToDo Only load previous images equal to those in prevList.
+            //There should not be any album covers to the left when prevButton is greyed out.
         }
         Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
         resources.add(newSongBitmap);
