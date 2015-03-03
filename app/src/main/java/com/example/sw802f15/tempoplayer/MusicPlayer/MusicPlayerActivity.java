@@ -41,7 +41,6 @@ public class MusicPlayerActivity extends Activity{
 
         initializeTestSongs();
 
-
         _initializers = new Initializers(this);
         _initializers.initializeDynamicQueue();
         _initializers.initializeOnClickListeners();

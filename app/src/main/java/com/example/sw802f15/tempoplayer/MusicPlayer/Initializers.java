@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
@@ -90,16 +91,13 @@ public class Initializers {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!DynamicQueue.getInstance(_activity).prevSongsIsEmpty()){
-                    _activity.mService.previous();
-                    _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
-                    changePlayPauseButton();
-                    previousAlbumCover();
-                    removeLastAlbumCover();
-                }
+                _activity.mService.previous();
+                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
+                changePlayPauseButton();
+                previousAlbumCover();
+                removeLastAlbumCover();
+                updateSongInfo();
                 previousButtonSetVisibility(false);
-
-
             }
         });
     }
@@ -115,9 +113,18 @@ public class Initializers {
                 changePlayPauseButton();
                 nextAlbumCover();
                 updateAlbumCovers();
+                updateSongInfo();
                 previousButtonSetVisibility(true);
             }
         });
+    }
+
+    private void updateSongInfo() {
+        Song song = DynamicQueue.getInstance(_activity).getCurrentSong();
+        ((TextView)_activity.findViewById(R.id.textView_title)).setText(song.getTitle());
+        ((TextView)_activity.findViewById(R.id.textView_artist)).setText(song.getArtist());
+        ((TextView)_activity.findViewById(R.id.textView_album)).setText(song.getAlbum());
+        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm()+"");
     }
 
     private void previousButtonSetVisibility(boolean show) {
@@ -166,6 +173,7 @@ public class Initializers {
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance(_activity).selectNextSong();
         _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
+        updateSongInfo();
     }
 
     public void initializeOnClickSeekBar() {
