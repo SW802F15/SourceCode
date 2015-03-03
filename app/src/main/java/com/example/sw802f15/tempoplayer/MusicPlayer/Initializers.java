@@ -124,10 +124,11 @@ public class Initializers {
         CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
         if(show){
             button.setAlpha(1f);
+            button.setEnabled(true);
         }else if (DynamicQueue.getInstance(_activity).prevSongsIsEmpty()) {
             button.setAlpha(0.3f);
+            button.setEnabled(false);
         }
-        button.setEnabled(show);
     }
 
     private void initializeOnClickSettings() {
@@ -318,6 +319,9 @@ public class Initializers {
 
     private Runnable updateSeekBarTime = new Runnable() {
         public void run() {
+            if(_activity.mService == null || _activity.mService.musicPlayer == null){
+                return;
+            }
             int timeElapsed = _activity.mService.musicPlayer.getCurrentPosition() / 1000;
             SeekBar sb = (SeekBar) _activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
