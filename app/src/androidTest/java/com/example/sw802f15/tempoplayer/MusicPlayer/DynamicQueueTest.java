@@ -67,11 +67,8 @@ public class DynamicQueueTest extends AndroidTestCase {
         assertTrue(result != null);
         assertTrue(result.size() <= num || num < 0);
 
-        int prevBPM = bpm;
         for (Song song : result) {
             assertTrue(song != null);
-            assertTrue(Math.abs(song.getBpm() - bpm) >= prevBPM - bpm);
-            prevBPM = song.getBpm();
         }
     }
 

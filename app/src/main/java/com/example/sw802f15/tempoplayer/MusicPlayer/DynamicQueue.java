@@ -15,6 +15,10 @@ import java.util.Random;
 public class DynamicQueue {
 
 
+    public boolean prevSongsIsEmpty() {
+        return prevSongs.size() == 0;
+    }
+
     private class StepCounterStub {
         public int getCurrentSPM() {
             return 110;
@@ -126,7 +130,7 @@ public class DynamicQueue {
         if (num > songs.size()){
             num = songs.size();
         }
-        if (songs.size() == 0){
+        if (songs.size() == 0 && !prevSongsIsEmpty()){
             final Song song = prevSongs.get(0);
             prevSongs.remove(0);
             return new ArrayList<Song>() {{ add(song); }};

@@ -4,18 +4,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
+import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
@@ -92,11 +90,19 @@ public class Initializers {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mService.previous();
-                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
-                changePlayPauseButton();
-                previousAlbumCover();
-                removeLastAlbumCover();
+                if(!DynamicQueue.getInstance(_activity).prevSongsIsEmpty()){
+                    _activity.mService.previous();
+                    _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
+                    changePlayPauseButton();
+                    previousAlbumCover();
+                    removeLastAlbumCover();
+                }
+                if(DynamicQueue.getInstance(_activity).prevSongsIsEmpty()){
+                    CircleButton button = (CircleButton) v; //_activity.findViewById(R.id.previousButton);
+                    button.setAlpha(0.3f);
+                    button.setEnabled(false);
+                }
+
             }
         });
     }
@@ -112,6 +118,9 @@ public class Initializers {
                 changePlayPauseButton();
                 nextAlbumCover();
                 updateAlbumCovers();
+                CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
+                button.setAlpha(1f);
+                button.setEnabled(true);
             }
         });
     }
