@@ -250,9 +250,7 @@ public class Initializers {
 
         List<Bitmap> resources = new ArrayList<>();
         for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
-            if (i > coverFlow.getSelectedItemPosition() - DynamicQueue.getInstance(_activity).getPrevSongs().size()) {
-                resources.add(resourceImageAdapter.getItem(i));
-            }
+            resources.add(resourceImageAdapter.getItem(i));
         }
         Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
         resources.add(newSongBitmap);
