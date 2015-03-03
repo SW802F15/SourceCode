@@ -23,8 +23,8 @@ import com.example.sw802f15.tempoplayer.R;
 public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
 
     private static final String TAG = ResourceImageAdapter.class.getSimpleName();
-    private static final List<WeakReference<Bitmap>> IMAGE_RESOURCE_IDS = new ArrayList<>();
-    private static final List<WeakReference<Bitmap>> DEFAULT_RESOURCE_LIST = new ArrayList<>();
+    private static final List<Bitmap> IMAGE_RESOURCE_IDS = new ArrayList<>();
+    private static final List<Bitmap> DEFAULT_RESOURCE_LIST = new ArrayList<>();
     public final Map<Integer, WeakReference<Bitmap>> bitmapMap = new HashMap<Integer, WeakReference<Bitmap>>();
 
     private final Context context;
@@ -40,9 +40,9 @@ public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
         return IMAGE_RESOURCE_IDS.size();
     }
 
-    public final synchronized void setResources(final List<WeakReference<Bitmap>> resourceSongs) {
+    public final synchronized void setResources(final List<Bitmap> resourceSongs) {
         IMAGE_RESOURCE_IDS.clear();
-        for (final WeakReference<Bitmap> albumCover : resourceSongs) {
+        for (final Bitmap albumCover : resourceSongs) {
             IMAGE_RESOURCE_IDS.add(albumCover);
         }
         notifyDataSetChanged();
@@ -51,8 +51,8 @@ public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
     @Override
     protected Bitmap createBitmap(final int position) {
         Log.v(TAG, "creating item " + position);
-        WeakReference<Bitmap> bitmap =  IMAGE_RESOURCE_IDS.get(position);
-        bitmapMap.put(position, bitmap);
-        return bitmap.get();
+        Bitmap bitmap = IMAGE_RESOURCE_IDS.get(position);
+        bitmapMap.put(position, new WeakReference<Bitmap>(bitmap));
+        return bitmap;
     }
 }

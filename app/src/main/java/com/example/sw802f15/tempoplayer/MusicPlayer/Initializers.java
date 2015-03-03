@@ -19,7 +19,6 @@ import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,7 +124,7 @@ public class Initializers {
         ((TextView)_activity.findViewById(R.id.textView_title)).setText(song.getTitle());
         ((TextView)_activity.findViewById(R.id.textView_artist)).setText(song.getArtist());
         ((TextView)_activity.findViewById(R.id.textView_album)).setText(song.getAlbum());
-        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm() + "");
+        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm()+"");
     }
 
     private void previousButtonSetVisibility(boolean show) {
@@ -223,7 +222,7 @@ public class Initializers {
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
         DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
-        List<WeakReference<Bitmap>> allAlbumCovers = new ArrayList<>();
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
         for (Song song : dynamicQueue.getPrevSongs())
         {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
@@ -249,13 +248,13 @@ public class Initializers {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
 
-        List<WeakReference<Bitmap>> resources = new ArrayList<>();
+        List<Bitmap> resources = new ArrayList<>();
         for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
             if (i > coverFlow.getSelectedItemPosition() - DynamicQueue.getInstance(_activity).getPrevSongs().size()) {
-                resources.add(new WeakReference<Bitmap>(resourceImageAdapter.getItem(i)));
+                resources.add(resourceImageAdapter.getItem(i));
             }
         }
-        WeakReference<Bitmap> newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
+        Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
         resources.add(newSongBitmap);
 
         resourceImageAdapter.setResources(resources);
@@ -296,16 +295,16 @@ public class Initializers {
         if (coverFlow.getItemAtPosition(previousPosition) != null) {
             ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
 
-            List<WeakReference<Bitmap>> resources = new ArrayList<>();
+            List<Bitmap> resources = new ArrayList<>();
             for (int i = 0; i < resourceImageAdapter.getCount() -1; i++) {
-                resources.add(new WeakReference<Bitmap>(resourceImageAdapter.getItem(i)));
+                resources.add(resourceImageAdapter.getItem(i));
             }
 
             resourceImageAdapter.setResources(resources);
         }
     }
 
-    private WeakReference<Bitmap> getBitmapFromUri(Uri albumUri) {
+    private Bitmap getBitmapFromUri(Uri albumUri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
@@ -314,13 +313,12 @@ public class Initializers {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new WeakReference<Bitmap>(BitmapFactory.decodeResource(_activity.getResources(),
-                                                                      R.drawable.defaultalbumcover));
+            return BitmapFactory.decodeResource(_activity.getResources(), R.drawable.defaultalbumcover);
         }
 
         BitmapFactory.Options optionsSecond = new BitmapFactory.Options();
         optionsSecond.inSampleSize = calculateInSampleSize(options, 350, 350);
-        return new WeakReference<Bitmap>(BitmapFactory.decodeFile(albumUri.toString(), optionsSecond));
+        return BitmapFactory.decodeFile(albumUri.toString(), optionsSecond);
     }
 
     Handler durationHandler = new Handler();
