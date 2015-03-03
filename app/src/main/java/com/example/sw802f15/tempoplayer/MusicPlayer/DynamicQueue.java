@@ -31,7 +31,7 @@ public class DynamicQueue {
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
-    private int _prevSize = 1;
+    private int _prevSize = 3;
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private static Context _context;

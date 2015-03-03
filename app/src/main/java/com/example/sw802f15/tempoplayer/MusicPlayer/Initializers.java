@@ -97,11 +97,8 @@ public class Initializers {
                     previousAlbumCover();
                     removeLastAlbumCover();
                 }
-                if(DynamicQueue.getInstance(_activity).prevSongsIsEmpty()){
-                    CircleButton button = (CircleButton) v; //_activity.findViewById(R.id.previousButton);
-                    button.setAlpha(0.3f);
-                    button.setEnabled(false);
-                }
+                previousButtonSetVisibility(false);
+
 
             }
         });
@@ -118,11 +115,19 @@ public class Initializers {
                 changePlayPauseButton();
                 nextAlbumCover();
                 updateAlbumCovers();
-                CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
-                button.setAlpha(1f);
-                button.setEnabled(true);
+                previousButtonSetVisibility(true);
             }
         });
+    }
+
+    private void previousButtonSetVisibility(boolean show) {
+        CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
+        if(show){
+            button.setAlpha(1f);
+        }else if (DynamicQueue.getInstance(_activity).prevSongsIsEmpty()) {
+            button.setAlpha(0.3f);
+        }
+        button.setEnabled(show);
     }
 
     private void initializeOnClickSettings() {
@@ -285,8 +290,6 @@ public class Initializers {
 
             resourceImageAdapter.setResources(resources);
         }
-        Toast.makeText(_activity, "Problem when you exceed prevSize. " +
-                                  "Then a album cover too much is removed.", Toast.LENGTH_SHORT).show();//ToDo
     }
 
     private Bitmap getBitmapFromUri(Uri albumUri) {

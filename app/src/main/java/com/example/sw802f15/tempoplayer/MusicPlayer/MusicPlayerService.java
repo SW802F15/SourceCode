@@ -175,7 +175,5 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
-        Toast.makeText(Initializers._activity, "Replays current song when prevList is empty.",
-                Toast.LENGTH_SHORT).show(); //TODO
     }
 }
