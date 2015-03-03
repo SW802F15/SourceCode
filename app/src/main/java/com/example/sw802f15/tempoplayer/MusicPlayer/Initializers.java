@@ -174,6 +174,7 @@ public class Initializers {
         DynamicQueue.getInstance(_activity).selectNextSong();
         _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
         updateSongInfo();
+        previousButtonSetVisibility(false);
     }
 
     public void initializeOnClickSeekBar() {
