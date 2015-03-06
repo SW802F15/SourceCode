@@ -6,6 +6,9 @@ import android.content.res.TypedArray;
 import android.graphics.Camera;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.animation.Transformation;
 import android.widget.Gallery;
@@ -35,24 +38,31 @@ public class CoverFlow extends Gallery {
     public float getImageHeight() {
         return imageHeight;
     }
+
     public void setImageHeight(final float imageHeight) {
         this.imageHeight = imageHeight;
     }
+
     public float getImageWidth() {
         return imageWidth;
     }
+
     public void setImageWidth(final float imageWidth) {
         this.imageWidth = imageWidth;
     }
+
     public int getMaxRotationAngle() {
         return maxRotationAngle;
     }
+
     public void setMaxRotationAngle(final int maxRotationAngle) {
         this.maxRotationAngle = maxRotationAngle;
     }
+
     public int getMaxZoom() {
         return maxZoom;
     }
+
     public void setMaxZoom(final int maxZoom) {
         this.maxZoom = maxZoom;
     }
@@ -104,11 +114,9 @@ public class CoverFlow extends Gallery {
 
         if (childCenter == coverflowCenter) {
             transformImageBitmap((ImageView) child, t, 0);
-        }
-        else if (childCenter+(childWidth/2) >= coverflowCenter && childCenter-(childWidth/2) <= coverflowCenter) {
+        } else if (childCenter + (childWidth / 2) >= coverflowCenter && childCenter - (childWidth / 2) <= coverflowCenter) {
             transformImageBitmap((ImageView) child, t, 0);
-        }
-        else {
+        } else {
             rotationAngle = (int) ((float) (coverflowCenter - childCenter) / childWidth * maxRotationAngle);
             rotationAngle = rotationAngle < 0 ? -maxRotationAngle : maxRotationAngle;
             /*if (Math.abs(rotationAngle) > maxRotationAngle) {
@@ -163,5 +171,20 @@ public class CoverFlow extends Gallery {
         } finally {
             a.recycle();
         }
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
     }
 }
