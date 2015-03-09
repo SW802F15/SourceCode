@@ -119,7 +119,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         long songId = _db.insertSong(_song).getID();
 
-        Song song = _db.readEntryById(songId);
+        Song song = _db.getSongById(songId);
 
         assertTrue(song != null);
 
@@ -128,7 +128,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testReadEntryNotExists(){
-        Song song = _db.readEntryById(12312); //only 6 songs in test set
+        Song song = _db.getSongById(12312); //only 6 songs in test set
         assertTrue(song == null);
     }
 
@@ -136,7 +136,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     public void testReadBySongPathExist(){
         _db.insertSong(_song);
 
-        Song song = _db.readBySongPath(_song.getUri());
+        Song song = _db.getSongByPath(_song.getUri());
         assertTrue(song != null);
 
         assertEquals(_song, song);
@@ -145,7 +145,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testReadBySongPathNotExist(){
 
-        Song song = _db.readBySongPath(Uri.parse("5.")); //only 6 songs in test set
+        Song song = _db.getSongByPath(Uri.parse("5.")); //only 6 songs in test set
         assertTrue(song == null);
     }
 

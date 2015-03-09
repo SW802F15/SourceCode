@@ -80,7 +80,7 @@ public class SongDatabase extends SQLiteOpenHelper
         if (song.getID() >= 0)
         {
             Toast.makeText(_context, "Song already exist.", Toast.LENGTH_SHORT).show();
-            song = readEntryById(song.getID());
+            song = getSongById(song.getID());
             return song;
         }
 
@@ -100,21 +100,14 @@ public class SongDatabase extends SQLiteOpenHelper
             return null;
         }
 
-
-//        SQLiteDatabase db1 = this.getReadableDatabase();
-
-//        Cursor c = db1.rawQuery("SELECT * FROM Songs",null);
-//
-//        c.moveToFirst();
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         try{
             long rowId = db.insertOrThrow(TABLE_NAME, null, values);
             song.setID(rowId);
         }catch (SQLiteException e){
-            Toast.makeText(_context, "Song already exist.", Toast.LENGTH_SHORT).show();
-            song = readBySongPath(song.getUri());
+            Toast.makeText(_context, "Song already exists.", Toast.LENGTH_SHORT).show();
+            song = getSongByPath(song.getUri());
         }
 
         db.close();
@@ -125,7 +118,7 @@ public class SongDatabase extends SQLiteOpenHelper
     public int deleteSong(Song song) throws SQLiteException
     {
         //If song already exists
-        if (song.getID() == -2)
+        if (song.getID() == -1)
         {
             throw new SQLiteException("Song doesn't exist in database.");
         }
@@ -144,15 +137,15 @@ public class SongDatabase extends SQLiteOpenHelper
         }
     }
 
-    public Song readEntryById(long songId) throws SQLiteException{
-        return readSong("ROWID", songId);
+    public Song getSongById(long songId) throws SQLiteException{
+        return getSong("ROWID", songId);
     }
 
-    public Song readBySongPath(Uri uri){
-        return readSong("path", uri);
+    public Song getSongByPath(Uri uri){
+        return getSong("path", uri);
     }
 
-    private Song readSong(String searchRow, Object searchParameter) {
+    private Song getSong(String searchRow, Object searchParameter) {
         Song resultSong = null;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -205,9 +198,5 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
         return resultSongs;
-    }
-
-    public Song getSongByPath() {
-        return null;
     }
 }

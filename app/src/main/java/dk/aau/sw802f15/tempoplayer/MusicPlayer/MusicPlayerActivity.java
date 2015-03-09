@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 
 
 public class MusicPlayerActivity extends Activity{
@@ -181,6 +182,8 @@ public class MusicPlayerActivity extends Activity{
 
 
     private void initializeTestSongs() {
+        SongScanner.getInstance(this).findSongs();
+        /*
         String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/tempo/";
         String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/tempo/";
 
@@ -276,7 +279,7 @@ public class MusicPlayerActivity extends Activity{
         songDatabase.insertSong(test_7);
         songDatabase.insertSong(test_8);
         songDatabase.insertSong(test_9);
-        songDatabase.insertSong(test_10);
+        songDatabase.insertSong(test_10);*/
     }
 
 
