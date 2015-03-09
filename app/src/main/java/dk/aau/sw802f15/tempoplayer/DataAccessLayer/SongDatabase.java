@@ -206,4 +206,8 @@ public class SongDatabase extends SQLiteOpenHelper
         }
         return resultSongs;
     }
+
+    public Song getSongByPath() {
+        return null;
+    }
 }

@@ -2,6 +2,8 @@ package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
 import android.test.AndroidTestCase;
 
+import java.util.List;
+
 public class SongScannerTest extends AndroidTestCase {
 
     private SongDatabase _db;
@@ -16,6 +18,8 @@ public class SongScannerTest extends AndroidTestCase {
 
     }
     public void testFindSongs(){
-
+        _ss.findSongs();
+        List<Song> songs = _db.getSongsWithBPM(100, 1000);
+        assertEquals(10, songs.size());
     }
 }

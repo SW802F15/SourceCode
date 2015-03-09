@@ -1,6 +1,9 @@
 package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+
+import java.io.File;
 
 /**
  * Created by Draegert on 16-02-2015.
@@ -9,6 +12,11 @@ public class Song {
     private static final Uri DEFAULTALBUMPATH = Uri.parse("android.resource" + "://" +
                                                           "com." + "example." + "sw802f15." + "tempoplayer" +
                                                           "/" + "drawable" + "/" + "defaultalbumcover.png");
+    private final Integer _bpmStub = 100;
+    private final Uri _albumStub = null;
+
+    private static final int MS_PER_SEC = 1000;
+
     private long _id;
     private String _title;
     private  String _artist;
@@ -18,20 +26,36 @@ public class Song {
     private int _durationInSec;
     private Uri _albumUri;
 
-    public Song(String songTitle, String songArtist, String songAlbum, Integer songBpm, Uri uri,
-                Uri albumUri, int durationInSec){
-        _id = -2;
-        setValues(songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
-    }
-
     public Song(long songId, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                 Uri uri, Uri albumUri, int durationInSec) {
-        _id = songId;
-        setValues(songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
-        }
+        setValues(songId, songTitle, songArtist, songAlbum, songBpm,
+                uri, albumUri, durationInSec);
+    }
 
-    private void setValues(String songTitle, String songArtist, String songAlbum, Integer songBpm,
+    public Song(String songTitle, String songArtist, String songAlbum, Integer songBpm, Uri uri,
+                Uri albumUri, int durationInSec){
+        setValues(-1, songTitle, songArtist, songAlbum, songBpm,
+                uri, albumUri, durationInSec);
+    }
+
+    public Song(File file) {
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(file.getPath());
+
+        setValues(-1,
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
+                _bpmStub,
+                Uri.fromFile(file),
+                _albumStub,
+                Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
+        );
+    }
+
+    private void setValues(long id, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                            Uri uri, Uri albumUri, int durationInSec){
+        _id = id;
         _title = songTitle != null ? songTitle : "Unknown" ;
         _artist = songArtist != null ? songArtist : "Unknown" ;
         _album = songAlbum != null ? songAlbum : "Unknown" ;
@@ -40,7 +64,6 @@ public class Song {
         _durationInSec = durationInSec;
         _albumUri = albumUri != null ? albumUri : DEFAULTALBUMPATH;
     }
-
 
     public long getID() {return _id;}
 
