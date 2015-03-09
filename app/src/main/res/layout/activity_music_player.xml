@@ -19,7 +19,7 @@
         android:layout_alignParentStart="true"
         android:id="@+id/covers">
 
-        <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow
+        <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow
             xmlns:coverflow="http://schemas.android.com/apk/res-auto"
             coverflow:imageWidth="175dp"
             coverflow:imageHeight="250dp"
@@ -244,7 +244,7 @@
                 android:layout_height="fill_parent"
                 android:id="@+id/settings">
 
-                <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+                <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
@@ -272,7 +272,7 @@
             android:columnCount="3"
             android:rowCount="7">
 
-           <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+           <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
@@ -292,7 +292,7 @@
                android:layout_marginLeft="10dp"
                android:padding="20dp" />
 
-            <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+            <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
@@ -310,7 +310,7 @@
                 android:layout_gravity="top|left"
                 android:layout_marginLeft="10dp" />
 
-            <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+            <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
@@ -328,7 +328,7 @@
                 android:cropToPadding="false"
                 android:layout_gravity="top|right" />
 
-            <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+            <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
@@ -353,7 +353,7 @@
                 android:adjustViewBounds="false"
                 android:paddingLeft="10dp"
                 android:visibility="visible" />
-            <com.example.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
+            <dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
