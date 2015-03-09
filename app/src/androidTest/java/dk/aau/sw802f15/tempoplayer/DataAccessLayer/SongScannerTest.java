@@ -1,5 +1,6 @@
 package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
+import android.net.Uri;
 import android.os.Environment;
 import android.test.AndroidTestCase;
 
@@ -25,5 +26,19 @@ public class SongScannerTest extends AndroidTestCase {
         _ss.findSongs();
         List<Song> songs = _db.getSongsWithBPM(100, 1000);
         assertEquals(10, songs.size());
+    }
+
+    public void testRemoveSongs(){
+        Song nonExistingSong = new Song("Tristram", "Matt Uemen", //Title, Artist
+                "Diablo SoundTrack", 130,  //Album , BPM
+                Uri.parse("nonExistingFilePath/" + "music_sample_1.mp3"),
+                null, //SongUri, CoverUri
+                7*60 + 40);
+        _db.insertSong(nonExistingSong);
+        List<Song> songs = _db.getSongsWithBPM(100, 1000);
+        assertEquals(1, songs.size());
+        _ss.removeSongs();
+        songs = _db.getSongsWithBPM(100, 1000);
+        assertEquals(0, songs.size());
     }
 }

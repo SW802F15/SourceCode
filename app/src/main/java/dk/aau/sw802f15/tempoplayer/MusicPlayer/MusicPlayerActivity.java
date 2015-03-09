@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -182,7 +183,10 @@ public class MusicPlayerActivity extends Activity{
 
 
     private void initializeTestSongs() {
-        SongScanner.getInstance(this).findSongs();
+        //SongScanner.getInstance(this).findSongs();
+
+        SongScanner.getInstance(getApplication().getApplicationContext()).scanInBackGround();
+
         /*
         String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/tempo/";
         String initCoverPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_PICTURES + "/tempo/";

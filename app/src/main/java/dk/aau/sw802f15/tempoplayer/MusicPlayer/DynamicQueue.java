@@ -74,13 +74,16 @@ public class DynamicQueue {
             prevSongs.clear();
             selectNextSong();
         }
-
+        if (nextSongs.size() == 0){
+            return;
+        }
         if (currentSong != null){
             prevSongs.add(currentSong);
             if (prevSongs.size() > _prevSize){
                 prevSongs.remove(0);
             }
         }
+
         currentSong = nextSongs.get(0);
         nextSongs.remove(0);
 

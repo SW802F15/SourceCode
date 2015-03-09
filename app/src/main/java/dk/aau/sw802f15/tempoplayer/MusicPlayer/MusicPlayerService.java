@@ -117,8 +117,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                     maxLabel.setText(song.getDurationInMinAndSec());
                 }
             });
-
-
         }
     }
 

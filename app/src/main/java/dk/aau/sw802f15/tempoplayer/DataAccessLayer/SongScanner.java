@@ -6,8 +6,10 @@ import android.net.Uri;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.Map;
+import java.util.concurrent.Executors;
 
-public class SongScanner {
+public class SongScanner{
     private static SongScanner _instance;
     private static Context _context;
     private static SongDatabase _db;
@@ -15,8 +17,42 @@ public class SongScanner {
     private String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
             + Environment.DIRECTORY_MUSIC + "/tempo/";
 
+    protected SongScanner(){
+        //Empty because singleton
+    }
+
+    public static SongScanner getInstance(Context context) {
+        if ( _instance == null ){
+            _context = context;
+            _db = new SongDatabase(context);
+            _instance = new SongScanner();
+        }
+        return _instance;
+    }
+    public void scanInBackGround(){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run(){
+                removeSongs();
+                findSongs();
+            }
+        });
+    }
+
+
     public void findSongs(){
         findSongsHelper(_musicPathStub);
+    }
+
+    public void removeSongs(){
+        Map<Integer, String> paths = _db.getAllSongPaths();
+
+        for (Integer key : paths.keySet()) {
+            if(!new File(paths.get(key)).exists()){
+                _db.deleteSongByID(key);
+            }
+        }
+
     }
 
     private void findSongsHelper(String path){
@@ -30,14 +66,5 @@ public class SongScanner {
                 findSongsHelper(file.getPath());
             }
         }
-    }
-
-    public static SongScanner getInstance(Context context) {
-        if ( _instance == null ){
-            _context = context;
-            _db = new SongDatabase(context);
-            _instance = new SongScanner();
-        }
-        return _instance;
     }
 }

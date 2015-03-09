@@ -10,7 +10,11 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Dan on 18-02-2015.
@@ -198,5 +202,40 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
         return resultSongs;
+    }
+
+    public Map<Integer, String> getAllSongPaths() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Map<Integer, String> res = new HashMap<>();
+
+        Cursor cursor = db.query(TABLE_NAME, new String[] {"ROWID ,path"}, null,
+                null, null, null, null, null);
+        if(cursor != null)
+        {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                res.put(cursor.getInt(cursor.getColumnIndex("rowid")),
+                        cursor.getString(cursor.getColumnIndex("path")));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }else {
+            throw new SQLiteException();
+        }
+
+        return res;
+    }
+
+    public int deleteSongByID(Integer id) {
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(TABLE_NAME, "ROWID = " + id, null);
+            db.close();
+
+            return 0;
+        }catch (SQLiteException ex)
+        {
+            throw new SQLiteException();
+        }
     }
 }
