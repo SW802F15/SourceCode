@@ -36,8 +36,13 @@ public class MusicPlayerActivity extends Activity{
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
 
-        initializeTestSongs();
-
+        if(true) { //TODO check if db is empty
+            SongScanner.getInstance(this).scanInBackground();
+        } else {
+            SongScanner.getInstance(this).findSongs();
+            //TODO reduce number of songs
+            //TODO start setting activity if db still empty
+        }
         _initializers = new Initializers(this);
         _initializers.initializeDynamicQueue();
         _initializers.initializeOnClickListeners();
@@ -185,7 +190,6 @@ public class MusicPlayerActivity extends Activity{
     private void initializeTestSongs() {
         //SongScanner.getInstance(this).findSongs();
 
-        SongScanner.getInstance(getApplication().getApplicationContext()).scanInBackGround();
 
         /*
         String initMusicPath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/tempo/";

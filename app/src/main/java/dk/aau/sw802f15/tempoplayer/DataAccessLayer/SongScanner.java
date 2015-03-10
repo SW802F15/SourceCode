@@ -29,14 +29,14 @@ public class SongScanner{
         }
         return _instance;
     }
-    public void scanInBackGround(){
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
+    public void scanInBackground(){
+        new Runnable() {
             @Override
             public void run(){
                 removeSongs();
                 findSongs();
             }
-        });
+        }.run();
     }
 
 

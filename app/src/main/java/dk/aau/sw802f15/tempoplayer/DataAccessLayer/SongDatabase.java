@@ -206,7 +206,7 @@ public class SongDatabase extends SQLiteOpenHelper
 
     public Map<Integer, String> getAllSongPaths() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Map<Integer, String> res = new HashMap<>();
+        Map<Integer, String> result = new HashMap<>();
 
         Cursor cursor = db.query(TABLE_NAME, new String[] {"ROWID ,path"}, null,
                 null, null, null, null, null);
@@ -214,8 +214,8 @@ public class SongDatabase extends SQLiteOpenHelper
         {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                res.put(cursor.getInt(cursor.getColumnIndex("rowid")),
-                        cursor.getString(cursor.getColumnIndex("path")));
+                result.put(cursor.getInt(cursor.getColumnIndex("rowid")),
+                           cursor.getString(cursor.getColumnIndex("path")));
                 cursor.moveToNext();
             }
             cursor.close();
@@ -223,7 +223,7 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
 
-        return res;
+        return result;
     }
 
     public int deleteSongByID(Integer id) {
