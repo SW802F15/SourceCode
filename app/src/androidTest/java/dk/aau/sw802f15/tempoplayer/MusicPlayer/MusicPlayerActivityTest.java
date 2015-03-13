@@ -6,13 +6,19 @@ import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.SmallTest;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
+import dk.aau.sw802f15.tempoplayer.R;
+
 import android.view.KeyEvent;
+import android.widget.Button;
+
+import com.robotium.solo.Solo;
 
 public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<MusicPlayerActivity>
 {
     private AudioManager _am = null;
     private Activity _ac = null;
     private MusicPlayerActivity _mpa = null;
+    private Solo _solo;
 
     public MusicPlayerActivityTest()
     {
@@ -24,7 +30,6 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
     {
         super.setUp();
         setActivityInitialTouchMode(false);
-
         _ac = getActivity();
         Context ctx = _ac.getApplicationContext();
         //_mpa = new MusicPlayerActivity();
@@ -32,11 +37,13 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         _am = (AudioManager)ctx.getSystemService(Context.AUDIO_SERVICE);
         _am.setStreamVolume(AudioManager.STREAM_MUSIC, 6,
                 AudioManager.FLAG_PLAY_SOUND+AudioManager.FLAG_SHOW_UI);
+        _solo = new Solo(getInstrumentation());
     }
 
     @Override
     protected void tearDown() throws Exception
     {
+        _solo.finishOpenedActivities();
         super.tearDown();
     }
 
@@ -82,5 +89,11 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
         int expectedVolume = initialVolume - 1;
         assertEquals(expectedVolume, endVolume);
+    }
+
+    @SmallTest
+    public void testRobo() {
+        _solo.waitForActivity("MusicPlayer", 5000);
+        _solo.clickOnView(_ac.findViewById(R.id.nextButton));
     }
 }
