@@ -5,6 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Environment;
@@ -22,15 +26,21 @@ import com.example.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import com.example.sw802f15.tempoplayer.R;
 import com.example.sw802f15.tempoplayer.DataAccessLayer.Song;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MusicPlayerActivity extends Activity{
+public class MusicPlayerActivity extends Activity implements SensorEventListener{
 
     MusicPlayerService mService;
     boolean mBound = false;
 
     private Initializers _initializers;
+    private SensorManager senSensorManager;
+    private Sensor senAccelerometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,10 @@ public class MusicPlayerActivity extends Activity{
         _initializers.initializeDynamicQueue();
         _initializers.initializeOnClickListeners();
         _initializers.initializeCoverFlow();
+
+        senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -66,12 +80,14 @@ public class MusicPlayerActivity extends Activity{
     protected void onResume() {
         super.onResume();
         _initializers.startSeekBarPoll();
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         _initializers.stopSeekBarPoll();
+        //senSensorManager.unregisterListener(this);
     }
 
     @Override
@@ -81,10 +97,11 @@ public class MusicPlayerActivity extends Activity{
             unbindService(mConnection);
             mBound = false;
         }
-
+        senSensorManager.unregisterListener(this);
 //        Intent musicPlayerService = new Intent(getApplicationContext(), MusicPlayerService.class);
 //        //musicPlayerService.setAction("Quit");
 //        stopService(musicPlayerService);
+
     }
 
     @Override
@@ -350,4 +367,77 @@ public class MusicPlayerActivity extends Activity{
         songDurationTextView.setText(durationString);
     }
 
+    private long lastUpdate = 0;
+    public static int numSteps = 0;
+    private float last_x = 0, last_y = 0, last_z = 0, last_diff = 0, last_g = 0;
+    public static float largest = 0, prev = 0;
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        Sensor mySensor = sensorEvent.sensor;
+
+        if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
+
+            long curTime = System.currentTimeMillis();
+
+            // update every 100 ms
+            if ((curTime - lastUpdate) > 100) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+
+                // alternate equation. 1 is earths normal gravity. This doesn't seem to work as well
+                // found at: http://stackoverflow.com/questions/6125862/how-to-count-step-using-accelerometer-in-android
+                //float g = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+
+                // found at: http://code.tutsplus.com/tutorials/using-the-accelerometer-on-android--mobile-22125
+                float g = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+                float diff = g - last_g;
+
+                if(diff < 0 && last_diff > 0 && g > 25)
+                {
+                    numSteps++;
+                }
+
+                last_diff = diff;
+                last_g = g;
+
+                ms.add(x + "@" + y + "@" + z + "@" + diffTime + "#");
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    public static List<String> ms = new ArrayList<>();
+
+    public static void WriteToFile(String path, String filename) throws FileNotFoundException {
+        File f = new File(path, filename);
+        FileOutputStream outputStream = new FileOutputStream(f, false);
+
+        try {
+            for(String m : ms) {
+                outputStream.write(m.getBytes());
+            }
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // code here to show dialog
+        //super.onBackPressed();  // optional depending on your needs
+    }
 }

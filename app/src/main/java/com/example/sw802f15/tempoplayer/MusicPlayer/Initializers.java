@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import com.example.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import com.example.sw802f15.tempoplayer.R;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,6 +196,15 @@ public class Initializers {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                //Toast.makeText(_activity, ("NumSteps " + MusicPlayerActivity.numSteps+""), Toast.LENGTH_SHORT).show();
+
+                String path = Environment.getExternalStorageDirectory() + "/Documents/";
+                try {
+                    MusicPlayerActivity.WriteToFile(path, "m.txt");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
                 _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
 
                 if(_isPlaying) {
