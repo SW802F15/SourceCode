@@ -78,19 +78,23 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void loadSong(Uri uri) {
         isPrepared = false;
         isLoaded = false;
+        String errorMessage = "Song not available.";
+
         if (uri == null || !new File(uri.getPath()).exists()){
-            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
+            showToast(errorMessage);
             return;
         }
 
         musicPlayer.reset();
+
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
             updateSeekBarAndLabels();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Log.e("loadSong", e.getStackTrace().toString());
-            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
+            showToast(errorMessage);
         }
 
         musicPlayer.prepareAsync();
@@ -168,5 +172,11 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(),
+                       message,
+                       Toast.LENGTH_SHORT).show();
     }
 }
