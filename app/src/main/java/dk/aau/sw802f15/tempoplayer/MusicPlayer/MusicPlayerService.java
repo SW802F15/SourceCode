@@ -1,5 +1,6 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -102,14 +103,15 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void updateSeekBarAndLabels()
     {
-        if(Initializers._activity == null) {
+        MusicPlayerActivity musicPlayerActivity = Initializers._activity;
+        if(musicPlayerActivity == null) {
             return;
         }
 
-        SeekBar seekBar = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
-        final Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
-        final TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
-        final TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
+        SeekBar seekBar = (SeekBar) musicPlayerActivity.findViewById(R.id.seekBar);
+        final Song song = DynamicQueue.getInstance(musicPlayerActivity).getCurrentSong();
+        final TextView minLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_currentPosition);
+        final TextView maxLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_songDuration);
         Handler handler = new Handler();
 
         seekBar.setMax(song.getDurationInSec());
@@ -150,27 +152,25 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void next() {
+        DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
+        loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
+
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
     }
 
     public void previous() {
+        DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
+        loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
+
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
     }
