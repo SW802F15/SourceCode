@@ -150,6 +150,21 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @MediumTest
+    public void testGetSongById(){
+
+    }
+
+    @MediumTest
+    public void testGetSongByPath(){
+
+    }
+
+    @MediumTest
+    public void testGetSong(){
+
+    }
+
+    @MediumTest
     public void testGetSongsWithBPM(){
         //int BMP, int tresholdBMP
         List<Song> songs = _db.getSongsWithBPM(110, 30);
@@ -172,5 +187,25 @@ public class SongDatabaseTest extends AndroidTestCase {
             Assert.fail();
         }
 
+    }
+
+    @MediumTest
+    public void testConstructSongListFromCursor(){
+
+    }
+
+    @MediumTest
+    public void testGetAllSongPaths(){
+
+    }
+
+    @MediumTest
+    public void testDeleteSongByID(){
+
+    }
+
+    @MediumTest
+    public void testUpdateSong(){
+        
     }
 }
