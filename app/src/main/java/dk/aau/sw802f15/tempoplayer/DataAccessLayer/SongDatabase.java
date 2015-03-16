@@ -238,4 +238,13 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
     }
+
+    public int updateSong(Song song) {
+        ContentValues values = new ContentValues();
+        values.put("album_path", song.getAlbumUri().toString());
+        SQLiteDatabase db = this.getWritableDatabase();
+        int ret = db.update(TABLE_NAME, values, "ROWID = " + song.getID(), null);
+        db.close();
+        return ret;
+    }
 }
