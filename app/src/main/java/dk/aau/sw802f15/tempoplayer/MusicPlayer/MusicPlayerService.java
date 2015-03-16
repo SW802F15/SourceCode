@@ -49,13 +49,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void onCreate() {
         super.onCreate();
-        Log.d("LogCat", "MusicPlayerService started.");
         initialiseMusicPlayer();
-        Log.d("LogCat", "MusicPlayer initialised.");
     }
 
     public void onPrepared(MediaPlayer player) {
-        Log.d("LogCat", "MusicPlayer Prepared.");
         isPrepared = true;
     }
 
