@@ -1,11 +1,30 @@
 package dk.aau.sw802f15.tempoplayer;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerService;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.AbstractCoverFlowImageAdapter;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 public class TestHelper {
     public static void initializeTestSongs(SongDatabase db) {
@@ -59,5 +78,140 @@ public class TestHelper {
         db.insertSong(test_5);
         db.insertSong(test_6);
     }
+
+
+    public static Method testPrivateMethod(Classes className, String methodName, Context context) {
+
+        Method[] privateMethods = new Method[0];
+
+        switch (className) {
+            case Song:
+                throw new UnsupportedOperationException();
+                //privateMethods =  Song.class.getDeclaredMethods();
+                //break;
+            case SongDatabase:
+                throw new UnsupportedOperationException();
+                //privateMethods =  SongDatabase.class.getDeclaredMethods();
+                //break;
+            case SongScanner:
+                privateMethods = SongScanner.getInstance(context).getClass().getDeclaredMethods();
+                break;
+            case DynamicQueue:
+                throw new UnsupportedOperationException();
+                //privateMethods =  DynamicQueue.class.getDeclaredMethods();
+                //break;
+            case Initializers:
+                throw new UnsupportedOperationException();
+                //privateMethods =  Initializers.class.getDeclaredMethods();
+                //break;
+            case MusicPlayerActivity:
+                throw new UnsupportedOperationException();
+                //privateMethods =  MusicPlayerActivity.class.getDeclaredMethods();
+                //break;
+            case MusicPlayerService:
+                throw new UnsupportedOperationException();
+                //privateMethods =  MusicPlayerService.class.getDeclaredMethods();
+                //break;
+            case CircleButton:
+                throw new UnsupportedOperationException();
+                //privateMethods =  CircleButton.class.getDeclaredMethods();
+                //break;
+            case AbstractCoverFlowImageAdapter:
+                throw new UnsupportedOperationException();
+                //privateMethods =  AbstractCoverFlowImageAdapter.class.getDeclaredMethods();
+                //break;
+            case CoverFlow:
+                throw new UnsupportedOperationException();
+                //privateMethods =  CoverFlow.class.getDeclaredMethods();
+                //break;
+            case ResourceImageAdapter:
+                throw new UnsupportedOperationException();
+                //privateMethods =  ResourceImageAdapter.class.getDeclaredMethods();
+                //break;
+            case SettingsActivity:
+                throw new UnsupportedOperationException();
+                //privateMethods =  SettingsActivity.class.getDeclaredMethods();
+                //break;
+
+            default:
+                throw new NoSuchElementException();
+                //break;
+        }
+
+        for (Method privateMethod : privateMethods) {
+            String privateMethodName = privateMethod.getName();
+            if (privateMethodName.equals(methodName)) {
+                privateMethod.setAccessible(true);
+                return privateMethod;
+            }
+        }
+
+        return null;
+    }
+
+    public enum Classes {
+        Song,
+        SongDatabase,
+        SongScanner,
+        DynamicQueue,
+        Initializers,
+        MusicPlayerActivity,
+        MusicPlayerService,
+        CircleButton,
+        AbstractCoverFlowImageAdapter,
+        CoverFlow,
+        ResourceImageAdapter,
+        SettingsActivity
+    }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                Examples for testing private methods                                            //
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+    public void testPrivateMethodWithoutParametersExample() {
+        Boolean expectedValue = true;
+        Boolean actualValue = false;
+
+        SongScanner songScannerClass = SongScanner.getInstance(getContext());
+        Method privateMethod = TestHelper.testPrivateMethod(TestHelper.Classes.ClassName,
+                                                            "MethodName",
+                                                            getContext());
+
+        if (privateMethod == null) {
+            assertTrue(false);
+        }
+
+        try {
+            actualValue = (Boolean) privateMethod.invoke(songScannerClass);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expectedValue, actualValue);
+    }
+
+    public void testPrivateMethodWithParametersExample() {
+        SongScanner songScannerClass = SongScanner.getInstance(getContext());
+        String parameter = path;
+        Method privateMethod = TestHelper.testPrivateMethod(TestHelper.Classes.ClassName,
+                                                            "MethodName",
+                                                            getContext());
+
+        if (privateMethod == null) {
+            assertTrue(false);
+        }
+
+        try {
+            privateMethod.invoke(songScannerClass, parameter);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(true);
+    }
+*/

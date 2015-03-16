@@ -4,13 +4,21 @@ import android.net.Uri;
 import android.os.Environment;
 import android.test.AndroidTestCase;
 
+import junit.framework.Assert;
+
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+
+import dk.aau.sw802f15.tempoplayer.TestHelper;
 
 public class SongScannerTest extends AndroidTestCase {
 
     private SongDatabase _db;
     private SongScanner _ss;
+    private String path = Environment.getExternalStorageDirectory() + "/"
+                        + Environment.DIRECTORY_MUSIC + "/tempo/music_sample_3.mp3";
 
     @Override
     protected void setUp() throws Exception {

@@ -1,5 +1,6 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -49,13 +50,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void onCreate() {
         super.onCreate();
-        Log.d("LogCat", "MusicPlayerService started.");
         initialiseMusicPlayer();
-        Log.d("LogCat", "MusicPlayer initialised.");
     }
 
     public void onPrepared(MediaPlayer player) {
-        Log.d("LogCat", "MusicPlayer Prepared.");
         isPrepared = true;
     }
 
@@ -81,19 +79,23 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void loadSong(Uri uri) {
         isPrepared = false;
         isLoaded = false;
+        String errorMessage = "Song not available.";
+
         if (uri == null || !new File(uri.getPath()).exists()){
-            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
+            showToast(errorMessage);
             return;
         }
 
         musicPlayer.reset();
+
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
             updateSeekBarAndLabels();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Log.e("loadSong", e.getStackTrace().toString());
-            Toast.makeText(getApplicationContext(), "Song not available.", Toast.LENGTH_SHORT).show();
+            showToast(errorMessage);
         }
 
         musicPlayer.prepareAsync();
@@ -101,23 +103,25 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void updateSeekBarAndLabels()
     {
-        if(Initializers._activity != null) {
-            SeekBar sb = (SeekBar) Initializers._activity.findViewById(R.id.seekBar);
-            final Song song = DynamicQueue.getInstance(Initializers._activity).getCurrentSong();
-            sb.setMax(song.getDurationInSec());
-
-            final TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
-            final TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
-
-            Handler handler = new Handler();
-
-            handler.post(new Runnable(){
-                public void run() {
-                    minLabel.setText("00:00");
-                    maxLabel.setText(song.getDurationInMinAndSec());
-                }
-            });
+        MusicPlayerActivity musicPlayerActivity = Initializers._activity;
+        if(musicPlayerActivity == null) {
+            return;
         }
+
+        SeekBar seekBar = (SeekBar) musicPlayerActivity.findViewById(R.id.seekBar);
+        final Song song = DynamicQueue.getInstance(musicPlayerActivity).getCurrentSong();
+        final TextView minLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_currentPosition);
+        final TextView maxLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_songDuration);
+        Handler handler = new Handler();
+
+        seekBar.setMax(song.getDurationInSec());
+
+        handler.post(new Runnable(){
+            public void run() {
+                minLabel.setText("00:00");
+                maxLabel.setText(song.getDurationInMinAndSec());
+            }
+        });
     }
 
     public void play(){
@@ -148,28 +152,32 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void next() {
+        DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
+        loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
+
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
     }
 
     public void previous() {
+        DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
+        loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
+
         if (musicPlayer.isPlaying()) {
-            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             play();
         }
         else {
-            DynamicQueue.getInstance(getApplicationContext()).selectPrevSong();
-            loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
             pause();
         }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(),
+                       message,
+                       Toast.LENGTH_SHORT).show();
     }
 }
