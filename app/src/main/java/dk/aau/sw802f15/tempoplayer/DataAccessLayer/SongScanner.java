@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.webkit.URLUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,7 +64,11 @@ public class SongScanner{
     }
 
     private void findSongsHelper(String path){
+        if (path == null) { return; }
+
         File dir = new File(path);
+        if (!dir.exists()) { return; }
+
         for(File file : dir.listFiles()){
             if (file.getPath().endsWith(".mp3") &&
                     _db.getSongByPath(Uri.fromFile(file)) == null){
@@ -78,6 +83,8 @@ public class SongScanner{
     }
 
     private void loadCover(Song song){
+        if (!new File(song.getAlbumUri().getPath()).exists()) return;
+        
         FFmpegMediaMetadataRetriever ffmmr = new FFmpegMediaMetadataRetriever();
         ffmmr.setDataSource(_context, song.getUri());
         byte[] data = ffmmr.getEmbeddedPicture();
