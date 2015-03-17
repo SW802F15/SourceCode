@@ -200,7 +200,7 @@ public class Initializers {
 
                 String path = Environment.getExternalStorageDirectory() + "/Documents/";
                 try {
-                    MusicPlayerActivity.WriteToFile(path, "m.txt");
+                    MusicPlayerActivity.WriteToFile(path);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

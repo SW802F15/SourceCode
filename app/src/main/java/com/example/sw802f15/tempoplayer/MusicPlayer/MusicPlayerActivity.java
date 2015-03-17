@@ -18,7 +18,6 @@ import android.text.format.Time;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class MusicPlayerActivity extends Activity implements SensorEventListener{
@@ -41,6 +41,8 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
     private Initializers _initializers;
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
+    private Sensor senGyro;
+    private Sensor senGravi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,38 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        senGyro = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        senGravi = senSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+
+        SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+        else{
+            Toast.makeText(this, "no acc", Toast.LENGTH_SHORT).show();
+            // Sorry, there are no accelerometers on your device.
+            // You can't play this game.
+        }
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null){
+        }
+        else{
+            Toast.makeText(this, "no gyro", Toast.LENGTH_SHORT).show();
+            // Sorry, there are no accelerometers on your device.
+            // You can't play this game.
+        }
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null){
+            Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        }
+        else{
+            Toast.makeText(this, "no gravi", Toast.LENGTH_SHORT).show();
+            // Sorry, there are no accelerometers on your device.
+            // You can't play this game.
+        }
+
+
+
     }
 
     @Override
@@ -81,6 +114,8 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
         super.onResume();
         _initializers.startSeekBarPoll();
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senGyro, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senGravi, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -367,48 +402,29 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
         songDurationTextView.setText(durationString);
     }
 
-    private long lastUpdate = 0;
-    public static int numSteps = 0;
-    private float last_x = 0, last_y = 0, last_z = 0, last_diff = 0, last_g = 0;
-    public static float largest = 0, prev = 0;
-
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor mySensor = sensorEvent.sensor;
+        long curTime = System.currentTimeMillis();
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            long curTime = System.currentTimeMillis();
+            accelerometer.add(curTime + ";" + x + ";" + y + ";" + z + ";" + "\r\n");
+        } else if (mySensor.getType() == Sensor.TYPE_GRAVITY) {
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
 
-            // update every 100 ms
-            if ((curTime - lastUpdate) > 100) {
-                long diffTime = (curTime - lastUpdate);
-                lastUpdate = curTime;
+            gravity.add(curTime + ";" + x + ";" + y + ";" + z + "\r\n");
+        } else if (mySensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
 
-                // alternate equation. 1 is earths normal gravity. This doesn't seem to work as well
-                // found at: http://stackoverflow.com/questions/6125862/how-to-count-step-using-accelerometer-in-android
-                //float g = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-
-                // found at: http://code.tutsplus.com/tutorials/using-the-accelerometer-on-android--mobile-22125
-                float g = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
-                float diff = g - last_g;
-
-                if(diff < 0 && last_diff > 0 && g > 25)
-                {
-                    numSteps++;
-                }
-
-                last_diff = diff;
-                last_g = g;
-
-                ms.add(x + "@" + y + "@" + z + "@" + diffTime + "#");
-                last_x = x;
-                last_y = y;
-                last_z = z;
-            }
+            gyroscope.add(curTime + ";" + x + ";" + y + ";" + z + "\r\n");
         }
     }
 
@@ -417,18 +433,36 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
 
     }
 
-    public static List<String> ms = new ArrayList<>();
+    public static List<String> accelerometer = new ArrayList<>();
+    public static List<String> gravity = new ArrayList<>();
+    public static List<String> gyroscope = new ArrayList<>();
 
-    public static void WriteToFile(String path, String filename) throws FileNotFoundException {
-        File f = new File(path, filename);
-        FileOutputStream outputStream = new FileOutputStream(f, false);
+    public static void WriteToFile(String path) throws FileNotFoundException {
+        File accel = new File(path, "accel.csv");
+        File gyro = new File(path, "gyro.csv");
+        File gravi = new File(path, "gravi.csv");
+        FileOutputStream accStream = new FileOutputStream(accel, false);
+        FileOutputStream gyrStream = new FileOutputStream(gyro, false);
+        FileOutputStream graStream = new FileOutputStream(gravi, false);
 
         try {
-            for(String m : ms) {
-                outputStream.write(m.getBytes());
+            for(String m : accelerometer) {
+                accStream.write(m.getBytes());
             }
-            outputStream.flush();
-            outputStream.close();
+            accStream.flush();
+            accStream.close();
+
+            for(String m : gravity) {
+                gyrStream.write(m.getBytes());
+            }
+            gyrStream.flush();
+            gyrStream.close();
+
+            for(String m : gyroscope) {
+                graStream.write(m.getBytes());
+            }
+            graStream.flush();
+            graStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
