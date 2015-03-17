@@ -27,9 +27,8 @@ import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 public class TestHelper {
-    public static void initializeTestSongs(SongDatabase db) {
-        db.clearDatabase();
 
+    public static Song getValidSong() {
         String initMusicPath = Environment.getExternalStorageDirectory() + "/"
                 + Environment.DIRECTORY_MUSIC + "/tempo/";
         String initCoverPath = Environment.getExternalStorageDirectory() + "/"
@@ -40,6 +39,23 @@ public class TestHelper {
                 Uri.parse(initMusicPath + "music_sample_1.mp3"),
                 Uri.parse(initCoverPath + "cover_sample_1.jpg"), //SongUri, CoverUri
                 7*60 + 40);
+
+        return test_1;
+    }
+
+    public static Song getInvalidSong() {
+        return new Song(null, null, null, null, null, null, 0);
+    }
+
+    public static void initializeTestSongs(SongDatabase db) {
+        db.clearDatabase();
+
+        String initMusicPath = Environment.getExternalStorageDirectory() + "/"
+                + Environment.DIRECTORY_MUSIC + "/tempo/";
+        String initCoverPath = Environment.getExternalStorageDirectory() + "/"
+                + Environment.DIRECTORY_PICTURES + "/tempo/";
+
+        Song test_1 = getValidSong();
 
         Song test_2 = new Song("Let It Go", "Idina Menzel", //Title, Artist
                 "Frozen SoundTrack", 137,  //Album , BPM
@@ -90,9 +106,8 @@ public class TestHelper {
                 //privateMethods =  Song.class.getDeclaredMethods();
                 //break;
             case SongDatabase:
-                throw new UnsupportedOperationException();
-                //privateMethods =  SongDatabase.class.getDeclaredMethods();
-                //break;
+                privateMethods = new SongDatabase(context).getClass().getDeclaredMethods();
+                break;
             case SongScanner:
                 privateMethods = SongScanner.getInstance(context).getClass().getDeclaredMethods();
                 break;
