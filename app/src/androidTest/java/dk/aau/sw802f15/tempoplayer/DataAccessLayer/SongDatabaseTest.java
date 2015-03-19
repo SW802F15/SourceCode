@@ -37,6 +37,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         super.setUp();
         _db = new SongDatabase(getContext());
         TestHelper.initializeTestSongs(_db);
+        _song = TestHelper.getValidSong();
     }
 
     @Override
@@ -194,7 +195,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testConstructSongListFromCursor(){
         SQLiteDatabase db = _db.getReadableDatabase();
-        List<Song> actualSongList = new ArrayList<>();
+        List<Song> actualSongList = new ArrayList<Song>();
 
         Cursor cursor = db.query("Song", new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
                 new String[] { String.valueOf(130 - 2), String.valueOf(130 + 2) }
