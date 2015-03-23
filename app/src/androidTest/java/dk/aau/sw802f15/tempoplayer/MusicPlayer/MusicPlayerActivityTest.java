@@ -7,7 +7,13 @@ import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
+import dk.aau.sw802f15.tempoplayer.R;
+
 import android.view.KeyEvent;
+import android.widget.Button;
+
+import com.robotium.solo.Solo;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +26,7 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
     private Activity _activity = null;
     private MusicPlayerActivity _musicPlayerActivity = null;
     private File emptyFolder = null;
+    private Solo _solo;
     public MusicPlayerActivityTest() {
         super(MusicPlayerActivity.class);
     }
@@ -38,10 +45,13 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
                 AudioManager.FLAG_PLAY_SOUND + AudioManager.FLAG_SHOW_UI);
         emptyFolder = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/EmptyDir/");
         emptyFolder.mkdir();
+		_solo = new Solo(getInstrumentation());
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
+        _solo.finishOpenedActivities();
         super.tearDown();
 
         emptyFolder = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/EmptyDir/");
