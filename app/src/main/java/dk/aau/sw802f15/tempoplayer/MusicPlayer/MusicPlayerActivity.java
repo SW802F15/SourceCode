@@ -17,14 +17,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.io.File;
+
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 
 
 public class MusicPlayerActivity extends Activity{
+    private static int MINIMUM_SONGS_REQUIRED = 5;
+
     // todo: remove stub when settings are done
-    private String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
+    public static String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
             + Environment.DIRECTORY_MUSIC + "/tempo/";
 
     MusicPlayerService mService;
@@ -138,9 +142,27 @@ public class MusicPlayerActivity extends Activity{
 
 
     private boolean dirContainsSongs(String path){
-        return false;
+        return dirContainsSongsHelper(path) >= MINIMUM_SONGS_REQUIRED;
     }
-    
+
+    private int dirContainsSongsHelper(String path) {
+        int count = 0;
+        if (path == null) { return 0; }
+
+        File dir = new File(path);
+        if (!dir.exists()) { return 0; }
+
+        for(File file : dir.listFiles()){
+            if (file.getPath().endsWith(".mp3")){
+                count++;
+            }
+            else if(file.isDirectory()){
+                count += dirContainsSongsHelper(file.getPath());
+            }
+        }
+        return count;
+    }
+
     public void volumeUp()
     {
         AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);

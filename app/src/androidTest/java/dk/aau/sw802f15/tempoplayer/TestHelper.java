@@ -105,9 +105,10 @@ public class TestHelper {
                 //privateMethods =  Initializers.class.getDeclaredMethods();
                 //break;
             case MusicPlayerActivity:
-                throw new UnsupportedOperationException();
-                //privateMethods =  MusicPlayerActivity.class.getDeclaredMethods();
-                //break;
+                //throw new UnsupportedOperationException();
+                //privateMethods =  ((MusicPlayerActivity) context).getClass().getDeclaredMethods();
+                privateMethods = MusicPlayerActivity.class.getDeclaredMethods();
+                break;
             case MusicPlayerService:
                 throw new UnsupportedOperationException();
                 //privateMethods =  MusicPlayerService.class.getDeclaredMethods();
