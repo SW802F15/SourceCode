@@ -18,6 +18,7 @@ import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -308,17 +309,13 @@ public class Initializers {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
-        try {
-            BitmapFactory.decodeFile(albumUri.toString(), options);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        if (!new File(albumUri.getPath()).exists()){
             return BitmapFactory.decodeResource(_activity.getResources(), dk.aau.sw802f15.tempoplayer.R.drawable.defaultalbumcover);
         }
-
         BitmapFactory.Options optionsSecond = new BitmapFactory.Options();
         optionsSecond.inSampleSize = calculateInSampleSize(options, 350, 350);
-        return BitmapFactory.decodeFile(albumUri.toString(), optionsSecond);
+
+        return BitmapFactory.decodeFile(albumUri.getPath(), optionsSecond);
     }
 
     Handler durationHandler = new Handler();
