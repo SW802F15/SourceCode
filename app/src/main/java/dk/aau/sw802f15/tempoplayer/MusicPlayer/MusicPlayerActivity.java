@@ -22,10 +22,11 @@ import java.io.File;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 
 public class MusicPlayerActivity extends Activity{
-    private static int MINIMUM_SONGS_REQUIRED = 5;
+    public static int MINIMUM_SONGS_REQUIRED = 5;
 
     // todo: remove stub when settings are done
     public static String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
@@ -34,25 +35,32 @@ public class MusicPlayerActivity extends Activity{
     MusicPlayerService mService;
     boolean mBound = false;
     private Initializers _initializers;
+    private boolean songDirContainsSongs = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, MusicPlayerService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
 
-        if(dirContainsSongs(_musicPathStub)) { //TODO check if db is empty
-            SongScanner.getInstance(this).scanInBackground();
-        } else {
-            SongScanner.getInstance(this).findSongs();
-            //TODO reduce number of songs
-            //TODO start setting activity if db still empty
+        songDirContainsSongs = dirContainsSongs(_musicPathStub);
+        if(!songDirContainsSongs){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            finish();
         }
-        _initializers = new Initializers(this);
-        _initializers.initializeDynamicQueue();
-        _initializers.initializeOnClickListeners();
-        _initializers.initializeCoverFlow();
+        else{
+            Intent intent = new Intent(this, MusicPlayerService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
+
+
+            SongScanner.getInstance(this).scanInBackground();
+
+            _initializers = new Initializers(this);
+            _initializers.initializeDynamicQueue();
+            _initializers.initializeOnClickListeners();
+            _initializers.initializeCoverFlow();
+        }
+
     }
 
     @Override
@@ -68,13 +76,17 @@ public class MusicPlayerActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        _initializers.startSeekBarPoll();
+        if(songDirContainsSongs){
+            _initializers.startSeekBarPoll();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        _initializers.stopSeekBarPoll();
+        if(songDirContainsSongs) {
+            _initializers.stopSeekBarPoll();
+        }
     }
 
     @Override
