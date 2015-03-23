@@ -73,9 +73,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             @Override
             public void onCompletion(MediaPlayer mp)
             {
-                i++;
-                Toast.makeText(getApplicationContext(), "Completed " + i + " times.", Toast.LENGTH_SHORT).show();
-
                 ImageView nextButton = (ImageView) Initializers._activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.nextButton);
                 nextButton.performClick();
                 play();
