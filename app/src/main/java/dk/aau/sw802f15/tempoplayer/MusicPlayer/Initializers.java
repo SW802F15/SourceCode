@@ -150,8 +150,8 @@ public class Initializers {
         });
     }
 
-    private void changePlayPauseButton(){
-        new CountDownTimer(50, 1) {
+    public static void changePlayPauseButton(){
+        new CountDownTimer(100, 1) {
             @Override
             public void onTick(long millisUntilFinished) { }
             @Override
@@ -178,9 +178,9 @@ public class Initializers {
     }
 
     public void initializeOnClickSeekBar() {
-        SeekBar sb = (SeekBar)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.seekBar);
+        SeekBar seekBar = (SeekBar)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.seekBar);
 
-        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
@@ -188,17 +188,17 @@ public class Initializers {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 _isPlaying = _activity.mService.musicPlayer.isPlaying();
-                _activity.mService.musicPlayer.pause();
+                _activity.mService.pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
 
-                if(_isPlaying) {
-                    _activity.mService.musicPlayer.start();
-                }else{
-                    _activity.mService.musicPlayer.pause();
+                if (_isPlaying) {
+                    _activity.mService.play();
+                } else {
+                    _activity.mService.pause();
                 }
             }
         });
@@ -264,7 +264,6 @@ public class Initializers {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
 
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
-        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
         if (nextPosition <= coverFlow.getCount()) {
             coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));

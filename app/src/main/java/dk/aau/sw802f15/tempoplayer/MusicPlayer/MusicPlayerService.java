@@ -9,6 +9,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         isPrepared = true;
     }
 
+
+    private int i = 0;
     private void initialiseMusicPlayer(){
         if (musicPlayer == null){
             musicPlayer = new MediaPlayer();
@@ -67,13 +70,27 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             musicPlayer.reset();
         }
         musicPlayer.setOnPreparedListener(this);
+
+        musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp)
+            {
+                i++;
+                Toast.makeText(getApplicationContext(), "Completed " + i + " times.", Toast.LENGTH_SHORT).show();
+
+                ImageView nextButton = (ImageView) Initializers._activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.nextButton);
+                nextButton.performClick();
+                play();
+                Initializers.changePlayPauseButton();
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (musicPlayer != null) {
-            musicPlayer.stop();
+            stop();
             musicPlayer.release();
         }
     }
@@ -127,12 +144,14 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         else {
             loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
 
-            new CountDownTimer(10, 1) {
+            new CountDownTimer(100, 1) {
                 @Override
                 public void onTick(long millisUntilFinished) { }
                 @Override
                 public void onFinish() {
-                    musicPlayer.start();
+                    if (isPrepared) {
+                        musicPlayer.start();
+                    }
                 }
             }.start();
         }
@@ -144,7 +163,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void pause() {
-        musicPlayer.pause();
+        if (musicPlayer.isPlaying()) {
+            musicPlayer.pause();
+        }
     }
 
     public void next() {
