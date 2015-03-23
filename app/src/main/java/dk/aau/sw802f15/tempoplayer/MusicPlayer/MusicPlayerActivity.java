@@ -23,6 +23,9 @@ import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 
 
 public class MusicPlayerActivity extends Activity{
+    // todo: remove stub when settings are done
+    private String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
+            + Environment.DIRECTORY_MUSIC + "/tempo/";
 
     MusicPlayerService mService;
     boolean mBound = false;
@@ -36,7 +39,7 @@ public class MusicPlayerActivity extends Activity{
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
 
-        if(true) { //TODO check if db is empty
+        if(dirContainsSongs(_musicPathStub)) { //TODO check if db is empty
             SongScanner.getInstance(this).scanInBackground();
         } else {
             SongScanner.getInstance(this).findSongs();
@@ -134,7 +137,9 @@ public class MusicPlayerActivity extends Activity{
 
 
 
-
+    private boolean dirContainsSongs(String path){
+        return false;
+    }
 
     public void volumeUp()
     {

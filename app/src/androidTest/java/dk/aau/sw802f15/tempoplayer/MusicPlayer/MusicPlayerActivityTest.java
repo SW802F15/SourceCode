@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import android.view.KeyEvent;
@@ -82,5 +83,12 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         int endVolume = _am.getStreamVolume(AudioManager.STREAM_MUSIC);
         int expectedVolume = initialVolume - 1;
         assertEquals(expectedVolume, endVolume);
+    }
+
+    @MediumTest
+    public void testSongsInEmptyDir()
+    {
+
+
     }
 }
