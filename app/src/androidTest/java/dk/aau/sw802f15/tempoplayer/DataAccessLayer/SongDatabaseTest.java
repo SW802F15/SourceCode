@@ -1,7 +1,10 @@
 package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Environment;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
@@ -9,6 +12,8 @@ import dk.aau.sw802f15.tempoplayer.TestHelper;
 
 import junit.framework.Assert;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +30,14 @@ public class SongDatabaseTest extends AndroidTestCase {
         add(0);
         add(1);
     }};
+
     @Override
     protected void setUp() throws Exception
     {
         super.setUp();
         _db = new SongDatabase(getContext());
-        _song = new Song("TestSong", "TestArtist", "TestAlbum", null, Uri.parse("TestFilePath"), null, 2);
         TestHelper.initializeTestSongs(_db);
+        _song = TestHelper.getValidSong();
     }
 
     @Override
@@ -39,29 +45,25 @@ public class SongDatabaseTest extends AndroidTestCase {
     {
         super.tearDown();
         _db.clearDatabase();
+        _db.close();
     }
 
     @MediumTest
     public void testCreateDatabaseNotExists()
     {
-        try
-        {
+        try {
             _db.getWritableDatabase();
         }
-        catch (SQLiteException e)
-        {
+        catch (SQLiteException e) {
             Assert.fail("Database not created. Expected: Database created.");
         }
-
     }
 
     @MediumTest
     public void testInsertValid()
     {
-        //Insert song in db
-        try
-        {
-            _song = _db.insertSong(_song);
+        try {
+            _song = _db.insertSong(TestHelper.getValidSong());
         }
         catch (SQLiteException e)
         {
@@ -144,24 +146,25 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testReadBySongPathNotExist(){
-
         Song song = _db.getSongByPath(Uri.parse("5.")); //only 6 songs in test set
         assertTrue(song == null);
     }
 
     @MediumTest
     public void testGetSongById(){
-
+        _song = _db.getSongById(1);
+        assertEquals(TestHelper.getValidSong(), _song);
     }
 
     @MediumTest
     public void testGetSongByPath(){
+        String initMusicPath = Environment.getExternalStorageDirectory() + "/"
+                + Environment.DIRECTORY_MUSIC + "/tempo/";
+        String fullPath = initMusicPath + "music_sample_1.mp3";
 
-    }
+        _song = _db.getSongByPath(Uri.parse(fullPath));
 
-    @MediumTest
-    public void testGetSong(){
-
+        assertEquals(TestHelper.getValidSong(), _song);
     }
 
     @MediumTest
@@ -191,7 +194,30 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testConstructSongListFromCursor(){
+        SQLiteDatabase db = _db.getReadableDatabase();
+        List<Song> actualSongList = new ArrayList<Song>();
 
+        Cursor cursor = db.query("Song", new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
+                new String[] { String.valueOf(130 - 2), String.valueOf(130 + 2) }
+                , null, null, null, null);
+
+        Method privateMethod = TestHelper.testPrivateMethod(TestHelper.Classes.SongDatabase,
+                                                                          "constructSongListFromCursor",
+                                                                          getContext());
+
+        if (privateMethod == null) {
+            assertTrue(false);
+        }
+
+        try {
+            actualSongList = (List<Song>) privateMethod.invoke(_db, cursor);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(TestHelper.getValidSong(), actualSongList.get(0));
     }
 
     @MediumTest
@@ -201,11 +227,15 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testDeleteSongByID(){
+        int actualValue = _db.deleteSongByID(1);
 
+        assertEquals(0, actualValue);
     }
 
     @MediumTest
     public void testUpdateSong(){
+        int actualValue = _db.updateSong(TestHelper.getValidSong());
 
+        assertEquals(TestHelper.getValidSong().getID(), actualValue);
     }
 }
