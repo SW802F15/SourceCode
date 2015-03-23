@@ -9,8 +9,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.KeyEvent;
 
-import junit.framework.Assert;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,9 +111,6 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         }
 
         assertFalse(privateResult);
-
-
-
     }
 
     @MediumTest
@@ -140,6 +135,27 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         }
 
         assertTrue(privateResult);
+    }
 
+    @MediumTest
+    public void testSongsInNestedDir(){
+        String path = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC;
+
+        Method dirContainsSongs = TestHelper.testPrivateMethod(TestHelper.Classes.MusicPlayerActivity,
+                "dirContainsSongs",
+                _musicPlayerActivity.getApplicationContext());
+
+        if (dirContainsSongs == null) {
+            assertTrue(false);
+        }
+
+        boolean privateResult = true;
+        try {
+            privateResult = (boolean)dirContainsSongs.invoke(_musicPlayerActivity, path);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(privateResult);
     }
 }
