@@ -254,7 +254,11 @@ public class Initializers {
         if (dynamicQueue.getPrevSongs().size() == dynamicQueue.getPrevSize()) {
             initialIndex = 1;
         }
-        for (int i = initialIndex; i < dynamicQueue.getPrevSongs().size(); i++) {
+        //ToDo for (int i = initialIndex; i < dynamicQueue.getPrevSongs().size(); i++)
+        //ToDo                              VS
+        //ToDo for (int i = 0; i < dynamicQueue.getPrevSongs().size() - initialIndex; i++)
+        //ToDo which is according to dynamicQueue prevSongs structure. Which is oldest 1 or size?
+        for (int i = 0; i < dynamicQueue.getPrevSongs().size() - initialIndex; i++) {
             allAlbumCovers.add(getBitmapFromUri(dynamicQueue.getPrevSongs().get(i).getAlbumUri()));
         }
 
