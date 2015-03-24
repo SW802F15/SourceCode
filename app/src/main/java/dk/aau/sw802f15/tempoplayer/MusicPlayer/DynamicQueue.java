@@ -66,6 +66,11 @@ public class DynamicQueue {
         return prevSongs;
     }
 
+    public int getPrevSize() {return _prevSize;}
+
+    public int getLookAheadSize() {return _lookAheadSize;}
+
+
     public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
             nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);

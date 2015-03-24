@@ -17,10 +17,12 @@ import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
+import dk.aau.sw802f15.tempoplayer.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -111,11 +113,11 @@ public class Initializers {
                 _activity.mService.next();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
-                nextAlbumCover();
-                updateAlbumCovers();
+                int currentIndex = nextAlbumCover();
+                updateAlbumCovers(currentIndex);
                 updateSongInfo();
                 previousButtonSetVisibility(true);
-                Toast.makeText(_activity, "If 'next' pressed multiple times while dynamic queue loads? an offset is created.", Toast.LENGTH_SHORT).show(); //Todo
+                //ToDo "If 'next' pressed multiple times while dynamic queue loads? an offset is created.
             }
         });
     }
@@ -242,36 +244,47 @@ public class Initializers {
     }
 
 
-    private void updateAlbumCovers() {
-        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
-        Song newSong = dynamicQueue.getNextSongs().get(dynamicQueue.getNextSongs().size() -1);
-
+    private void updateAlbumCovers(int currentIndex) {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
-        ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
-        List<Bitmap> resources = new ArrayList<>();
-        for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
-            resources.add(resourceImageAdapter.getItem(i));
-            //ToDo Only load previous images equal to those in prevList.
-            //There should not be any album covers to the left when prevButton is greyed out.
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
+        int initialIndex = 0;
+        if (dynamicQueue.getPrevSongs().size() == dynamicQueue.getPrevSize()) {
+            initialIndex = 1;
         }
-        Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
-        resources.add(newSongBitmap);
+        for (int i = initialIndex; i < dynamicQueue.getPrevSongs().size(); i++) {
+            allAlbumCovers.add(getBitmapFromUri(dynamicQueue.getPrevSongs().get(i).getAlbumUri()));
+        }
 
-        resourceImageAdapter.setResources(resources);
+        allAlbumCovers.add(getBitmapFromUri(dynamicQueue.getCurrentSong().getAlbumUri()));
+
+        for (Song song : dynamicQueue.getNextSongs())
+        {
+            allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        ((ResourceImageAdapter) coverImageAdapter).setResources(allAlbumCovers);
+        coverFlow.setAdapter(coverImageAdapter);
+        coverFlow.setSelection(currentIndex);
+        coverImageAdapter.notifyDataSetChanged();
     }
 
-    private void nextAlbumCover() {
+    private int nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
 
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
         if (nextPosition <= coverFlow.getCount()) {
             coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
+            //coverFlow.setSelection(nextPosition);
         }
         else {
             Toast.makeText(_activity, "No next song.", Toast.LENGTH_SHORT).show();
         }
+
+        return coverFlow.getSelectedItemPosition();
     }
 
     private void previousAlbumCover() {
@@ -281,6 +294,7 @@ public class Initializers {
 
         if (coverFlow.getItemAtPosition(previousPosition) != null) {
             coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
+            //coverFlow.setSelection(previousPosition);
         }
         else {
             Toast.makeText(_activity, "No previous song.", Toast.LENGTH_SHORT).show();
