@@ -113,9 +113,9 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
     protected void onResume() {
         super.onResume();
         _initializers.startSeekBarPoll();
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        senSensorManager.registerListener(this, senGyro, SensorManager.SENSOR_DELAY_NORMAL);
-        senSensorManager.registerListener(this, senGravi, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, senGyro, SensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, senGravi, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
