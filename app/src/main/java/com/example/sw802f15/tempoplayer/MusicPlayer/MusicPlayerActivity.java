@@ -436,14 +436,16 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
     public static List<String> accelerometer = new ArrayList<>();
     public static List<String> gravity = new ArrayList<>();
     public static List<String> gyroscope = new ArrayList<>();
-
-    public static void WriteToFile(String path) throws FileNotFoundException {
-        File accel = new File(path, "accel.csv");
-        File gyro = new File(path, "gyro.csv");
-        File gravi = new File(path, "gravi.csv");
+    private int filescount = 0;
+    public void WriteToFile(String path) throws FileNotFoundException {
+        File accel = new File(path, filescount + "accel.csv");
+        File gyro = new File(path, filescount + "gyro.csv");
+        File gravi = new File(path, filescount + "gravi.csv");
         FileOutputStream accStream = new FileOutputStream(accel, false);
         FileOutputStream gyrStream = new FileOutputStream(gyro, false);
         FileOutputStream graStream = new FileOutputStream(gravi, false);
+
+        Toast.makeText(this, accel.getAbsolutePath(), Toast.LENGTH_SHORT).show();
 
         try {
             for(String m : accelerometer) {
@@ -466,6 +468,10 @@ public class MusicPlayerActivity extends Activity implements SensorEventListener
         } catch (Exception e) {
             e.printStackTrace();
         }
+        accelerometer.clear();
+        gravity.clear();
+        gyroscope.clear();
+        filescount++;
     }
 
     @Override
