@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.format.Time;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +17,9 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
+import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 
 
 public class MusicPlayerActivity extends Activity{
@@ -32,8 +29,12 @@ public class MusicPlayerActivity extends Activity{
     public static String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
             + Environment.DIRECTORY_MUSIC + "/tempo/";
 
-    MusicPlayerService mService;
-    boolean mBound = false;
+    public MusicPlayerService mMusicPlayerService;
+    private StepCounterService mStepCounterService;
+
+    boolean mMusicPlayerBound = false;
+    boolean mStepCounterBound = false;
+
     private Initializers _initializers;
     private boolean songDirContainsSongs = false;
 
@@ -48,8 +49,12 @@ public class MusicPlayerActivity extends Activity{
             finish();
         }
         else{
-            Intent intent = new Intent(this, MusicPlayerService.class);
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            Intent intentPlayer = new Intent(this, MusicPlayerService.class);
+            bindService(intentPlayer, mMusicPlayerConnection, Context.BIND_AUTO_CREATE);
+
+            Intent intentStep = new Intent(this, StepCounterService.class);
+            bindService(intentStep, mStepCounterConnection, Context.BIND_AUTO_CREATE);
+
             setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
 
 
@@ -92,9 +97,11 @@ public class MusicPlayerActivity extends Activity{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
+        if (mMusicPlayerBound) {
+            unbindService(mMusicPlayerConnection);
+            mMusicPlayerBound = false;
+            unbindService(mStepCounterConnection);
+            mStepCounterBound = false;
         }
     }
 
@@ -116,21 +123,36 @@ public class MusicPlayerActivity extends Activity{
         return super.onOptionsItemSelected(item);
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-
+    private ServiceConnection mMusicPlayerConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MusicPlayerService.LocalBinder binder = (MusicPlayerService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            mService.loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
+            mMusicPlayerService = binder.getService();
+            mMusicPlayerBound = true;
+            mMusicPlayerService.loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
+            mMusicPlayerBound = false;
+        }
+    };
+
+    private ServiceConnection mStepCounterConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            StepCounterService.LocalBinder binder = (StepCounterService.LocalBinder) service;
+            mStepCounterService = binder.getService();
+            mStepCounterBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mMusicPlayerBound = false;
         }
     };
 

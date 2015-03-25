@@ -51,7 +51,7 @@ public class Initializers {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mService.play();
+                _activity.mMusicPlayerService.play();
                 changePlayPauseButton();
                 startSeekBarPoll();
             }
@@ -66,7 +66,7 @@ public class Initializers {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mService.pause();
+                _activity.mMusicPlayerService.pause();
                 changePlayPauseButton();
             }
         });
@@ -79,7 +79,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 resetSeekBar();
-                _activity.mService.stop();
+                _activity.mMusicPlayerService.stop();
                 changePlayPauseButton();
             }
         });
@@ -91,7 +91,7 @@ public class Initializers {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mService.previous();
+                _activity.mMusicPlayerService.previous();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 previousAlbumCover();
@@ -108,7 +108,7 @@ public class Initializers {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mService.next();
+                _activity.mMusicPlayerService.next();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 nextAlbumCover();
@@ -159,7 +159,7 @@ public class Initializers {
             public void onFinish() {
                 final ImageView playButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.playButton);
                 final ImageView pauseButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.pauseButton);
-                if (_activity.mService.musicPlayer.isPlaying()) {
+                if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
                     pauseButton.setVisibility(View.VISIBLE);
                     playButton.setVisibility(View.GONE);
                 }
@@ -188,18 +188,18 @@ public class Initializers {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                _isPlaying = _activity.mService.musicPlayer.isPlaying();
-                _activity.mService.pause();
+                _isPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+                _activity.mMusicPlayerService.pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                _activity.mService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
+                _activity.mMusicPlayerService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
 
                 if (_isPlaying) {
-                    _activity.mService.play();
+                    _activity.mMusicPlayerService.play();
                 } else {
-                    _activity.mService.pause();
+                    _activity.mMusicPlayerService.pause();
                 }
             }
         });
@@ -326,10 +326,10 @@ public class Initializers {
 
     private Runnable updateSeekBarTime = new Runnable() {
         public void run() {
-            if(_activity.mService == null || _activity.mService.musicPlayer == null){
+            if(_activity.mMusicPlayerService == null || _activity.mMusicPlayerService.musicPlayer == null){
                 return;
             }
-            int timeElapsed = _activity.mService.musicPlayer.getCurrentPosition() / 1000;
+            int timeElapsed = _activity.mMusicPlayerService.musicPlayer.getCurrentPosition() / 1000;
             SeekBar sb = (SeekBar) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.seekBar);
             sb.setProgress(timeElapsed);
             _activity.setSongProgressText(timeElapsed);
@@ -338,7 +338,7 @@ public class Initializers {
     };
 
     private void resetSeekBar() {
-        _activity.mService.musicPlayer.seekTo(0);
+        _activity.mMusicPlayerService.musicPlayer.seekTo(0);
     }
 
     public void stopSeekBarPoll(){
