@@ -125,9 +125,9 @@ public class Initializers {
     private void updateSongInfo() {
         Song song = DynamicQueue.getInstance(_activity).getCurrentSong();
         ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_title)).setText(song.getTitle());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_artist)).setText(song.getArtist());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_album)).setText(song.getAlbum());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_bpm)).setText(song.getBpm()+"");
+        //((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_artist)).setText(song.getArtist());
+        //((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_album)).setText(song.getAlbum());
+        //((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_bpm)).setText(song.getBpm()+"");
     }
 
     private void previousButtonSetVisibility(boolean show) {
@@ -250,15 +250,11 @@ public class Initializers {
         DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
         List<Bitmap> allAlbumCovers = new ArrayList<>();
-        int initialIndex = 0;
-        if (dynamicQueue.getPrevSongs().size() == dynamicQueue.getPrevSize()) {
-            initialIndex = 1;
+        if (dynamicQueue.prevSongsSizeBeforeAdd == dynamicQueue.getPrevSize()) {
+            currentIndex--;
         }
-        //ToDo for (int i = initialIndex; i < dynamicQueue.getPrevSongs().size(); i++)
-        //ToDo                              VS
-        //ToDo for (int i = 0; i < dynamicQueue.getPrevSongs().size() - initialIndex; i++)
-        //ToDo which is according to dynamicQueue prevSongs structure. Which is oldest 1 or size?
-        for (int i = 0; i < dynamicQueue.getPrevSongs().size() - initialIndex; i++) {
+
+        for (int i = 0 ; i < dynamicQueue.getPrevSongs().size(); i++) {
             allAlbumCovers.add(getBitmapFromUri(dynamicQueue.getPrevSongs().get(i).getAlbumUri()));
         }
 
@@ -269,11 +265,14 @@ public class Initializers {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
         }
 
+        //Updates coverflow to use new album covers.
         ((ResourceImageAdapter) coverImageAdapter).setResources(allAlbumCovers);
         coverFlow.setAdapter(coverImageAdapter);
+
+        //Sets the middle cover to current song.
         coverFlow.setSelection(currentIndex);
-        coverImageAdapter.notifyDataSetChanged();
     }
+
 
     private int nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
@@ -281,8 +280,8 @@ public class Initializers {
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
         if (nextPosition <= coverFlow.getCount()) {
-            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
-            //coverFlow.setSelection(nextPosition);
+            //coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
+            coverFlow.setSelection(nextPosition);
         }
         else {
             Toast.makeText(_activity, "No next song.", Toast.LENGTH_SHORT).show();
@@ -297,8 +296,8 @@ public class Initializers {
         int previousPosition = coverFlow.getSelectedItemPosition() - 1;
 
         if (coverFlow.getItemAtPosition(previousPosition) != null) {
-            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
-            //coverFlow.setSelection(previousPosition);
+            //coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
+            coverFlow.setSelection(previousPosition);
         }
         else {
             Toast.makeText(_activity, "No previous song.", Toast.LENGTH_SHORT).show();
