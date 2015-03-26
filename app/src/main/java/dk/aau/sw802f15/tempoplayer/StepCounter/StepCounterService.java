@@ -74,10 +74,13 @@ public class StepCounterService extends Service implements SensorEventListener {
             if(isStepTaken(curTime)){
                 double timeDiff = (double)(curTime - lastStep);
                 spm[spmIndex % SPM_AVG_SIZE] = (int)(1. / ( timeDiff / MS_PER_MIN));
-
                 Initializers._activity.setSPMText(getSpm());
 
                 lastStep = curTime;
+            }
+            else if(curTime - 2000 > lastStep){
+                spm[spmIndex % SPM_AVG_SIZE] = 0;
+                Initializers._activity.setSPMText(getSpm());
             }
             spmIndex++;
             accelerometerIndex++;

@@ -125,7 +125,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         assertTrue(song != null);
 
-        assertEquals(_song, song);
+        assertEquals(_song.getUri(), song.getUri());
     }
 
     @MediumTest
@@ -141,7 +141,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         Song song = _db.getSongByPath(_song.getUri());
         assertTrue(song != null);
 
-        assertEquals(_song, song);
+        assertEquals(_song.getUri(), song.getUri());
     }
 
     @MediumTest
@@ -153,7 +153,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testGetSongById(){
         _song = _db.getSongById(1);
-        assertEquals(TestHelper.getValidSong(), _song);
+        assertEquals(TestHelper.getValidSong().getUri(), _song.getUri());
     }
 
     @MediumTest
@@ -164,7 +164,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         _song = _db.getSongByPath(Uri.parse(fullPath));
 
-        assertEquals(TestHelper.getValidSong(), _song);
+        assertEquals(TestHelper.getValidSong().getUri(), _song.getUri());
     }
 
     @MediumTest
@@ -217,7 +217,7 @@ public class SongDatabaseTest extends AndroidTestCase {
             e.printStackTrace();
         }
 
-        assertEquals(TestHelper.getValidSong(), actualSongList.get(0));
+        assertEquals(TestHelper.getValidSong().getUri(), actualSongList.get(0).getUri());
     }
 
     @MediumTest
@@ -234,8 +234,11 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testUpdateSong(){
-        int actualValue = _db.updateSong(TestHelper.getValidSong());
-
-        assertEquals(TestHelper.getValidSong().getID(), actualValue);
+        Song updatedSong = _db.insertSong(_song);
+        updatedSong.setAlbumUri(_song.getUri());
+        int songID = _db.updateSong(updatedSong);
+        updatedSong = _db.getSongById(songID);
+        assertEquals(_song.getUri(), updatedSong.getUri());
+        assertNotSame(_song.getAlbumUri(), updatedSong.getAlbumUri());
     }
 }
