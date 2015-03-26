@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -84,12 +87,15 @@ public class SongScanner{
                 Song song = new Song(file);
                 song = _db.insertSong(song);
                 loadCover(song);
+                loadBPM(song);
 
             } else if(file.isDirectory()){
                 findSongsHelper(file.getPath());
             }
         }
     }
+
+
 
     private void loadCover(Song song){
         if (!new File(song.getUri().getPath()).exists()) return;
@@ -160,5 +166,48 @@ public class SongScanner{
         song.setAlbumUri(Uri.fromFile(file));
 
         _db.updateSong(song);
+    }
+
+
+
+    private void loadBPM(Song song) {
+        try {
+            getOnlineBPM("http://developer.android.com/reference/android/os/AsyncTask.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getOnlineBPM(final String url) throws IOException {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet(url);
+                    HttpResponse response = client.execute(request);
+
+                    String html = "";
+                    InputStream in = response.getEntity().getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder str = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        str.append(line);
+                    }
+                    in.close();
+                    html = str.toString();
+                    parseHTML(html);
+                    return null;
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }.execute();
+    }
+
+    private void parseHTML(String html) {
+        String data = html;
+
     }
 }
