@@ -17,10 +17,12 @@ import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
+import dk.aau.sw802f15.tempoplayer.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -95,7 +97,6 @@ public class Initializers {
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
                 previousAlbumCover();
-                removeLastAlbumCover();
                 updateSongInfo();
                 previousButtonSetVisibility(false);
             }
@@ -111,11 +112,11 @@ public class Initializers {
                 _activity.mMusicPlayerService.next();
                 _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                 changePlayPauseButton();
-                nextAlbumCover();
-                updateAlbumCovers();
+                int currentIndex = nextAlbumCover();
+                updateAlbumCovers(currentIndex);
                 updateSongInfo();
                 previousButtonSetVisibility(true);
-                Toast.makeText(_activity, "If 'next' pressed multiple times while dynamic queue loads? an offset is created.", Toast.LENGTH_SHORT).show(); //Todo
+                //ToDo "If 'next' pressed multiple times while dynamic queue loads? an offset is created.
             }
         });
     }
@@ -221,9 +222,17 @@ public class Initializers {
     private void setCoverFlowImages() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
-        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
+        ((ResourceImageAdapter) coverImageAdapter).setResources(getDynamicQueueAsList());
+
+        coverFlow.setAdapter(coverImageAdapter);
+    }
+
+
+    private List<Bitmap> getDynamicQueueAsList() {
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
         List<Bitmap> allAlbumCovers = new ArrayList<>();
+
         for (Song song : dynamicQueue.getPrevSongs())
         {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
@@ -236,42 +245,39 @@ public class Initializers {
             allAlbumCovers.add(getBitmapFromUri(song.getAlbumUri()));
         }
 
-        ((ResourceImageAdapter) coverImageAdapter).setResources(allAlbumCovers);
-
-        coverFlow.setAdapter(coverImageAdapter);
+        return allAlbumCovers;
     }
 
-
-    private void updateAlbumCovers() {
-        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
-        Song newSong = dynamicQueue.getNextSongs().get(dynamicQueue.getNextSongs().size() -1);
-
+    private void updateAlbumCovers(int currentIndex) {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
-        ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
+        DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
-        List<Bitmap> resources = new ArrayList<>();
-        for (int i = 0; i < resourceImageAdapter.getCount(); i++) {
-            resources.add(resourceImageAdapter.getItem(i));
-            //ToDo Only load previous images equal to those in prevList.
-            //There should not be any album covers to the left when prevButton is greyed out.
+        //Updates coverflow to use new album covers.
+        ((ResourceImageAdapter) coverImageAdapter).setResources(getDynamicQueueAsList());
+        coverFlow.setAdapter(coverImageAdapter);
+
+        //Sets the middle cover to current song.
+        if (dynamicQueue.prevSongsSizeBeforeAdd == dynamicQueue.getPrevSize()) {
+            currentIndex--;
         }
-        Bitmap newSongBitmap = getBitmapFromUri(newSong.getAlbumUri());
-        resources.add(newSongBitmap);
-
-        resourceImageAdapter.setResources(resources);
+        coverFlow.setSelection(currentIndex);
     }
 
-    private void nextAlbumCover() {
+
+    private int nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
 
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
         if (nextPosition <= coverFlow.getCount()) {
-            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, new KeyEvent(0,0));
+            coverFlow.setSelection(nextPosition);
         }
         else {
             Toast.makeText(_activity, "No next song.", Toast.LENGTH_SHORT).show();
         }
+
+        return coverFlow.getSelectedItemPosition();
     }
 
     private void previousAlbumCover() {
@@ -280,27 +286,10 @@ public class Initializers {
         int previousPosition = coverFlow.getSelectedItemPosition() - 1;
 
         if (coverFlow.getItemAtPosition(previousPosition) != null) {
-            coverFlow.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, new KeyEvent(0, 0));
+            coverFlow.setSelection(previousPosition);
         }
         else {
             Toast.makeText(_activity, "No previous song.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void removeLastAlbumCover(){
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
-
-        int previousPosition = coverFlow.getSelectedItemPosition() - 1;
-
-        if (coverFlow.getItemAtPosition(previousPosition) != null) {
-            ResourceImageAdapter resourceImageAdapter = (ResourceImageAdapter) coverFlow.getAdapter();
-
-            List<Bitmap> resources = new ArrayList<>();
-            for (int i = 0; i < resourceImageAdapter.getCount() -1; i++) {
-                resources.add(resourceImageAdapter.getItem(i));
-            }
-
-            resourceImageAdapter.setResources(resources);
         }
     }
 

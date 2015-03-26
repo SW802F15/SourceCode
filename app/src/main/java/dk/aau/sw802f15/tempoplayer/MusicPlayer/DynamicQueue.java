@@ -34,6 +34,7 @@ public class DynamicQueue {
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private static Context _context;
+    public int prevSongsSizeBeforeAdd = -1;
 
     private static DynamicQueue instance = null;
 
@@ -66,6 +67,11 @@ public class DynamicQueue {
         return prevSongs;
     }
 
+    public int getPrevSize() {return _prevSize;}
+
+    public int getLookAheadSize() {return _lookAheadSize;}
+
+
     public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
             nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
@@ -78,6 +84,7 @@ public class DynamicQueue {
             return;
         }
         if (currentSong != null){
+            prevSongsSizeBeforeAdd = prevSongs.size();
             prevSongs.add(currentSong);
             if (prevSongs.size() > _prevSize){
                 prevSongs.remove(0);

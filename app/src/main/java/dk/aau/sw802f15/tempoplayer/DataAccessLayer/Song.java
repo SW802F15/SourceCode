@@ -56,7 +56,7 @@ public class Song {
     private void setValues(long id, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                            Uri uri, Uri albumUri, int durationInSec){
         _id = id;
-        _title = songTitle != null ? songTitle : "Unknown" ;
+        _title = songTitle != null ? songTitle : getUriAsTitle(uri) ;
         _artist = songArtist != null ? songArtist : "Unknown" ;
         _album = songAlbum != null ? songAlbum : "Unknown" ;
         _bpm = songBpm;
@@ -128,5 +128,13 @@ public class Song {
         }
 
         return leftSide + ":" + rightSide;
+    }
+
+    private String getUriAsTitle(Uri uri) {
+        String title = uri.getLastPathSegment();
+        if (title == null) {
+            return "Unknown";
+        }
+        return title;
     }
 }
