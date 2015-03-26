@@ -26,6 +26,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -172,13 +174,16 @@ public class SongScanner{
 
     private void loadBPM(Song song) {
         try {
-            getOnlineBPM("http://developer.android.com/reference/android/os/AsyncTask.html");
+            getOnlineBPM(String.format("https://songbpm.com/%s/%s",
+                    song.getArtist().replace(' ', '+'),
+                    song.getTitle().replace(' ', '+')),
+                    song.getID());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void getOnlineBPM(final String url) throws IOException {
+    private void getOnlineBPM(final String url, final long songID) throws IOException {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -197,7 +202,7 @@ public class SongScanner{
                     }
                     in.close();
                     html = str.toString();
-                    parseHTML(html);
+                    parseHTML(html, songID);
                     return null;
                 } catch (Exception e) {
                     return null;
@@ -206,8 +211,21 @@ public class SongScanner{
         }.execute();
     }
 
-    private void parseHTML(String html) {
-        String data = html;
+    private void parseHTML(String src, long SongID) {
+        String line = src;
+        String pattern = ">(\\d+)<";
 
+        Pattern r = Pattern.compile(pattern);
+
+        Matcher m = r.matcher(line);
+        if (m.find( )) {
+            updateBPM(m.group(1)+"", SongID);
+        }
+    }
+
+    private void updateBPM(String bpm, long SongID) {
+        Song song = _db.getSongById(SongID);
+        //song.setBPM(bpm);
+        _db.updateSong(song);
     }
 }
