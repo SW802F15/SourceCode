@@ -27,8 +27,10 @@ import java.io.IOException;
 public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener{
 
     MediaPlayer musicPlayer;
-    Boolean isLoaded = false;
-    Boolean isPrepared = false;
+    public boolean isLoaded = false;
+    public boolean isPrepared = false;
+    public boolean isPaused = false;
+
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -141,6 +143,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void play(){
         if (isPrepared) {
             musicPlayer.start();
+            isPaused = false;
         }
         else {
             loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getUri());
@@ -152,6 +155,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                 public void onFinish() {
                     if (isPrepared) {
                         musicPlayer.start();
+                        isPaused = false;
                     }
                 }
             }.start();
@@ -159,13 +163,17 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void stop() {
-        musicPlayer.stop();
-        isPrepared = false;
+        if (musicPlayer.isPlaying() || isPaused) {
+            musicPlayer.stop();
+            isPrepared = false;
+            isPaused = false;
+        }
     }
 
     public void pause() {
         if (musicPlayer.isPlaying()) {
             musicPlayer.pause();
+            isPaused = true;
         }
     }
 

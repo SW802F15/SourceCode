@@ -327,7 +327,10 @@ public class Initializers {
     };
 
     private void resetSeekBar() {
-        _activity.mMusicPlayerService.musicPlayer.seekTo(0);
+        if (_activity.mMusicPlayerService.musicPlayer.isPlaying() ||
+                _activity.mMusicPlayerService.isPaused) {
+            _activity.mMusicPlayerService.musicPlayer.seekTo(0);
+        }
     }
 
     public void stopSeekBarPoll(){
