@@ -45,7 +45,6 @@ public class MusicPlayerActivity extends Activity{
         if(!songDirContainsSongs){
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-            finish();
         }
         else{
             Intent intentPlayer = new Intent(this, MusicPlayerService.class);

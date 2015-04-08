@@ -1,5 +1,6 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import dk.aau.sw802f15.tempoplayer.R;
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -146,7 +148,8 @@ public class Initializers {
 
             @Override
             public void onClick(View v) {
-                //Start settings activity
+                Intent intent = new Intent(_activity, SettingsActivity.class);
+                _activity.startActivity(intent);
             }
 
         });

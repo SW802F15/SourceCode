@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- opens a subscreen of settings -->
+
+    <PreferenceScreen
+        android:key="button_song_loader_category_key"
+        android:title="@string/song_loader_menu"
+        android:persistent="false">
+
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="button_step_counter_category_key"
+        android:title="@string/step_counter_menu"
+        android:persistent="false">
+
+    </PreferenceScreen>
+</PreferenceScreen>
