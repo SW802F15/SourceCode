@@ -7,12 +7,20 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.webkit.URLUtil;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -28,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.net.ssl.HttpsURLConnection;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -170,13 +181,19 @@ public class SongScanner{
         _db.updateSong(song);
     }
 
-
-
     private void loadBPM(Song song) {
         try {
-            getOnlineBPM(String.format("https://songbpm.com/%s/%s",
-                    song.getArtist().replace(' ', '+'),
-                    song.getTitle().replace(' ', '+')),
+            if(song.getArtist().equals("Unknown") || song.getTitle().equals("Unknown")){
+                return;
+            }
+
+            String webservice = "http://developer.echonest.com/api/v4/song/search?api_key=";
+            String apiKey = "HTPFP2KLIK4BIFZTC";
+            String responseFormat = "&bucket=audio_summary&artist=%s&title=%s";
+
+            getOnlineBPM(String.format(webservice + apiKey + responseFormat,
+                            song.getArtist().replace(' ', '+'),
+                            song.getTitle().replace(' ', '+')),
                     song.getID());
         } catch (IOException e) {
             e.printStackTrace();
@@ -187,45 +204,80 @@ public class SongScanner{
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                try {
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet(url);
-                    HttpResponse response = client.execute(request);
+                String json = getJSON(url);
 
-                    String html = "";
-                    InputStream in = response.getEntity().getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder str = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        str.append(line);
-                    }
-                    in.close();
-                    html = str.toString();
-                    parseHTML(html, songID);
-                    return null;
-                } catch (Exception e) {
+                if(json == null) {
                     return null;
                 }
+
+                int bpm = getBPMfromJSON(json);
+
+                if(bpm == -1){
+                    return null;
+                }
+
+                updateBpm(bpm, songID);
+                return null;
             }
         }.execute();
     }
 
-    private void parseHTML(String src, long SongID) {
-        String line = src;
-        String pattern = ">(\\d+)<";
+    private int getBPMfromJSON(String json){
+        try {
+            JSONObject jsonObject = new JSONObject(json);
 
-        Pattern r = Pattern.compile(pattern);
+            JSONObject response = jsonObject.getJSONObject("response");
+            JSONArray songs = response.getJSONArray("songs");
 
-        Matcher m = r.matcher(line);
-        if (m.find( )) {
-            updateBPM(m.group(1)+"", SongID);
+            if(songs.length() == 0){
+                return -1;
+            }
+
+            JSONObject selectSong = songs.getJSONObject(0);
+            JSONObject summary = selectSong.getJSONObject("audio_summary");
+
+            int bpm = summary.getInt("tempo");
+
+            if (bpm <= 0) {
+                return -1;
+            }
+
+            return bpm;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 
-    private void updateBPM(String bpm, long SongID) {
+    private String getJSON(String url){
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            InputStream inputStream = httpEntity.getContent();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = null;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line + '\n');
+            }
+
+            inputStream.close();
+
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void updateBpm(int bpm, long SongID) {
         Song song = _db.getSongById(SongID);
-        //song.setBPM(bpm);
+        song.setBpm(bpm);
         _db.updateSong(song);
     }
 }

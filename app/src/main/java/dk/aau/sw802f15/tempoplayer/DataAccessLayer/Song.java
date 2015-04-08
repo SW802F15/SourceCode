@@ -92,6 +92,10 @@ public class Song {
         this._albumUri = _albumUri;
     }
 
+    public void setBpm(int bpm){
+        this._bpm = bpm;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
