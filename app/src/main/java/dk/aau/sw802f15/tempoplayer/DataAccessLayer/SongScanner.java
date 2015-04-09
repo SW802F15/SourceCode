@@ -269,7 +269,14 @@ public class SongScanner{
 
             inputStream.close();
 
-            return stringBuilder.toString();
+            String response = stringBuilder.toString();
+
+            //Returns null if response is actual html page instead of JSON
+            if (response.contains("<!DOCTYPE html")) {
+                return null;
+            }
+
+            return response;
         } catch (Exception e) {
             return null;
         }
