@@ -39,7 +39,7 @@ public class SettingsActivity extends PreferenceActivity {
         List<Song> songs = db.getSongsWithBPM(100, 1000);
 
         if(!(songs.size() >= MusicPlayerActivity.MINIMUM_SONGS_REQUIRED)){
-            Initializers._activity.finish();
+            //Initializers._activity.finish();
             Toast.makeText(this, "Not enough songs in the folder.", Toast.LENGTH_SHORT).show();
         }
     }
