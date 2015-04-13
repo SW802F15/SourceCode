@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.Assert;
 
@@ -336,5 +337,41 @@ public class SongScannerTest extends AndroidTestCase {
         json = json.replaceAll("Expires=([a-zA-Z0-9\\/]*)", "");
 
         return json;
+    }
+
+    @SmallTest
+    public void testGetBPMfromJSONEmpty(){
+        testGetBPMfromJSONHelper(-1, "");
+    }
+
+    @SmallTest
+    public void testGetBPMfromJSONValid(){
+        testGetBPMfromJSONHelper(81, "{\"response\": {\"status\": {\"version\": \"4.2\", \"code\": 0, \"message\": \"Success\"}, \"songs\": [{\"artist_id\": \"ARIGTAO11FED0C4411\", \"artist_name\": \"Adam Lambert\", \"id\": \"SOCQUYA1393C5C5D05\", \"audio_summary\": {\"key\": 2, \"analysis_url\": \"http://echonest-analysis.s3.amazonaws.com/TR/wcCWhgRei5t1y90nKh9ooAthH8GlbMlQFynIMxaJk2M7RwpuQ3Tog_twM7UhinUD4nKejxlIcIT93zn_U%3D/3/full.json?AWSAccessKeyId=AKIAJRDFEY23UEVW42BQ&Expires=1428930721&Signature=RUa6feC0UPIPxvJEE30riJCEz5M%3D\", \"energy\": 0.872807, \"liveness\": 0.153161, \"tempo\": 81.04, \"speechiness\": 0.091843, \"acousticness\": 0.008626, \"instrumentalness\": 0.0, \"mode\": 0, \"time_signature\": 4, \"duration\": 228.53288, \"loudness\": -4.473, \"audio_md5\": \"223770b0ecf8c0fbd5c5b5fef049bbcb\", \"valence\": 0.34062, \"danceability\": 0.300303}, \"title\": \"Runnin'\"}]}}");
+    }
+
+    @SmallTest
+    public void testGetBPMfromJSONNotValid(){
+        testGetBPMfromJSONHelper(-1, "ø8å6æ68æ");
+    }
+
+    private void testGetBPMfromJSONHelper(int expectedValue, String parameter){
+        SongScanner songScannerClass = SongScanner.getInstance(getContext());
+        int actualValue;
+
+        Method privateMethod = TestHelper.testPrivateMethod(TestHelper.Classes.SongScanner,
+                "getBPMfromJSON",
+                getContext());
+
+        if (privateMethod == null) {
+            assertTrue(false);
+        }
+
+        try {
+            actualValue = (int) privateMethod.invoke(songScannerClass, parameter);
+            assertEquals(expectedValue, actualValue);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
     }
 }

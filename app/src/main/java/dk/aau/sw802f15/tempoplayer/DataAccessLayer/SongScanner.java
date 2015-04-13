@@ -223,6 +223,10 @@ public class SongScanner{
     }
 
     private int getBPMfromJSON(String json){
+        if(json == null){
+            return -1;
+        }
+
         try {
             JSONObject jsonObject = new JSONObject(json);
 
