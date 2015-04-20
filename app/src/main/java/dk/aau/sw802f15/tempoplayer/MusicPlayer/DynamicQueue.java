@@ -17,7 +17,7 @@ public class DynamicQueue {
     //                         Stubs and Drivers                          //
     ////////////////////////////////////////////////////////////////////////
     //region
-    private int getCurrentSPM_STUB() { return 110; }
+    final private int getCurrentSPM_STUB() { return 110; }
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ public class DynamicQueue {
         return prevSongs.size() == 0;
     }
 
-    public void selectNextSong() {
+    final public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
             nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }

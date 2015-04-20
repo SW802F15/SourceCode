@@ -7,16 +7,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.util.Log;
-import android.webkit.URLUtil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,16 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.net.ssl.HttpsURLConnection;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -111,10 +96,10 @@ public class SongScanner{
 
 
     private void loadCover(Song song){
-        if (!new File(song.getUri().getPath()).exists()) return;
+        if (!new File(song.getSongUri().getPath()).exists()) return;
 
         FFmpegMediaMetadataRetriever ffmmr = new FFmpegMediaMetadataRetriever();
-        ffmmr.setDataSource(_context, song.getUri());
+        ffmmr.setDataSource(_context, song.getSongUri());
         byte[] data = ffmmr.getEmbeddedPicture();
         if(data == null){
           /*  try {

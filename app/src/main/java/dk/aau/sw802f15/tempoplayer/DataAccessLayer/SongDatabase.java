@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +93,7 @@ public class SongDatabase extends SQLiteOpenHelper
             values.put("artist", song.getArtist());
             values.put("album", song.getAlbum());
             values.put("bpm", song.getBpm());
-            values.put("path", song.getUri().toString());
+            values.put("path", song.getSongUri().toString());
             values.put("album_path", song.getAlbumUri().toString());
             values.put("duration", song.getDurationInSec());
         } catch (Exception e) {
@@ -111,7 +109,7 @@ public class SongDatabase extends SQLiteOpenHelper
             song.setID(rowId);
         }catch (SQLiteException e){
             Toast.makeText(_context, "Song already exists.", Toast.LENGTH_SHORT).show();
-            song = getSongByPath(song.getUri());
+            song = getSongByPath(song.getSongUri());
         }
 
         db.close();

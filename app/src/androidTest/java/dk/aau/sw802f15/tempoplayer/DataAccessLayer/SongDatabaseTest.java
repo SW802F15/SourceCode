@@ -125,7 +125,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         assertTrue(song != null);
 
-        assertEquals(_song.getUri(), song.getUri());
+        assertEquals(_song.getSongUri(), song.getSongUri());
     }
 
     @MediumTest
@@ -138,10 +138,10 @@ public class SongDatabaseTest extends AndroidTestCase {
     public void testReadBySongPathExist(){
         _db.insertSong(_song);
 
-        Song song = _db.getSongByPath(_song.getUri());
+        Song song = _db.getSongByPath(_song.getSongUri());
         assertTrue(song != null);
 
-        assertEquals(_song.getUri(), song.getUri());
+        assertEquals(_song.getSongUri(), song.getSongUri());
     }
 
     @MediumTest
@@ -153,7 +153,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testGetSongById(){
         _song = _db.getSongById(1);
-        assertEquals(TestHelper.getValidSong().getUri(), _song.getUri());
+        assertEquals(TestHelper.getValidSong().getSongUri(), _song.getSongUri());
     }
 
     @MediumTest
@@ -164,7 +164,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         _song = _db.getSongByPath(Uri.parse(fullPath));
 
-        assertEquals(TestHelper.getValidSong().getUri(), _song.getUri());
+        assertEquals(TestHelper.getValidSong().getSongUri(), _song.getSongUri());
     }
 
     @MediumTest
@@ -217,7 +217,7 @@ public class SongDatabaseTest extends AndroidTestCase {
             e.printStackTrace();
         }
 
-        assertEquals(TestHelper.getValidSong().getUri(), actualSongList.get(0).getUri());
+        assertEquals(TestHelper.getValidSong().getSongUri(), actualSongList.get(0).getSongUri());
     }
 
     @MediumTest
@@ -235,10 +235,10 @@ public class SongDatabaseTest extends AndroidTestCase {
     @MediumTest
     public void testUpdateSong(){
         Song updatedSong = _db.insertSong(_song);
-        updatedSong.setAlbumUri(_song.getUri());
+        updatedSong.setAlbumUri(_song.getSongUri());
         int songID = _db.updateSong(updatedSong);
         updatedSong = _db.getSongById(songID);
-        assertEquals(_song.getUri(), updatedSong.getUri());
+        assertEquals(_song.getSongUri(), updatedSong.getSongUri());
         assertNotSame(_song.getAlbumUri(), updatedSong.getAlbumUri());
     }
 }

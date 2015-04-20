@@ -9,99 +9,151 @@ import java.io.File;
  * Created by Draegert on 16-02-2015.
  */
 public class Song {
-    private static final Uri DEFAULTALBUMPATH = Uri.parse("android.resource" + "://" +
-                                                          "com." + "example." + "sw802f15." + "tempoplayer" +
-                                                          "/" + "drawable" + "/" + "defaultalbumcover.png");
-    private final Integer _bpmStub = 100;
-    private final Uri _albumStub = null;
+    ////////////////////////////////////////////////////////////////////////
+    //                         Stubs and Drivers                          //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private static final int MS_PER_SEC = 1000;
-
+    private static final int INT_DOES_NOT_EXIST = -1;
+    private static final Uri URI_DOES_NOT_EXIST = null;
     private long _id;
     private String _title;
-    private  String _artist;
+    private String _artist;
     private String _album;
     private Integer _bpm;
-    private Uri _uri;
     private int _durationInSec;
+    private Uri _songUri;
     private Uri _albumUri;
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                      Public Shared Resources                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public long getID() {
+        return _id;
+    }
+    public void setID(long id) {
+        _id = id;
+    }
+
+    public String getTitle() {
+        return _title;
+    }
+
+    public String getArtist() {
+        return _artist;
+    }
+
+    public String getAlbum() {
+        return _album;
+    }
+
+    public Integer getBpm() {
+        return _bpm;
+    }
+    public void setBpm(int bpm) {
+        this._bpm = bpm;
+    }
+
+    public int getDurationInSec() {
+        return _durationInSec;
+    }
+
+    public Uri getSongUri() {
+        return _songUri;
+    }
+
+    public Uri getAlbumUri() {
+        return _albumUri;
+    }
+    public void setAlbumUri(Uri _albumUri) {
+        this._albumUri = _albumUri;
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public Song(long songId, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                 Uri uri, Uri albumUri, int durationInSec) {
-        setValues(songId, songTitle, songArtist, songAlbum, songBpm,
-                uri, albumUri, durationInSec);
+        setValues(songId, songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
     }
 
     public Song(String songTitle, String songArtist, String songAlbum, Integer songBpm, Uri uri,
                 Uri albumUri, int durationInSec){
-        setValues(-1, songTitle, songArtist, songAlbum, songBpm,
-                uri, albumUri, durationInSec);
+        setValues(INT_DOES_NOT_EXIST, songTitle, songArtist, songAlbum, songBpm, uri, albumUri, durationInSec);
     }
 
     public Song(File file) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(file.getPath());
 
-        setValues(-1,
+        setValues(INT_DOES_NOT_EXIST,
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
-                _bpmStub,
+                INT_DOES_NOT_EXIST,
                 Uri.fromFile(file),
-                _albumStub,
+                URI_DOES_NOT_EXIST,
                 Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
         );
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private void setValues(long id, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                            Uri uri, Uri albumUri, int durationInSec){
         _id = id;
-        _title = songTitle != null ? songTitle : getUriAsTitle(uri) ;
+        _title = songTitle != null ? songTitle : getTitleFromUri(uri) ;
         _artist = songArtist != null ? songArtist : "Unknown" ;
         _album = songAlbum != null ? songAlbum : "Unknown" ;
         _bpm = songBpm;
-        _uri = uri;
+        _songUri = uri;
         _durationInSec = durationInSec;
-        _albumUri = albumUri != null ? albumUri : DEFAULTALBUMPATH;
+        _albumUri = albumUri != null ? albumUri : Uri.EMPTY;
     }
 
-    public long getID() {return _id;}
+    private String getTitleFromUri(Uri uri) {
+        if (uri == null || uri.getLastPathSegment() == null) {
+            return "Unknown";
+        }
 
-    public void setID(long id)
-    {
-        _id = id;
+        return uri.getLastPathSegment();
     }
+    //endregion
 
-    public String getTitle() {return _title;}
-
-    public String getArtist() {return _artist;}
-
-    public String getAlbum() {return _album;}
-
-    public Integer getBpm() {return _bpm;}
-
-    public Uri getUri() {return _uri;}
-
-    public int getDurationInSec() {return _durationInSec;}
-
-    public Uri getAlbumUri() {
-        return _albumUri;
-    }
-
-    public void setAlbumUri(Uri _albumUri) {
-        this._albumUri = _albumUri;
-    }
-
-    public void setBpm(int bpm){
-        this._bpm = bpm;
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Song)) return false;
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Song)) {
+            return false;
+        }
 
-        Song song = (Song) o;
+        Song song = (Song) object;
 
         return _id == song._id;
     }
@@ -112,33 +164,15 @@ public class Song {
     }
 
     public String getDurationInMinAndSec() {
-        int durationOriginal = getDurationInSec();
+        int minutes = _durationInSec / 60;
+        int seconds = _durationInSec % 60;
+        String displayedMinutes;
+        String displayedSeconds;
 
-        String leftSide, rightSide;
+        displayedMinutes = (minutes < 10 ? "0" : "") + Integer.toString(minutes);
+        displayedSeconds = (seconds < 10 ? "0" : "") + Integer.toString(seconds);
 
-        int right = (durationOriginal % 60);
-        int left = (int)Math.floor((double)durationOriginal / 60);
-
-        if(right < 10){
-            rightSide = "0" + right;
-        }else{
-            rightSide = "" + right;
-        }
-
-        if(left < 10){
-            leftSide = "0" + left;
-        }else{
-            leftSide = "" + left;
-        }
-
-        return leftSide + ":" + rightSide;
+        return displayedMinutes + ":" + displayedSeconds;
     }
-
-    private String getUriAsTitle(Uri uri) {
-        String title = uri.getLastPathSegment();
-        if (title == null) {
-            return "Unknown";
-        }
-        return title;
-    }
+    //endregion
 }

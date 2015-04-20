@@ -45,7 +45,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testPlaySong(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         Intent playIntent = new Intent();
@@ -66,7 +66,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         startService(stopIntent);
 
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongInvalid.getSongUri(), "mp3");
         startService(loadIntent);
 
         playIntent.setAction("Play");
@@ -83,10 +83,10 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 
     @MediumTest
     public void testLoadSong(){
-        getService().loadSong(testSongValid.getUri());
+        getService().loadSong(testSongValid.getSongUri());
         assertTrue(getService().isLoaded);
 
-        getService().loadSong(testSongInvalid.getUri());
+        getService().loadSong(testSongInvalid.getSongUri());
         assertFalse(getService().isLoaded);
 
         getService().loadSong(null);
@@ -97,7 +97,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testPause(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final Intent playIntent = new Intent();
@@ -126,7 +126,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testPausePosition(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final Intent playIntent = new Intent();
@@ -159,7 +159,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testUnPause(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final Intent playIntent = new Intent();
@@ -193,7 +193,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testStop(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final Intent playIntent = new Intent();
@@ -221,7 +221,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testPrepareSong(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
         new CountDownTimer(2000,1) {
             @Override
@@ -233,7 +233,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         }.start();
 
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongInvalid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongInvalid.getSongUri(), "mp3");
         startService(loadIntent);
         new CountDownTimer(2000,1) {
             @Override
@@ -261,7 +261,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testRepeat(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final int startPos = (7*60+38)*1000;
@@ -291,7 +291,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
     public void testUnRepeat(){
         Intent loadIntent = new Intent();
         loadIntent.setAction("Load");
-        loadIntent.setDataAndType(testSongValid.getUri(), "mp3");
+        loadIntent.setDataAndType(testSongValid.getSongUri(), "mp3");
         startService(loadIntent);
 
         final int startPos = (7*60+38)*1000;
@@ -334,7 +334,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
 //        TextView minLabel = (TextView) Initializers._activity.findViewById(R.id.textView_currentPosition);
 //        TextView maxLabel = (TextView) Initializers._activity.findViewById(R.id.textView_songDuration);
 //
-//        getService().loadSong(testSongValid.getUri());
+//        getService().loadSong(testSongValid.getSongUri());
 //
 //        assertEquals("07:40", minLabel.getText());
 //        assertEquals("00:00", maxLabel.getText());
