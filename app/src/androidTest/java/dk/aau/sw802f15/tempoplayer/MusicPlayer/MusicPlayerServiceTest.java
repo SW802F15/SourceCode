@@ -115,7 +115,8 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                 assertFalse(getService().musicPlayer.isPlaying());
                 try {
                     startService(playIntent);
-                } catch (IllegalStateException ignored){
+                } catch (IllegalStateException e){
+                    e.printStackTrace();
                     Assert.fail();
                 }
             }

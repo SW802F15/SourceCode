@@ -109,6 +109,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             updateSeekBarAndLabels();
         }
         catch (IOException e) {
+            e.printStackTrace();
             Log.e("loadSong", e.getStackTrace().toString());
             showToast(errorMessage);
         }

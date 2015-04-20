@@ -55,6 +55,7 @@ public class SongDatabaseTest extends AndroidTestCase {
             _db.getWritableDatabase();
         }
         catch (SQLiteException e) {
+            e.printStackTrace();
             Assert.fail("Database not created. Expected: Database created.");
         }
     }
@@ -67,6 +68,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         }
         catch (SQLiteException e)
         {
+            e.printStackTrace();
             Assert.fail("Got SQLiteException, expected none.");
         }
 
@@ -103,8 +105,9 @@ public class SongDatabaseTest extends AndroidTestCase {
         try {
             _db.deleteSong(_song);
             Assert.fail();
-        }catch (SQLiteException ex)
+        }catch (SQLiteException e)
         {
+            e.printStackTrace();
             // do nothing
         }
     }
@@ -186,7 +189,8 @@ public class SongDatabaseTest extends AndroidTestCase {
             for (Integer i : _intValues){
                 _db.getSongsWithBPM(50, i);
             }
-        }catch (Exception ignored){
+        }catch (Exception e){
+            e.printStackTrace();
             Assert.fail();
         }
 

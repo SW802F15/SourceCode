@@ -59,8 +59,9 @@ public class DirectoryChooserDialog
         {
             m_sdcardDirectory = new File(m_sdcardDirectory).getCanonicalPath();
         }
-        catch (IOException ioe)
+        catch (IOException e)
         {
+            e.printStackTrace();
         }
     }
 
@@ -106,8 +107,9 @@ public class DirectoryChooserDialog
         {
             dir = new File(dir).getCanonicalPath();
         }
-        catch (IOException ioe)
+        catch (IOException e)
         {
+            e.printStackTrace();
             return;
         }
 
@@ -210,6 +212,7 @@ public class DirectoryChooserDialog
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
 
         Collections.sort(dirs, new Comparator<String>()

@@ -72,6 +72,7 @@ public class SongDatabase extends SQLiteOpenHelper
         catch(SQLiteException e)
         {
             //TODO: Display error message
+            e.printStackTrace();
             return false;
         }
     }
@@ -107,7 +108,9 @@ public class SongDatabase extends SQLiteOpenHelper
         try{
             long rowId = db.insertOrThrow(TABLE_NAME, null, values);
             song.setID(rowId);
-        }catch (SQLiteException e){
+        }
+        catch (SQLiteException e){
+            e.printStackTrace();
             Toast.makeText(_context, "Song already exists.", Toast.LENGTH_SHORT).show();
             song = getSongByPath(song.getSongUri());
         }
@@ -133,8 +136,9 @@ public class SongDatabase extends SQLiteOpenHelper
             db.close();
 
             return 0;
-        }catch (SQLiteException ex)
+        }catch (SQLiteException e)
         {
+            e.printStackTrace();
             throw new SQLiteException();
         }
     }
@@ -158,7 +162,8 @@ public class SongDatabase extends SQLiteOpenHelper
         try{
             resultSong = constructSongListFromCursor(cursor).get(0);
         }
-        catch (IndexOutOfBoundsException ignored){
+        catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
             //No songs by that parameter.
         }
 
@@ -231,8 +236,9 @@ public class SongDatabase extends SQLiteOpenHelper
             db.close();
 
             return 0;
-        }catch (SQLiteException ex)
+        }catch (SQLiteException e)
         {
+            e.printStackTrace();
             throw new SQLiteException();
         }
     }
