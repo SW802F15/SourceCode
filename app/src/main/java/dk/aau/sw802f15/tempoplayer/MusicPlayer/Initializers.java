@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -18,13 +17,11 @@ import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
-import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -261,7 +258,7 @@ public class Initializers {
         coverFlow.setAdapter(coverImageAdapter);
 
         //Sets the middle cover to current song.
-        if (dynamicQueue.prevSongsSizeBeforeAdd == dynamicQueue.getPrevSize()) {
+        if (dynamicQueue.getPrevSongsSizeBeforeAdd() == dynamicQueue.getPrevSize()) {
             currentIndex--;
         }
         coverFlow.setSelection(currentIndex);

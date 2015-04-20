@@ -13,20 +13,19 @@ import java.util.Random;
 
 public class DynamicQueue {
 
+    ////////////////////////////////////////////////////////////////////////
+    //                         Stubs and Drivers                          //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    private int getCurrentSPM_STUB() { return 110; }
+    //endregion
 
-    public boolean prevSongsIsEmpty() {
-        return prevSongs.size() == 0;
-    }
-
-    private class StepCounterStub {
-        public int getCurrentSPM() {
-            return 110;
-        }
-    }
-
-    private StepCounterStub sc = new StepCounterStub();
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    private static DynamicQueue instance = null;
     private static SongDatabase db;
-
     private List<Song> nextSongs = new ArrayList<Song>();
     private List<Song> prevSongs = new ArrayList<Song>();
     private Song currentSong;
@@ -34,10 +33,38 @@ public class DynamicQueue {
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private static Context _context;
-    public int prevSongsSizeBeforeAdd = -1;
+    private int prevSongsSizeBeforeAdd = -1;
+    //endregion
 
-    private static DynamicQueue instance = null;
+    ////////////////////////////////////////////////////////////////////////
+    //                      Public Shared Resources                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
 
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public Song getCurrentSong() {
+        return currentSong;
+    }
+    public List<Song> getNextSongs() {
+        return nextSongs;
+    }
+    public List<Song> getPrevSongs() {
+        return prevSongs;
+    }
+    public int getPrevSize() { return _prevSize; }
+    public int getLookAheadSize() { return _lookAheadSize; }
+    public int getPrevSongsSizeBeforeAdd() { return prevSongsSizeBeforeAdd; }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     protected DynamicQueue(){
         //Empty because singleton
     }
@@ -54,23 +81,22 @@ public class DynamicQueue {
     public static void clearInstance(){
         instance = null;
     }
+    //endregion
 
-    public Song getCurrentSong() {
-        return currentSong;
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public boolean prevSongsIsEmpty() {
+        return prevSongs.size() == 0;
     }
-
-    public List<Song> getNextSongs() {
-        return nextSongs;
-    }
-
-    public List<Song> getPrevSongs() {
-        return prevSongs;
-    }
-
-    public int getPrevSize() {return _prevSize;}
-
-    public int getLookAheadSize() {return _lookAheadSize;}
-
 
     public void selectNextSong() {
         if (nextSongs == null || nextSongs.size() == 0) {
@@ -81,7 +107,7 @@ public class DynamicQueue {
             selectNextSong();
         }
         if (nextSongs.size() == 0){
-            return;
+            return; //todo Throw exception or prompt user?
         }
         if (currentSong != null){
             prevSongsSizeBeforeAdd = prevSongs.size();
@@ -104,6 +130,7 @@ public class DynamicQueue {
         }
 
         nextSongs.add(0, currentSong);
+
         if (nextSongs.size() > _lookAheadSize){
             nextSongs.remove(nextSongs.size()-1);
         }
@@ -118,8 +145,9 @@ public class DynamicQueue {
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
-        final int BMP = sc.getCurrentSPM();
-        final List<Song> songs = db.getSongsWithBPM(BMP, thresholdBMP);
+
+        final int desiredBMP = getCurrentSPM_STUB();
+        final List<Song> songs = db.getSongsWithBPM(desiredBMP, thresholdBMP);
 
         for (Song song : prevSongs){
             if(songs.contains(song)){
@@ -146,5 +174,6 @@ public class DynamicQueue {
         }
         return songs.subList(0, num);
     }
+    //endregion
 }
 

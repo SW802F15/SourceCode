@@ -1,6 +1,5 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;

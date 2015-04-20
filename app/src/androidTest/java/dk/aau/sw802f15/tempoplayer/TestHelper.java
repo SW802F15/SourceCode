@@ -5,26 +5,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
-import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
-import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
-import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerService;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.AbstractCoverFlowImageAdapter;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
-import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 public class TestHelper {
 
