@@ -2,6 +2,7 @@ package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -87,7 +89,8 @@ public class SongScanner{
                 loadCover(song);
                 loadBPM(song);
 
-            } else if(file.isDirectory()){
+            }
+            else if(file.isDirectory()){
                 findSongsHelper(file.getPath());
             }
         }
@@ -176,36 +179,51 @@ public class SongScanner{
             String apiKey = "HTPFP2KLIK4BIFZTC";
             String responseFormat = "&bucket=audio_summary&artist=%s&title=%s";
 
-            getOnlineBPM(String.format(webservice + apiKey + responseFormat,
-                            song.getArtist().replace(' ', '+'),
-                            song.getTitle().replace(' ', '+')),
-                    song.getID());
+            Integer bpm;
+            bpm = getOnlineBPM(String.format(webservice + apiKey + responseFormat,
+                               song.getArtist().replace(' ', '+'),
+                               song.getTitle().replace(' ', '+')));
+
+            updateBpm(bpm, song.getID());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void getOnlineBPM(final String url, final long songID) throws IOException {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                String json = getJSON(url);
+    private Integer getOnlineBPM(final String url) throws IOException {
+        Integer bpm = null;
 
-                if(json == null) {
-                    return null;
+        try {
+            bpm = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected Integer doInBackground(Void... params) {
+                    String json = getJSON(url);
+
+                    if(json == null) {
+                        return null;
+                    }
+
+                    Integer[] bpmResults = new Integer[1];
+                    bpmResults[0] = getBPMfromJSON(json);
+
+                    if(bpmResults[0] == -1){
+                        return null;
+                    }
+
+
+                    return bpmResults[0];
                 }
+            }.execute().get();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-                int bpm = getBPMfromJSON(json);
-
-                if(bpm == -1){
-                    return null;
-                }
-
-                updateBpm(bpm, songID);
-                return null;
-            }
-        }.execute();
+        return bpm;
     }
+
 
     private int getBPMfromJSON(String json){
         if(json == null){
@@ -272,9 +290,14 @@ public class SongScanner{
         }
     }
 
-    private void updateBpm(int bpm, long SongID) {
-        Song song = _db.getSongById(SongID);
-        song.setBpm(bpm);
-        _db.updateSong(song);
+    private void updateBpm(Integer bpm, long SongID) {
+        try {
+            Song song = _db.getSongById(SongID);
+            song.setBpm(bpm);
+            _db.updateSong(song);
+        }
+        catch (SQLiteException e) {
+            e.printStackTrace();
+        }
     }
 }

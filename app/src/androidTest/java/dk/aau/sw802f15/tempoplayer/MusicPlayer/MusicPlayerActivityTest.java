@@ -100,7 +100,7 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
 
     @MediumTest
     public void testSongsInEmptyDir() {
-
+        //todo throws 'Instrumentation run failed due to 'java.lang.NullPointerException''
         String parameter = emptyFolder.getAbsolutePath();
 
 

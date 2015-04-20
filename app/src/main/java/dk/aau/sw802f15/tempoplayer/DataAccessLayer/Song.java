@@ -65,7 +65,7 @@ public class Song {
     public Integer getBpm() {
         return _bpm;
     }
-    public void setBpm(int bpm) {
+    public void setBpm(Integer bpm) {
         this._bpm = bpm;
     }
 

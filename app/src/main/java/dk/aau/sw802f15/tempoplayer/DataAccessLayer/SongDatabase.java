@@ -243,12 +243,29 @@ public class SongDatabase extends SQLiteOpenHelper
         }
     }
 
-    public int updateSong(Song song) {
+    public int updateSong(Song song) throws SQLiteException{
+        SQLiteDatabase db = null;
+        try {
+            db = this.getWritableDatabase();
+        }
+        catch (SQLiteException e) {
+            e.printStackTrace();
+            throw new SQLiteException();
+        }
+
+        if (db == null) {
+            return -1;
+        }
+
         ContentValues values = new ContentValues();
         values.put("album_path", song.getAlbumUri().toString());
-        SQLiteDatabase db = this.getWritableDatabase();
-        int ret = db.update(TABLE_NAME, values, "ROWID = " + song.getID(), null);
-        db.close();
-        return ret;
+
+        int newValue = -1;
+        if (db.isOpen()) {
+            newValue = db.update(TABLE_NAME, values, "ROWID = " + song.getID(), null);
+            db.close();
+        }
+
+        return newValue;
     }
 }

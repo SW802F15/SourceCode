@@ -98,6 +98,8 @@ public class SongScannerTest extends AndroidTestCase {
 
     @MediumTest
     public void testFindSongsHelper() {
+        //todo java.lang.NoClassDefFoundError: java.lang.ReflectiveOperationException
+        //at dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScannerTest.testFindSongsHelper(SongScannerTest.java:135)
         Method findSongsHelper = TestHelper.testPrivateMethod(TestHelper.Classes.SongScanner,
                 "findSongsHelper",
                 getContext());
@@ -333,8 +335,8 @@ public class SongScannerTest extends AndroidTestCase {
     }
 
     private String stripSignature(String json){
-        json = json.replaceAll("Signature=([a-zA-Z0-9\\/]*)", "");
-        json = json.replaceAll("Expires=([a-zA-Z0-9\\/]*)", "");
+        json = json.replaceAll("Signature=([a-zA-Z0-9\\/%]*)", "");
+        json = json.replaceAll("Expires=([a-zA-Z0-9\\/%]*)", "");
 
         return json;
     }
