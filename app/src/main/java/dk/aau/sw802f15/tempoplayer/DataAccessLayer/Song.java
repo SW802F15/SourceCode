@@ -13,6 +13,8 @@ public class Song {
     //                         Stubs and Drivers                          //
     ////////////////////////////////////////////////////////////////////////
     //region
+    private static final int BPM_STUP = 100;
+
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -107,7 +109,7 @@ public class Song {
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
-                INT_DOES_NOT_EXIST,
+                BPM_STUP,
                 Uri.fromFile(file),
                 URI_DOES_NOT_EXIST,
                 Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
