@@ -1,6 +1,8 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Environment;
@@ -12,6 +14,8 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
+import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 import dk.aau.sw802f15.tempoplayer.TestHelper;
 
 public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<MusicPlayerActivity> {
@@ -26,7 +30,10 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        setActivityInitialTouchMode(false);
+
+        if(_activity != null){
+            _activity.finish();
+        }
 
         _activity = getActivity();
         _audioManager = (AudioManager) _activity.getSystemService(Context.AUDIO_SERVICE);
@@ -45,7 +52,9 @@ public class MusicPlayerActivityTest extends ActivityInstrumentationTestCase2<Mu
         emptyFolder = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_MUSIC + "/EmptyDir/");
         emptyFolder.delete();
 
-        _done
+        if(_activity != null) _activity.finish();
+
+
     }
 
     @SmallTest
