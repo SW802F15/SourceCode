@@ -46,6 +46,13 @@ public class Initializers {
         initializeOnClickSeekBar();
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    //                      Public Shared Resources                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+
+    //endregion
+
     private void initializeOnClickPlay() {
         final ImageView playButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.playButton);
 
