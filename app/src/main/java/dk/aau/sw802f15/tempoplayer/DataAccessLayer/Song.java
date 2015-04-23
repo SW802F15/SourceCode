@@ -12,14 +12,6 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
  */
 public class Song {
     ////////////////////////////////////////////////////////////////////////
-    //                         Stubs and Drivers                          //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-    private static final int BPM_STUP = 100;
-
-    //endregion
-
-    ////////////////////////////////////////////////////////////////////////
     //                      Private Shared Resources                      //
     ////////////////////////////////////////////////////////////////////////
     //region
@@ -104,7 +96,7 @@ public class Song {
                 metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_TITLE),
                 metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST),
                 metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM),
-                BPM_STUP,
+                INT_DOES_NOT_EXIST,
                 Uri.fromFile(file),
                 URI_DOES_NOT_EXIST,
                 Integer.parseInt(metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
