@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import java.io.File;
 
+import wseemann.media.FFmpegMediaMetadataRetriever;
+
 /**
  * Created by Draegert on 16-02-2015.
  */
@@ -95,17 +97,17 @@ public class Song {
     }
 
     public Song(File file) {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        mmr.setDataSource(file.getPath());
+        FFmpegMediaMetadataRetriever metadataRetriever = new FFmpegMediaMetadataRetriever();
+        metadataRetriever.setDataSource(file.getPath());
 
         setValues(INT_DOES_NOT_EXIST,
-                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
-                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
-                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
+                metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_TITLE),
+                metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST),
+                metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM),
                 BPM_STUP,
                 Uri.fromFile(file),
                 URI_DOES_NOT_EXIST,
-                Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
+                Integer.parseInt(metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
         );
     }
     //endregion
@@ -117,7 +119,7 @@ public class Song {
     private void setValues(long id, String songTitle, String songArtist, String songAlbum, Integer songBpm,
                            Uri uri, Uri albumUri, int durationInSec){
         _id = id;
-        _title = songTitle != null ? songTitle : getTitleFromUri(uri) ;
+        _title = songTitle != null && !songTitle.equals("") ? songTitle : getTitleFromUri(uri) ;
         _artist = songArtist != null ? songArtist : "Unknown" ;
         _album = songAlbum != null ? songAlbum : "Unknown" ;
         _bpm = songBpm;
