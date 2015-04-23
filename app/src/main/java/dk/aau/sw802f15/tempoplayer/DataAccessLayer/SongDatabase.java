@@ -258,8 +258,11 @@ public class SongDatabase extends SQLiteOpenHelper
         }
 
         ContentValues values = new ContentValues();
+        //TODO consider if this should be more general
         values.put("album_path", song.getAlbumUri().toString());
-
+        if (song.getBpm() != null) {
+            values.put("bpm", song.getBpm().toString());
+        }
         int newValue = -1;
         if (db.isOpen()) {
             newValue = db.update(TABLE_NAME, values, "ROWID = " + song.getID(), null);

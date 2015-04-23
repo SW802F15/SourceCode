@@ -178,7 +178,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     public void next() {
-        DynamicQueue.getInstance(getApplicationContext()).selectNextSong();
+        if(!DynamicQueue.getInstance(getApplicationContext()).selectNextSong()){
+            Toast.makeText(this, "No Available Songs", Toast.LENGTH_SHORT).show();
+        }
         loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getSongUri());
 
         if (musicPlayer.isPlaying()) {

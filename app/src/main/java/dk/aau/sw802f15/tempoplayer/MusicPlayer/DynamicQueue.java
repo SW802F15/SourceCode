@@ -17,7 +17,7 @@ public class DynamicQueue {
     //                         Stubs and Drivers                          //
     ////////////////////////////////////////////////////////////////////////
     //region
-    final private int getCurrentSPM_STUB() { return 110; }
+    private int getCurrentSPM_STUB() { return 110; }
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,6 @@ public class DynamicQueue {
     private int _prevSize = 3;
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
-    private static Context _context;
     private int prevSongsSizeBeforeAdd = -1;
     //endregion
 
@@ -49,9 +48,12 @@ public class DynamicQueue {
     public List<Song> getPrevSongs() {
         return prevSongs;
     }
-    public int getPrevSize() { return _prevSize; }
-    public int getLookAheadSize() { return _lookAheadSize; }
-    public int getPrevSongsSizeBeforeAdd() { return prevSongsSizeBeforeAdd; }
+    public int getPrevSize() {
+        return _prevSize;
+    }
+    public int getPrevSongsSizeBeforeAdd() {
+        return prevSongsSizeBeforeAdd;
+    }
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -64,7 +66,6 @@ public class DynamicQueue {
 
     public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
-            _context = context;
             db = new SongDatabase(context);
             instance = new DynamicQueue();
         }
@@ -80,6 +81,32 @@ public class DynamicQueue {
     //                        Private Functionality                       //
     ////////////////////////////////////////////////////////////////////////
     //region
+    private boolean refillQueueWhenEmpty() {
+        if (nextSongs == null || nextSongs.size() == 0) {
+            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+        }
+        if (nextSongs.size() == 0 && prevSongs.size() > 0){
+            prevSongs.clear();
+            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+        }
+        return nextSongs.size() != 0;
+    }
+
+    private void moveCurrentSongToPrevious() {
+        if (currentSong != null){
+            prevSongsSizeBeforeAdd = prevSongs.size();
+            prevSongs.add(currentSong);
+            if (prevSongs.size() > _prevSize){
+                prevSongs.remove(0);
+            }
+        }
+    }
+
+    private void updateCurrentSongFromNextSongs() {
+        currentSong = nextSongs.get(0);
+        nextSongs.remove(0);
+        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
+    }
 
     //endregion
 
@@ -91,29 +118,13 @@ public class DynamicQueue {
         return prevSongs.size() == 0;
     }
 
-    final public void selectNextSong() {
-        if (nextSongs == null || nextSongs.size() == 0) {
-            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+    final public boolean selectNextSong() {
+        if (!refillQueueWhenEmpty()){
+            return false;
         }
-        if (nextSongs.size() == 0 && prevSongs.size() > 0){
-            prevSongs.clear();
-            selectNextSong();
-        }
-        if (nextSongs.size() == 0){
-            return; //todo Throw exception or prompt user?
-        }
-        if (currentSong != null){
-            prevSongsSizeBeforeAdd = prevSongs.size();
-            prevSongs.add(currentSong);
-            if (prevSongs.size() > _prevSize){
-                prevSongs.remove(0);
-            }
-        }
-
-        currentSong = nextSongs.get(0);
-        nextSongs.remove(0);
-
-        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
+        moveCurrentSongToPrevious();
+        updateCurrentSongFromNextSongs();
+        return true;
     }
 
     public void selectPrevSong() {
