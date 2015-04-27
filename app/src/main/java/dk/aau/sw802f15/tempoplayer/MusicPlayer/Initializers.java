@@ -270,7 +270,7 @@ public class Initializers {
 
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
-        if (nextPosition <= coverFlow.getCount()) {
+        if (nextPosition < coverFlow.getCount()) {
             coverFlow.setSelection(nextPosition);
         }
         else {
