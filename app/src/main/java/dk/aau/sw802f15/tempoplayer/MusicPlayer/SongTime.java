@@ -20,7 +20,7 @@ public class SongTime {
     ////////////////////////////////////////////////////////////////////////
     //region
     public SongTime(int duration) {
-        if (duration < 0) {
+        if (duration < 0 || duration < Integer.MIN_VALUE -1 || duration > Integer.MAX_VALUE + 1) {
             throw new IndexOutOfBoundsException("Duration of song must be 0 or longer.");
         }
 
