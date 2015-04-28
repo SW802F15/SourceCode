@@ -22,7 +22,7 @@ import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 
 
 public class MusicPlayerActivity extends Activity{
-    public static int MINIMUM_SONGS_REQUIRED = 5;
+    public static int MINIMUM_SONGS_REQUIRED = 6;
 
     // todo: remove stub when settings are done
     public static String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
