@@ -35,4 +35,28 @@ public class SongTimeTest extends AndroidTestCase {
         }
 
     }
+
+    @SmallTest
+    public void testValidSongTime(){
+        try {
+            SongTime songTimeLow = new SongTime(136);
+            String formattedSongTimeLow = songTimeLow.getFormattedSongTime();
+
+            SongTime songTimeHigh = new SongTime(3600);
+            String formattedSongTimeHigh = songTimeHigh.getFormattedSongTime();
+
+            if(!formattedSongTimeLow.equals("02:16")){
+                Assert.fail("Proper time returned the wrong formatted time");
+            }
+
+            if(!formattedSongTimeHigh.equals("01:00:00")){
+                Assert.fail("Proper time returned the wrong formatted time");
+            }
+
+            assertTrue(true);
+        }catch (IndexOutOfBoundsException e){
+            Assert.fail();
+        }
+
+    }
 }
