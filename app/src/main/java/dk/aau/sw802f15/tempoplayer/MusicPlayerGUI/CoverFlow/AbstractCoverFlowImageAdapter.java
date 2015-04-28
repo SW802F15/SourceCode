@@ -19,15 +19,20 @@ import android.widget.ImageView;
  */
 public abstract class AbstractCoverFlowImageAdapter extends BaseAdapter {
 
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private static final String TAG = AbstractCoverFlowImageAdapter.class.getSimpleName();
     private float width = 0;
     private float height = 0;
     private final Map<Integer, WeakReference<Bitmap>> bitmapMap = new HashMap<Integer, WeakReference<Bitmap>>();
+    //endregion
 
-    public AbstractCoverFlowImageAdapter() {
-        super();
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public synchronized void setWidth(final float width) {
         this.width = width;
     }
@@ -35,8 +40,6 @@ public abstract class AbstractCoverFlowImageAdapter extends BaseAdapter {
     public synchronized void setHeight(final float height) {
         this.height = height;
     }
-
-    protected abstract Bitmap createBitmap(int position);
 
     @Override
     public final synchronized long getItemId(final int position) {
@@ -77,4 +80,27 @@ public abstract class AbstractCoverFlowImageAdapter extends BaseAdapter {
         imageView.setImageBitmap(getItem(position));
         return imageView;
     }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public AbstractCoverFlowImageAdapter() {
+        super();
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    protected abstract Bitmap createBitmap(int position);
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    //endregion
 }
