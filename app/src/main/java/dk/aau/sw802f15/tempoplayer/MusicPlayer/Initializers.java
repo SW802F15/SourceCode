@@ -28,9 +28,19 @@ import java.util.List;
  */
 public class Initializers {
 
-    public static MusicPlayerActivity _activity;
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private boolean _isPlaying = false;
-    private final int POLL_RATE = 100;
+    private final static int POLL_RATE = 100;
+    private long timeForLastPrevClick = 0;
+    private long timeForLastNextClick = 0;
+    private final static long TIME_BETWEEN_BUTTON_CLICKS = 100;
+    //endregion
+
+    public static MusicPlayerActivity _activity;
+
 
     public Initializers(MusicPlayerActivity activity) {
         _activity = activity;
@@ -45,13 +55,6 @@ public class Initializers {
         initializeOnClickSettings();
         initializeOnClickSeekBar();
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    //                      Public Shared Resources                       //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-
-    //endregion
 
     private void initializeOnClickPlay() {
         final ImageView playButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.playButton);
@@ -99,12 +102,21 @@ public class Initializers {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mMusicPlayerService.previous();
-                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
-                changePlayPauseButton();
-                previousAlbumCover();
-                updateSongInfo();
-                previousButtonSetVisibility(false);
+                if (System.currentTimeMillis() - timeForLastPrevClick > TIME_BETWEEN_BUTTON_CLICKS) {
+                    boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+
+                    _activity.mMusicPlayerService.previous();
+                    _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
+                    previousAlbumCover();
+                    updateSongInfo();
+                    previousButtonSetVisibility(false);
+
+                    if(wasPlaying){
+                        _activity.mMusicPlayerService.play();
+                    }
+                }
+
+                timeForLastPrevClick = System.currentTimeMillis();
             }
         });
     }
@@ -115,14 +127,22 @@ public class Initializers {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mMusicPlayerService.next();
-                _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
-                changePlayPauseButton();
-                int currentIndex = nextAlbumCover();
-                updateAlbumCovers(currentIndex);
-                updateSongInfo();
-                previousButtonSetVisibility(true);
-                //ToDo "If 'next' pressed multiple times while dynamic queue loads? an offset is created.
+                 if (System.currentTimeMillis() - timeForLastNextClick > TIME_BETWEEN_BUTTON_CLICKS) {
+
+                     boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+
+                     _activity.mMusicPlayerService.next();
+                     _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
+                     int currentIndex = nextAlbumCover();
+                     updateAlbumCovers(currentIndex);
+                     updateSongInfo();
+                     previousButtonSetVisibility(true);
+
+                     if (wasPlaying) {
+                         _activity.mMusicPlayerService.play();
+                     }
+                 }
+                timeForLastNextClick = System.currentTimeMillis();
             }
         });
     }
