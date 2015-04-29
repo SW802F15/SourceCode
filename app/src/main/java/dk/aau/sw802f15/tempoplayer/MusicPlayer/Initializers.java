@@ -17,6 +17,7 @@ import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
+import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 
 import java.io.File;
@@ -32,12 +33,15 @@ public class Initializers {
     //                      Private Shared Resources                      //
     ////////////////////////////////////////////////////////////////////////
     //region
-    private boolean _isPlaying = false;
     private final static int POLL_RATE = 100;
+    private final static long TIME_BETWEEN_BUTTON_CLICKS = 100;
+
+    private static MusicPlayerActivity _activity;
+
     private long timeForLastPrevClick = 0;
     private long timeForLastNextClick = 0;
-    private final static long TIME_BETWEEN_BUTTON_CLICKS = 100;
-    private static MusicPlayerActivity _activity;
+    private boolean _isPlaying = false;
+    private Handler durationHandler = new Handler();
 
     //endregion
 
@@ -51,40 +55,17 @@ public class Initializers {
     //                            Constructors                            //
     ////////////////////////////////////////////////////////////////////////
     //region
-
+    public Initializers(MusicPlayerActivity activity) {
+        _activity = activity;
+    }
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
     //                        Private Functionality                       //
     ////////////////////////////////////////////////////////////////////////
     //region
-
-    //endregion
-
-    ////////////////////////////////////////////////////////////////////////
-    //                  Public Functionality - Interface                  //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-
-    //endregion
-
-
-    public Initializers(MusicPlayerActivity activity) {
-        _activity = activity;
-    }
-
-    public void initializeOnClickListeners() {
-        initializeOnClickPlay();
-        initializeOnClickPause();
-        initializeOnClickStop();
-        initializeOnClickPrevious();
-        initializeOnClickNext();
-        initializeOnClickSettings();
-        initializeOnClickSeekBar();
-    }
-
     private void initializeOnClickPlay() {
-        final ImageView playButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.playButton);
+        final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,10 +77,8 @@ public class Initializers {
         });
     }
 
-
-
     private void initializeOnClickPause() {
-        final ImageView pauseButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.pauseButton);
+        final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +90,7 @@ public class Initializers {
     }
 
     private void initializeOnClickStop() {
-        ImageView stopButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.stopButton);
+        ImageView stopButton = (ImageView) _activity.findViewById(R.id.stopButton);
 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +103,7 @@ public class Initializers {
     }
 
     private void initializeOnClickPrevious() {
-        final ImageView previousButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.previousButton);
+        final ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
 
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +112,6 @@ public class Initializers {
                     boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
 
                     _activity.mMusicPlayerService.previous();
-                    _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
                     previousAlbumCover();
                     updateSongInfo();
                     previousButtonSetVisibility(false);
@@ -149,26 +127,25 @@ public class Initializers {
     }
 
     private void initializeOnClickNext() {
-        ImageView nextButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.nextButton);
+        ImageView nextButton = (ImageView) _activity.findViewById(R.id.nextButton);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 if (System.currentTimeMillis() - timeForLastNextClick > TIME_BETWEEN_BUTTON_CLICKS) {
+                if (System.currentTimeMillis() - timeForLastNextClick > TIME_BETWEEN_BUTTON_CLICKS) {
 
-                     boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+                    boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
 
-                     _activity.mMusicPlayerService.next();
-                     _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
-                     int currentIndex = nextAlbumCover();
-                     updateAlbumCovers(currentIndex);
-                     updateSongInfo();
-                     previousButtonSetVisibility(true);
+                    _activity.mMusicPlayerService.next();
+                    int currentIndex = nextAlbumCover();
+                    updateAlbumCovers(currentIndex);
+                    updateSongInfo();
+                    previousButtonSetVisibility(true);
 
-                     if (wasPlaying) {
-                         _activity.mMusicPlayerService.play();
-                     }
-                 }
+                    if (wasPlaying) {
+                        _activity.mMusicPlayerService.play();
+                    }
+                }
                 timeForLastNextClick = System.currentTimeMillis();
             }
         });
@@ -176,14 +153,16 @@ public class Initializers {
 
     private void updateSongInfo() {
         Song song = DynamicQueue.getInstance(_activity).getCurrentSong();
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_title)).setText(song.getTitle());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_artist)).setText(song.getArtist());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_album)).setText(song.getAlbum());
-        ((TextView)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_bpm)).setText(song.getBpm()+"");
+        ((TextView)_activity.findViewById(R.id.textView_title)).setText(song.getTitle());
+        ((TextView)_activity.findViewById(R.id.textView_artist)).setText(song.getArtist());
+        ((TextView)_activity.findViewById(R.id.textView_album)).setText(song.getAlbum());
+        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm()+"");
+
+        _activity.setSongDurationText(song.getDurationInSec());
     }
 
     private void previousButtonSetVisibility(boolean show) {
-        CircleButton button = (CircleButton) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.previousButton);
+        CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
         if(show){
             button.setAlpha(1f);
             button.setEnabled(true);
@@ -194,7 +173,7 @@ public class Initializers {
     }
 
     private void initializeOnClickSettings() {
-        ImageView settingsButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.settingsButton);
+        ImageView settingsButton = (ImageView) _activity.findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -206,35 +185,50 @@ public class Initializers {
         });
     }
 
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public void initializeOnClickListeners() {
+        initializeOnClickPlay();
+        initializeOnClickPause();
+        initializeOnClickStop();
+        initializeOnClickPrevious();
+        initializeOnClickNext();
+        initializeOnClickSettings();
+        initializeOnClickSeekBar();
+    }
+
     public static void changePlayPauseButton(){
-        new CountDownTimer(100, 1) {
-            @Override
-            public void onTick(long millisUntilFinished) { }
-            @Override
-            public void onFinish() {
-                final ImageView playButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.playButton);
-                final ImageView pauseButton = (ImageView) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.pauseButton);
-                if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
-                    pauseButton.setVisibility(View.VISIBLE);
-                    playButton.setVisibility(View.GONE);
+        new Handler().postDelayed(
+            new Runnable(){
+                @Override
+                public void run() {
+                    final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
+                    final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
+                    if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
+                        pauseButton.setVisibility(View.VISIBLE);
+                        playButton.setVisibility(View.GONE);
+                    }
+                    else {
+                        pauseButton.setVisibility(View.GONE);
+                        playButton.setVisibility(View.VISIBLE);
+                    }
                 }
-                else {
-                    pauseButton.setVisibility(View.GONE);
-                    playButton.setVisibility(View.VISIBLE);
-                }
-            }
-        }.start();
+            }, 100) ;
     }
 
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance(_activity).selectNextSong();
-        _activity.setSongDurationText(DynamicQueue.getInstance(_activity).getCurrentSong().getDurationInSec());
         updateSongInfo();
         previousButtonSetVisibility(false);
     }
 
     public void initializeOnClickSeekBar() {
-        SeekBar seekBar = (SeekBar)_activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.seekBar);
+        SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.seekBar);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -261,7 +255,7 @@ public class Initializers {
     }
 
     public void initializeCoverFlow() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
         coverFlow.setAdapter(coverImageAdapter);
         coverFlow.setSpacing(-10);
@@ -270,11 +264,27 @@ public class Initializers {
 
         setCoverFlowImages();
     }
+    //endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
     private void setCoverFlowImages() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
 
         ((ResourceImageAdapter) coverImageAdapter).setResources(getDynamicQueueAsList());
@@ -303,7 +313,7 @@ public class Initializers {
     }
 
     private void updateAlbumCovers(int currentIndex) {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
         DynamicQueue dynamicQueue = DynamicQueue.getInstance(_activity);
 
@@ -320,7 +330,7 @@ public class Initializers {
 
 
     private int nextAlbumCover() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
         int nextPosition = coverFlow.getSelectedItemPosition() + 1;
 
@@ -335,7 +345,7 @@ public class Initializers {
     }
 
     private void previousAlbumCover() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.coverflow);
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
         int previousPosition = coverFlow.getSelectedItemPosition() - 1;
 
@@ -352,7 +362,7 @@ public class Initializers {
         options.inJustDecodeBounds = true;
 
         if (!new File(albumUri.getPath()).exists()){
-            return BitmapFactory.decodeResource(_activity.getResources(), dk.aau.sw802f15.tempoplayer.R.drawable.defaultalbumcover);
+            return BitmapFactory.decodeResource(_activity.getResources(), R.drawable.defaultalbumcover);
         }
         BitmapFactory.Options optionsSecond = new BitmapFactory.Options();
         optionsSecond.inSampleSize = calculateInSampleSize(options, 350, 350);
@@ -360,7 +370,6 @@ public class Initializers {
         return BitmapFactory.decodeFile(albumUri.getPath(), optionsSecond);
     }
 
-    Handler durationHandler = new Handler();
 
     public void startSeekBarPoll()
     {
@@ -373,7 +382,7 @@ public class Initializers {
                 return;
             }
             int timeElapsed = _activity.mMusicPlayerService.musicPlayer.getCurrentPosition() / 1000;
-            SeekBar sb = (SeekBar) _activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.seekBar);
+            SeekBar sb = (SeekBar) _activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
             _activity.setSongProgressText(timeElapsed);
             durationHandler.postDelayed(this, POLL_RATE);
