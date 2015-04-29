@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 
 public class StepCounterService extends Service implements SensorEventListener {
 
@@ -36,6 +37,7 @@ public class StepCounterService extends Service implements SensorEventListener {
     Sensor senAccelerometer;
     private long lastTime;
     private long lastStep;
+    private MusicPlayerActivity musicPlayerActivity;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -56,6 +58,8 @@ public class StepCounterService extends Service implements SensorEventListener {
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_GAME);
 
         Arrays.fill(accelerometerData, 0.);
+
+        musicPlayerActivity = (MusicPlayerActivity) getApplicationContext();
         return mBinder;
     }
 
@@ -74,13 +78,13 @@ public class StepCounterService extends Service implements SensorEventListener {
             if(isStepTaken(curTime)){
                 double timeDiff = (double)(curTime - lastStep);
                 spm[spmIndex % SPM_AVG_SIZE] = (int)(1. / ( timeDiff / MS_PER_MIN));
-                Initializers._activity.setSPMText(getSpm());
+                musicPlayerActivity.setSPMText(getSpm());
 
                 lastStep = curTime;
             }
             else if(curTime - 2000 > lastStep){
                 spm[spmIndex % SPM_AVG_SIZE] = 0;
-                Initializers._activity.setSPMText(getSpm());
+                musicPlayerActivity.setSPMText(getSpm());
             }
             spmIndex++;
             accelerometerIndex++;

@@ -32,6 +32,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
 
     private final IBinder mBinder = new LocalBinder();
+    private MusicPlayerActivity musicPlayerActivity;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -40,7 +41,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public class LocalBinder extends Binder {
         MusicPlayerService getService() {
             // Return this instance of LocalService so clients can call public methods
-
+            musicPlayerActivity = (MusicPlayerActivity) getApplicationContext();
             return MusicPlayerService.this;
         }
     }
@@ -74,7 +75,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             @Override
             public void onCompletion(MediaPlayer mp)
             {
-                ImageView nextButton = (ImageView) Initializers._activity.findViewById(dk.aau.sw802f15.tempoplayer.R.id.nextButton);
+                ImageView nextButton = (ImageView) musicPlayerActivity.findViewById(
+                                            dk.aau.sw802f15.tempoplayer.R.id.nextButton);
                 nextButton.performClick();
                 play();
                 Initializers.changePlayPauseButton();
@@ -119,7 +121,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void updateSeekBarAndLabels()
     {
-        MusicPlayerActivity musicPlayerActivity = Initializers._activity;
         if(musicPlayerActivity == null) {
             return;
         }
