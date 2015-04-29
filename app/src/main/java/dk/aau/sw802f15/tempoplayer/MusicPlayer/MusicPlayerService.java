@@ -41,13 +41,13 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public class LocalBinder extends Binder {
         MusicPlayerService getService() {
             // Return this instance of LocalService so clients can call public methods
-            musicPlayerActivity = (MusicPlayerActivity) getApplicationContext();
             return MusicPlayerService.this;
         }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
+        musicPlayerActivity = MusicPlayerActivity.getInstance();
         return mBinder;
     }
 

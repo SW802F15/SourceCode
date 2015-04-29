@@ -36,6 +36,7 @@ public class MusicPlayerActivity extends Activity{
 
     private Initializers _initializers;
     private boolean songDirContainsSongs = false;
+    private static MusicPlayerActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class MusicPlayerActivity extends Activity{
             _initializers.initializeCoverFlow();
         }
 
+        instance = this;
     }
 
     @Override
@@ -255,5 +257,9 @@ public class MusicPlayerActivity extends Activity{
         SongTime songTime = new SongTime(duration);
 
         songDurationTextView.setText(songTime.getFormattedSongTime());
+    }
+
+    public static MusicPlayerActivity getInstance(){
+        return instance;
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.HandlerThread;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Handler;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -50,13 +52,13 @@ public class SongScanner{
         return _instance;
     }
     public void scanInBackground(){
-        new Runnable() {
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 removeSongs();
                 findSongs();
             }
-        }.run();
+        }.start();
     }
 
 

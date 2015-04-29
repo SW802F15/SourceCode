@@ -59,7 +59,7 @@ public class StepCounterService extends Service implements SensorEventListener {
 
         Arrays.fill(accelerometerData, 0.);
 
-        musicPlayerActivity = (MusicPlayerActivity) getApplicationContext();
+        musicPlayerActivity = MusicPlayerActivity.getInstance();
         return mBinder;
     }
 
