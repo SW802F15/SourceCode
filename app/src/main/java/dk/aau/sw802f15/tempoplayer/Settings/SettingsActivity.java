@@ -11,17 +11,19 @@ import java.util.List;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
-import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import dk.aau.sw802f15.tempoplayer.R;
 
 
 public class SettingsActivity extends PreferenceActivity {
 
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     public void onBuildHeaders(List<Header> target) {
         super.onBuildHeaders(target);
-        //loadHeadersFromResource(R.xml.preference_headers, target);
     }
 
     @Override
@@ -33,20 +35,25 @@ public class SettingsActivity extends PreferenceActivity {
         setContentView(R.layout.activity_settings);
 
 
-        SongDatabase db = new SongDatabase(this);
+        SongDatabase songDatabase = new SongDatabase(this);
         SongScanner.getInstance(this).findSongs();
 
-        List<Song> songs = db.getSongsWithBPM(100, 1000);
+        List<Song> songs = songDatabase.getSongsWithBPM(100, 1000);
 
         if(!(songs.size() >= MusicPlayerActivity.MINIMUM_SONGS_REQUIRED)){
-            //Initializers._activity.finish();
             Toast.makeText(this, "Not enough songs in the folder.", Toast.LENGTH_SHORT).show();
         }
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public void openMusicPlayer(View v)
     {
         Intent intent = new Intent(this, MusicPlayerActivity.class);
         startActivity(intent);
     }
+    //endregion
 }
