@@ -17,7 +17,10 @@ import dk.aau.sw802f15.tempoplayer.R;
  * Created by Draegert on 19-02-2015.
  */
 public class CircleButton extends ImageView {
-
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private static final int PRESSED_COLOR_LIGHTUP = 255 / 25;
     private static final int PRESSED_RING_ALPHA = 75;
     private static final int DEFAULT_PRESSED_RING_WIDTH_DIP = 4;
@@ -37,22 +40,12 @@ public class CircleButton extends ImageView {
     private int defaultColor = Color.BLACK;
     private int pressedColor;
     private ObjectAnimator pressedAnimator;
+    //endregion
 
-    public CircleButton(Context context) {
-        super(context);
-        init(context, null);
-    }
-
-    public CircleButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
-    }
-
-    public CircleButton(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs);
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     public void setPressed(boolean pressed) {
         super.setPressed(pressed);
@@ -66,22 +59,6 @@ public class CircleButton extends ImageView {
         } else {
             hidePressedRing();
         }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(centerX, centerY, pressedRingRadius + animationProgress, focusPaint);
-        canvas.drawCircle(centerX, centerY, outerRadius - pressedRingWidth, circlePaint);
-        super.onDraw(canvas);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        centerX = w / 2;
-        centerY = h / 2;
-        outerRadius = Math.min(w, h) / 2;
-        pressedRingRadius = outerRadius - pressedRingWidth - pressedRingWidth / 2;
     }
 
     public float getAnimationProgress() {
@@ -102,6 +79,47 @@ public class CircleButton extends ImageView {
         focusPaint.setAlpha(PRESSED_RING_ALPHA);
 
         this.invalidate();
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public CircleButton(Context context) {
+        super(context);
+        init(context, null);
+    }
+
+    public CircleButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
+
+    public CircleButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawCircle(centerX, centerY, pressedRingRadius + animationProgress, focusPaint);
+        canvas.drawCircle(centerX, centerY, outerRadius - pressedRingWidth, circlePaint);
+        super.onDraw(canvas);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        centerX = w / 2;
+        centerY = h / 2;
+        outerRadius = Math.min(w, h) / 2;
+        pressedRingRadius = outerRadius - pressedRingWidth - pressedRingWidth / 2;
     }
 
     private void hidePressedRing() {
@@ -148,4 +166,11 @@ public class CircleButton extends ImageView {
         return Color.argb(Math.min(255, Color.alpha(color)), Math.min(255, Color.red(color) + amount),
                 Math.min(255, Color.green(color) + amount), Math.min(255, Color.blue(color) + amount));
     }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    //endregion
 }

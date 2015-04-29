@@ -20,16 +20,24 @@ import dk.aau.sw802f15.tempoplayer.R;
  */
 public class CoverFlow extends Gallery {
 
-    /**
-     * Graphics Camera used for transforming the matrix of ImageViews.
-     */
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    //Graphics Camera used for transforming the matrix of ImageViews.
     private final Camera camera = new Camera();
+
     private int maxRotationAngle = 45;
     private int maxZoom = -120;
     private int coverflowCenter;
     private float imageHeight;
     private float imageWidth;
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public float getImageHeight() {
         return imageHeight;
     }
@@ -62,6 +70,23 @@ public class CoverFlow extends Gallery {
         this.maxZoom = maxZoom;
     }
 
+    @Override
+    public void setAdapter(final SpinnerAdapter adapter) {
+        if (!(adapter instanceof AbstractCoverFlowImageAdapter)) {
+            throw new IllegalArgumentException("The adapter should derive from "
+                    + AbstractCoverFlowImageAdapter.class.getName());
+        }
+        final AbstractCoverFlowImageAdapter coverAdapter = (AbstractCoverFlowImageAdapter) adapter;
+        coverAdapter.setWidth(imageWidth);
+        coverAdapter.setHeight(imageHeight);
+        super.setAdapter(adapter);
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public CoverFlow(final Context context) {
         super(context);
         this.setStaticTransformationsEnabled(true);
@@ -76,19 +101,12 @@ public class CoverFlow extends Gallery {
         parseAttributes(context, attrs);
         this.setStaticTransformationsEnabled(true);
     }
+    //endregion
 
-    @Override
-    public void setAdapter(final SpinnerAdapter adapter) {
-        if (!(adapter instanceof AbstractCoverFlowImageAdapter)) {
-            throw new IllegalArgumentException("The adapter should derive from "
-                    + AbstractCoverFlowImageAdapter.class.getName());
-        }
-        final AbstractCoverFlowImageAdapter coverAdapter = (AbstractCoverFlowImageAdapter) adapter;
-        coverAdapter.setWidth(imageWidth);
-        coverAdapter.setHeight(imageHeight);
-        super.setAdapter(adapter);
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private int getCenterOfCoverflow() {
         return (getWidth() - getPaddingLeft() - getPaddingRight()) / 2 + getPaddingLeft();
     }
@@ -167,7 +185,12 @@ public class CoverFlow extends Gallery {
             a.recycle();
         }
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         return false;
@@ -182,4 +205,5 @@ public class CoverFlow extends Gallery {
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         return false;
     }
+    //endregion
 }

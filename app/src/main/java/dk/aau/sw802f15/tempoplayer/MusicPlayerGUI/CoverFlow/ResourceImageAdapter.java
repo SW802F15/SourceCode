@@ -17,19 +17,20 @@ import android.util.Log;
  */
 public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
 
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private static final String TAG = ResourceImageAdapter.class.getSimpleName();
     private static final List<Bitmap> IMAGE_RESOURCE_IDS = new ArrayList<>();
     private static final List<Bitmap> DEFAULT_RESOURCE_LIST = new ArrayList<>();
-    public final Map<Integer, WeakReference<Bitmap>> bitmapMap = new HashMap<Integer, WeakReference<Bitmap>>();
-
     private final Context context;
+    //endregion
 
-    public ResourceImageAdapter(final Context context) {
-        super();
-        this.context = context;
-        setResources(DEFAULT_RESOURCE_LIST);
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     public synchronized int getCount() {
         return IMAGE_RESOURCE_IDS.size();
@@ -42,12 +43,42 @@ public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
         }
         notifyDataSetChanged();
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public ResourceImageAdapter(final Context context) {
+        super();
+        this.context = context;
+        setResources(DEFAULT_RESOURCE_LIST);
+    }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     protected Bitmap createBitmap(final int position) {
         Log.v(TAG, "creating item " + position);
         Bitmap bitmap = IMAGE_RESOURCE_IDS.get(position);
-        bitmapMap.put(position, new WeakReference<Bitmap>(bitmap));
         return bitmap;
     }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    //endregion
+
+
+
+
+
+
+
+
 }
