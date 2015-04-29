@@ -24,8 +24,6 @@ public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
     private static final String TAG = ResourceImageAdapter.class.getSimpleName();
     private static final List<Bitmap> IMAGE_RESOURCE_IDS = new ArrayList<>();
     private static final List<Bitmap> DEFAULT_RESOURCE_LIST = new ArrayList<>();
-    private final Map<Integer, WeakReference<Bitmap>> bitmapMap = new HashMap<Integer, WeakReference<Bitmap>>();
-
     private final Context context;
     //endregion
 
@@ -66,7 +64,6 @@ public class ResourceImageAdapter extends AbstractCoverFlowImageAdapter {
     protected Bitmap createBitmap(final int position) {
         Log.v(TAG, "creating item " + position);
         Bitmap bitmap = IMAGE_RESOURCE_IDS.get(position);
-        bitmapMap.put(position, new WeakReference<Bitmap>(bitmap));
         return bitmap;
     }
     //endregion
