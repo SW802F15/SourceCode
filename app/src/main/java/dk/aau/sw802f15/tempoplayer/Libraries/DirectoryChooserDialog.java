@@ -1,4 +1,4 @@
-package dk.aau.sw802f15.tempoplayer.Settings;
+package dk.aau.sw802f15.tempoplayer.Libraries;
 
 import java.io.File;
 import java.io.IOException;

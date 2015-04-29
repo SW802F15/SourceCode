@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -19,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import dk.aau.sw802f15.tempoplayer.Libraries.DirectoryChooserDialog;
 import dk.aau.sw802f15.tempoplayer.R;
 
 public class SettingsFragment extends PreferenceFragment {
