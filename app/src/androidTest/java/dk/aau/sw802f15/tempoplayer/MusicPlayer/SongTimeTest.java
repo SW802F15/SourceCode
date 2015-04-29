@@ -25,10 +25,20 @@ public class SongTimeTest extends AndroidTestCase {
     }
 
     @SmallTest
-    public void testOutOfBoundDuration(){
+    public void testOutOfBoundDurationMin(){
+        try {
+            SongTime songTimeMin = new SongTime(Integer.MIN_VALUE);
+            Assert.fail("Maximum negative value should not be valid for a song time");
+        }catch (IndexOutOfBoundsException e){
+            assertTrue(true);
+        }
+
+    }
+
+    @SmallTest
+    public void testOutOfBoundDurationMax(){
         try {
             SongTime songTimeMax = new SongTime(Integer.MAX_VALUE);
-            SongTime songTimeMin = new SongTime(Integer.MIN_VALUE);
             assertTrue(true);
         }catch (IndexOutOfBoundsException e){
             Assert.fail();
