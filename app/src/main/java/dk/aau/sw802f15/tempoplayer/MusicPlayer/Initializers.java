@@ -133,12 +133,10 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 if (System.currentTimeMillis() - timeForLastNextClick > TIME_BETWEEN_BUTTON_CLICKS) {
-
                     boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
 
                     _activity.mMusicPlayerService.next();
-                    int currentIndex = nextAlbumCover();
-                    updateAlbumCovers(currentIndex);
+                    nextAlbumCover();
                     updateSongInfo();
                     previousButtonSetVisibility(true);
 
@@ -184,105 +182,6 @@ public class Initializers {
 
         });
     }
-
-
-    //endregion
-
-    ////////////////////////////////////////////////////////////////////////
-    //                  Public Functionality - Interface                  //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-    public void initializeOnClickListeners() {
-        initializeOnClickPlay();
-        initializeOnClickPause();
-        initializeOnClickStop();
-        initializeOnClickPrevious();
-        initializeOnClickNext();
-        initializeOnClickSettings();
-        initializeOnClickSeekBar();
-    }
-
-    public static void changePlayPauseButton(){
-        new Handler().postDelayed(
-            new Runnable(){
-                @Override
-                public void run() {
-                    final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
-                    final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
-                    if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
-                        pauseButton.setVisibility(View.VISIBLE);
-                        playButton.setVisibility(View.GONE);
-                    }
-                    else {
-                        pauseButton.setVisibility(View.GONE);
-                        playButton.setVisibility(View.VISIBLE);
-                    }
-                }
-            }, 100) ;
-    }
-
-    public void initializeDynamicQueue() {
-        DynamicQueue.getInstance(_activity).selectNextSong();
-        updateSongInfo();
-        previousButtonSetVisibility(false);
-    }
-
-    public void initializeOnClickSeekBar() {
-        SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.seekBar);
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                _isPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
-                _activity.mMusicPlayerService.pause();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                _activity.mMusicPlayerService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
-
-                if (_isPlaying) {
-                    _activity.mMusicPlayerService.play();
-                } else {
-                    _activity.mMusicPlayerService.pause();
-                }
-            }
-        });
-    }
-
-    public void initializeCoverFlow() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
-        BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
-        coverFlow.setAdapter(coverImageAdapter);
-        coverFlow.setSpacing(-10);
-        coverFlow.setMaxZoom(-200);
-
-
-        setCoverFlowImages();
-    }
-    //endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void setCoverFlowImages() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
@@ -329,19 +228,18 @@ public class Initializers {
     }
 
 
-    private int nextAlbumCover() {
+    private void nextAlbumCover() {
         final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
 
-        int nextPosition = coverFlow.getSelectedItemPosition() + 1;
+        int nextPosition = coverFlow.getSelectedItemPosition();
 
         if (nextPosition < coverFlow.getCount()) {
-            coverFlow.setSelection(nextPosition);
+            nextPosition = coverFlow.getSelectedItemPosition() + 1;
         }
         else {
             Toast.makeText(_activity, "No next song.", Toast.LENGTH_SHORT).show();
         }
-
-        return coverFlow.getSelectedItemPosition();
+        updateAlbumCovers(nextPosition);
     }
 
     private void previousAlbumCover() {
@@ -399,7 +297,7 @@ public class Initializers {
     public void stopSeekBarPoll(){
         durationHandler.removeCallbacks(updateSeekBarTime);
     }
-    
+
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -421,4 +319,83 @@ public class Initializers {
 
         return inSampleSize;
     }
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public void initializeOnClickListeners() {
+        initializeOnClickPlay();
+        initializeOnClickPause();
+        initializeOnClickStop();
+        initializeOnClickPrevious();
+        initializeOnClickNext();
+        initializeOnClickSettings();
+        initializeOnClickSeekBar();
+    }
+
+    public static void changePlayPauseButton(){
+        new Handler().postDelayed(
+            new Runnable(){
+                @Override
+                public void run() {
+                    final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
+                    final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
+                    if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
+                        pauseButton.setVisibility(View.VISIBLE);
+                        playButton.setVisibility(View.GONE);
+                    }
+                    else {
+                        pauseButton.setVisibility(View.GONE);
+                        playButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            }, 200) ;
+    }
+
+    public void initializeDynamicQueue() {
+        DynamicQueue.getInstance(_activity).selectNextSong();
+        updateSongInfo();
+        previousButtonSetVisibility(false);
+    }
+
+    public void initializeOnClickSeekBar() {
+        SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.seekBar);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                _isPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+                _activity.mMusicPlayerService.pause();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                _activity.mMusicPlayerService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
+
+                if (_isPlaying) {
+                    _activity.mMusicPlayerService.play();
+                } else {
+                    _activity.mMusicPlayerService.pause();
+                }
+            }
+        });
+    }
+
+    public void initializeCoverFlow() {
+        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
+        coverFlow.setAdapter(coverImageAdapter);
+        coverFlow.setSpacing(-10);
+        coverFlow.setMaxZoom(-200);
+
+        setCoverFlowImages();
+    }
+    //endregion
 }
