@@ -27,8 +27,8 @@ public class SongTimeTest extends AndroidTestCase {
     @SmallTest
     public void testOutOfBoundDuration(){
         try {
-            SongTime songTimeMax = new SongTime(Integer.MAX_VALUE + 1);
-            SongTime songTimeMin = new SongTime(Integer.MIN_VALUE - 1);
+            SongTime songTimeMax = new SongTime(Integer.MAX_VALUE);
+            SongTime songTimeMin = new SongTime(Integer.MIN_VALUE);
             Assert.fail("songTime object should not be able to be created with over/underflowed value");
         }catch (IndexOutOfBoundsException e){
             assertTrue(true);
