@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SongDatabaseTest extends AndroidTestCase {
 
-    private SongDatabase _db = null;
+    private SongDatabase _songDatabase = null;
     private Song _song = null;
     private List<Integer> _intValues = new ArrayList<Integer>() {{
         add(Integer.MAX_VALUE);
@@ -35,8 +35,8 @@ public class SongDatabaseTest extends AndroidTestCase {
     protected void setUp() throws Exception
     {
         super.setUp();
-        _db = new SongDatabase(getContext());
-        TestHelper.initializeTestSongs(_db);
+        _songDatabase = new SongDatabase(getContext());
+        TestHelper.initializeTestSongs(_songDatabase);
         _song = TestHelper.getValidSong();
     }
 
@@ -44,15 +44,15 @@ public class SongDatabaseTest extends AndroidTestCase {
     protected void tearDown() throws Exception
     {
         super.tearDown();
-        _db.clearDatabase();
-        _db.close();
+        _songDatabase.clearDatabase();
+        _songDatabase.close();
     }
 
     @MediumTest
     public void testCreateDatabaseNotExists()
     {
         try {
-            _db.getWritableDatabase();
+            _songDatabase.getWritableDatabase();
         }
         catch (SQLiteException e) {
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     public void testInsertValid()
     {
         try {
-            _song = _db.insertSong(TestHelper.getValidSong());
+            _song = _songDatabase.insertSong(TestHelper.getValidSong());
         }
         catch (SQLiteException e)
         {
@@ -82,49 +82,48 @@ public class SongDatabaseTest extends AndroidTestCase {
     public void testInsertInvalid()
     {
         _song.setAlbumUri(null);
-        Song song = _db.insertSong(_song);
+        Song song = _songDatabase.insertSong(_song);
         assertTrue(song == null);
     }
 
     @MediumTest
     public void testInsertMultiple()
     {
-        Song song = _db.insertSong(_song);
-        _song = _db.insertSong(_song);
+        Song song = _songDatabase.insertSong(_song);
+        _song = _songDatabase.insertSong(_song);
         assertEquals(_song, song);
     }
 
     @MediumTest
     public void testDeleteExists(){
-        Song tempSong = _db.insertSong(_song);
-        assertEquals(0, _db.deleteSong(tempSong));
+        Song tempSong = _songDatabase.insertSong(_song);
+        assertEquals(0, _songDatabase.deleteSong(tempSong));
     }
 
     @MediumTest
     public void testDeleteNotExists(){
         try {
-            _db.deleteSong(_song);
+            _songDatabase.deleteSong(_song);
             Assert.fail();
         }catch (SQLiteException e)
         {
             e.printStackTrace();
-            // do nothing
         }
     }
 
     @MediumTest
     public void testDropDatabaseExists()
     {
-        boolean actual = _db.clearDatabase();
+        boolean actual = _songDatabase.clearDatabase();
         assertEquals(true, actual);
     }
 
     @MediumTest
     public void testReadEntryExists(){
 
-        long songId = _db.insertSong(_song).getID();
+        long songId = _songDatabase.insertSong(_song).getID();
 
-        Song song = _db.getSongById(songId);
+        Song song = _songDatabase.getSongById(songId);
 
         assertTrue(song != null);
 
@@ -133,15 +132,15 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testReadEntryNotExists(){
-        Song song = _db.getSongById(12312); //only 6 songs in test set
+        Song song = _songDatabase.getSongById(12312); //only 6 songs in test set
         assertTrue(song == null);
     }
 
     @MediumTest
     public void testReadBySongPathExist(){
-        _db.insertSong(_song);
+        _songDatabase.insertSong(_song);
 
-        Song song = _db.getSongByPath(_song.getSongUri());
+        Song song = _songDatabase.getSongByPath(_song.getSongUri());
         assertTrue(song != null);
 
         assertEquals(_song.getSongUri(), song.getSongUri());
@@ -149,13 +148,13 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testReadBySongPathNotExist(){
-        Song song = _db.getSongByPath(Uri.parse("5.")); //only 6 songs in test set
+        Song song = _songDatabase.getSongByPath(Uri.parse("5.")); //only 6 songs in test set
         assertTrue(song == null);
     }
 
     @MediumTest
     public void testGetSongById(){
-        _song = _db.getSongById(1);
+        _song = _songDatabase.getSongById(1);
         assertEquals(TestHelper.getValidSong().getSongUri(), _song.getSongUri());
     }
 
@@ -165,29 +164,28 @@ public class SongDatabaseTest extends AndroidTestCase {
                 + Environment.DIRECTORY_MUSIC + "/tempo/";
         String fullPath = initMusicPath + "music_sample_1.mp3";
 
-        _song = _db.getSongByPath(Uri.parse(fullPath));
+        _song = _songDatabase.getSongByPath(Uri.parse(fullPath));
 
         assertEquals(TestHelper.getValidSong().getSongUri(), _song.getSongUri());
     }
 
     @MediumTest
     public void testGetSongsWithBPM(){
-        //int BMP, int tresholdBMP
-        List<Song> songs = _db.getSongsWithBPM(110, 30);
+        List<Song> songs = _songDatabase.getSongsWithBPM(110, 30);
         assertEquals(5, songs.size());
 
-        songs = _db.getSongsWithBPM(80, 10);
+        songs = _songDatabase.getSongsWithBPM(80, 10);
         assertEquals(2, songs.size());
 
-        songs = _db.getSongsWithBPM(30, 5);
+        songs = _songDatabase.getSongsWithBPM(30, 5);
         assertEquals(0, songs.size());
 
         try{
             for(Integer i : _intValues){
-                _db.getSongsWithBPM(i,10);
+                _songDatabase.getSongsWithBPM(i, 10);
             }
             for (Integer i : _intValues){
-                _db.getSongsWithBPM(50, i);
+                _songDatabase.getSongsWithBPM(50, i);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -198,7 +196,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testConstructSongListFromCursor(){
-        SQLiteDatabase db = _db.getReadableDatabase();
+        SQLiteDatabase db = _songDatabase.getReadableDatabase();
         List<Song> actualSongList = new ArrayList<Song>();
 
         Cursor cursor = db.query("Song", new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
@@ -214,7 +212,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         }
 
         try {
-            actualSongList = (List<Song>) privateMethod.invoke(_db, cursor);
+            actualSongList = (List<Song>) privateMethod.invoke(_songDatabase, cursor);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -231,17 +229,17 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testDeleteSongByID(){
-        int actualValue = _db.deleteSongByID(1);
+        int actualValue = _songDatabase.deleteSongByID(1);
 
         assertEquals(0, actualValue);
     }
 
     @MediumTest
     public void testUpdateSong(){
-        Song updatedSong = _db.insertSong(_song);
+        Song updatedSong = _songDatabase.insertSong(_song);
         updatedSong.setAlbumUri(_song.getSongUri());
-        int songID = _db.updateSong(updatedSong);
-        updatedSong = _db.getSongById(songID);
+        int songID = _songDatabase.updateSong(updatedSong);
+        updatedSong = _songDatabase.getSongById(songID);
         assertEquals(_song.getSongUri(), updatedSong.getSongUri());
         assertNotSame(_song.getAlbumUri(), updatedSong.getAlbumUri());
     }
