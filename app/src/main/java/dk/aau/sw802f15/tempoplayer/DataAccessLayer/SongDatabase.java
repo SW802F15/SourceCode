@@ -175,7 +175,7 @@ public class SongDatabase extends SQLiteOpenHelper
     public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
+        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "1=1 OR ? < ?", //TODO use this: "bpm >= ? AND bpm <= ?",
                 new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
                 , null, null, null, null);
 

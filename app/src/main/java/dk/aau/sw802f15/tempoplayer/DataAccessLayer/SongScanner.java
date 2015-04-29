@@ -52,13 +52,15 @@ public class SongScanner{
         return _instance;
     }
     public void scanInBackground(){
-        new Thread() {
+        removeSongs();
+        findSongs();
+       /* new Thread() { TODO fix race
             @Override
             public void run() {
                 removeSongs();
                 findSongs();
             }
-        }.start();
+        }.start(); */
     }
 
 
