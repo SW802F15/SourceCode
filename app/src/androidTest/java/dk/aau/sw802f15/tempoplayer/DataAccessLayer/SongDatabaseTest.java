@@ -32,8 +32,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     }};
 
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception{
         super.setUp();
         _songDatabase = new SongDatabase(getContext());
         TestHelper.initializeTestSongs(_songDatabase);
@@ -41,16 +40,14 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception
-    {
+    protected void tearDown() throws Exception{
         super.tearDown();
         _songDatabase.clearDatabase();
         _songDatabase.close();
     }
 
     @MediumTest
-    public void testCreateDatabaseNotExists()
-    {
+    public void testCreateDatabaseNotExists(){
         try {
             _songDatabase.getWritableDatabase();
         }
@@ -61,8 +58,7 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @MediumTest
-    public void testInsertValid()
-    {
+    public void testInsertValid(){
         try {
             _song = _songDatabase.insertSong(TestHelper.getValidSong());
         }
@@ -75,20 +71,17 @@ public class SongDatabaseTest extends AndroidTestCase {
         //The updated song should have an id.
         assertTrue(_song.getID() > 0);
         assertTrue(_song.getID() >= 0);
-
     }
 
     @MediumTest
-    public void testInsertInvalid()
-    {
+    public void testInsertInvalid(){
         _song.setAlbumUri(null);
         Song song = _songDatabase.insertSong(_song);
         assertTrue(song == null);
     }
 
     @MediumTest
-    public void testInsertMultiple()
-    {
+    public void testInsertMultiple(){
         Song song = _songDatabase.insertSong(_song);
         _song = _songDatabase.insertSong(_song);
         assertEquals(_song, song);
@@ -112,21 +105,17 @@ public class SongDatabaseTest extends AndroidTestCase {
     }
 
     @MediumTest
-    public void testDropDatabaseExists()
-    {
+    public void testDropDatabaseExists(){
         boolean actual = _songDatabase.clearDatabase();
         assertEquals(true, actual);
     }
 
     @MediumTest
     public void testReadEntryExists(){
-
         long songId = _songDatabase.insertSong(_song).getID();
-
         Song song = _songDatabase.getSongById(songId);
 
         assertTrue(song != null);
-
         assertEquals(_song.getSongUri(), song.getSongUri());
     }
 
@@ -191,7 +180,6 @@ public class SongDatabaseTest extends AndroidTestCase {
             e.printStackTrace();
             Assert.fail();
         }
-
     }
 
     @MediumTest
@@ -213,9 +201,7 @@ public class SongDatabaseTest extends AndroidTestCase {
 
         try {
             actualSongList = (List<Song>) privateMethod.invoke(_songDatabase, cursor);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -238,8 +224,10 @@ public class SongDatabaseTest extends AndroidTestCase {
     public void testUpdateSong(){
         Song updatedSong = _songDatabase.insertSong(_song);
         updatedSong.setAlbumUri(_song.getSongUri());
+
         int songID = _songDatabase.updateSong(updatedSong);
         updatedSong = _songDatabase.getSongById(songID);
+
         assertEquals(_song.getSongUri(), updatedSong.getSongUri());
         assertNotSame(_song.getAlbumUri(), updatedSong.getAlbumUri());
     }
