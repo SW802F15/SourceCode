@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
+import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceActivity;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
@@ -117,19 +118,9 @@ public class MusicPlayerActivity extends Activity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(dk.aau.sw802f15.tempoplayer.R.menu.menu_music_player, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == dk.aau.sw802f15.tempoplayer.R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Intent i = new Intent(this, ControlInterfaceActivity.class);
+        startActivity(i);
+        return false;
     }
 
     private ServiceConnection mMusicPlayerConnection = new ServiceConnection() {
