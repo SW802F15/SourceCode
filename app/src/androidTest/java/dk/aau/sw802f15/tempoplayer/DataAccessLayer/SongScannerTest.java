@@ -84,7 +84,7 @@ public class SongScannerTest extends AndroidTestCase {
         _songDatabase.insertSong(_song);
         _songScanner.findSongs();
         List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
-        assertEquals(14, songs.size());
+        assertEquals(12, songs.size());
     }
 
     public void testRemoveSongs() {
@@ -111,7 +111,7 @@ public class SongScannerTest extends AndroidTestCase {
         try {
             findSongsHelper.invoke(_songScanner, _correctDirPath);
             List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
-            assertEquals(14, songs.size());
+            assertEquals(12, songs.size());
 
             _songDatabase.clearDatabase();
             findSongsHelper.invoke(_songScanner, _wrongDirPath);
