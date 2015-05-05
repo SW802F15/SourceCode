@@ -160,15 +160,12 @@ public class SongDatabase extends SQLiteOpenHelper
                 new String[] { String.valueOf(searchParameter) }, null, null, null, null);
 
         try{
-            resultSong = constructSongListFromCursor(cursor).get(0);
+            resultSong = constructSongListFromCursor(cursor, db).get(0);
         }
         catch (IndexOutOfBoundsException e){
             e.printStackTrace();
             //No songs by that parameter.
         }
-
-        db.close();
-
         return resultSong;
     }
 
@@ -179,10 +176,10 @@ public class SongDatabase extends SQLiteOpenHelper
                 new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
                 , null, null, null, null);
 
-        return constructSongListFromCursor(cursor);
+        return constructSongListFromCursor(cursor, db);
     }
 
-    private List<Song> constructSongListFromCursor(Cursor cursor){
+    private List<Song> constructSongListFromCursor(Cursor cursor, SQLiteDatabase db){
         List<Song> resultSongs = new ArrayList<>();
 
         if(cursor != null)
@@ -201,6 +198,7 @@ public class SongDatabase extends SQLiteOpenHelper
                 cursor.moveToNext();
             }
             cursor.close();
+            db.close();
         }else {
             throw new SQLiteException();
         }
