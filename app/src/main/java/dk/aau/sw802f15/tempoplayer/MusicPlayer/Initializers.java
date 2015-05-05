@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -294,10 +293,7 @@ public class Initializers {
         }
     }
 
-    public void stopSeekBarPoll(){
-        durationHandler.removeCallbacks(updateSeekBarTime);
-    }
-
+    //TODO: Maybe a bit confusing?
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -396,6 +392,10 @@ public class Initializers {
         coverFlow.setMaxZoom(-200);
 
         setCoverFlowImages();
+    }
+
+    public void stopSeekBarPoll(){
+        durationHandler.removeCallbacks(updateSeekBarTime);
     }
     //endregion
 }
