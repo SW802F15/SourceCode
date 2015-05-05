@@ -25,10 +25,10 @@ public class DynamicQueue {
     ////////////////////////////////////////////////////////////////////////
     //region
     private static DynamicQueue instance = null;
-    private static SongDatabase db;
-    private List<Song> nextSongs = new ArrayList<Song>();
-    private List<Song> prevSongs = new ArrayList<Song>();
-    private Song currentSong;
+    private static SongDatabase _songDatabase;
+    private List<Song> _nextSongs = new ArrayList<Song>();
+    private List<Song> _prevSongs = new ArrayList<Song>();
+    private Song _currentSong;
     private int _prevSize = 3;
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
@@ -40,13 +40,13 @@ public class DynamicQueue {
     ////////////////////////////////////////////////////////////////////////
     //region
     public Song getCurrentSong() {
-        return currentSong;
+        return _currentSong;
     }
     public List<Song> getNextSongs() {
-        return nextSongs;
+        return _nextSongs;
     }
     public List<Song> getPrevSongs() {
-        return prevSongs;
+        return _prevSongs;
     }
     public int getPrevSize() {
         return _prevSize;
@@ -66,7 +66,7 @@ public class DynamicQueue {
 
     public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
-            db = new SongDatabase(context);
+            _songDatabase = new SongDatabase(context);
             instance = new DynamicQueue();
         }
         return instance;
@@ -82,32 +82,31 @@ public class DynamicQueue {
     ////////////////////////////////////////////////////////////////////////
     //region
     private boolean refillQueueWhenEmpty() {
-        if (nextSongs == null || nextSongs.size() == 0) {
-            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+        if (_nextSongs == null || _nextSongs.size() == 0) {
+            _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
-        if (nextSongs.size() == 0 && prevSongs.size() > 0){
-            prevSongs.clear();
-            nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
+        if (_nextSongs.size() == 0 && _prevSongs.size() > 0){
+            _prevSongs.clear();
+            _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
-        return nextSongs.size() != 0;
+        return _nextSongs.size() != 0;
     }
 
     private void moveCurrentSongToPrevious() {
-        if (currentSong != null){
-            prevSongsSizeBeforeAdd = prevSongs.size();
-            prevSongs.add(currentSong);
-            if (prevSongs.size() > _prevSize){
-                prevSongs.remove(0);
+        if (_currentSong != null){
+            prevSongsSizeBeforeAdd = _prevSongs.size();
+            _prevSongs.add(_currentSong);
+            if (_prevSongs.size() > _prevSize){
+                _prevSongs.remove(0);
             }
         }
     }
 
     private void updateCurrentSongFromNextSongs() {
-        currentSong = nextSongs.get(0);
-        nextSongs.remove(0);
-        nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
+        _currentSong = _nextSongs.get(0);
+        _nextSongs.remove(0);
+        _nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
     }
-
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -115,33 +114,35 @@ public class DynamicQueue {
     ////////////////////////////////////////////////////////////////////////
     //region
     public boolean prevSongsIsEmpty() {
-        return prevSongs.size() == 0;
+        return _prevSongs.size() == 0;
     }
 
     final public boolean selectNextSong() {
         if (!refillQueueWhenEmpty()){
             return false;
         }
+
         moveCurrentSongToPrevious();
         updateCurrentSongFromNextSongs();
+
         return true;
     }
 
     public void selectPrevSong() {
-        if (prevSongs.size() == 0) {
+        if (_prevSongs.size() == 0) {
             Log.e("selectPrevSong", "No previously played songs.");
             return;
         }
 
-        nextSongs.add(0, currentSong);
+        _nextSongs.add(0, _currentSong);
 
-        if (nextSongs.size() > _lookAheadSize){
-            nextSongs.remove(nextSongs.size()-1);
+        if (_nextSongs.size() > _lookAheadSize){
+            _nextSongs.remove(_nextSongs.size()-1);
         }
 
-        currentSong = prevSongs.get(prevSongs.size()-1);
-        prevSongs.remove(currentSong);
-        prevSongs.remove(null);
+        _currentSong = _prevSongs.get(_prevSongs.size() - 1);
+        _prevSongs.remove(_currentSong);
+        _prevSongs.remove(null);
     }
 
     public List<Song> getMatchingSongs(int num, int thresholdBMP){
@@ -151,31 +152,36 @@ public class DynamicQueue {
         }
 
         final int desiredBMP = getCurrentSPM_STUB();
-        final List<Song> songs = db.getSongsWithBPM(desiredBMP, thresholdBMP);
+        final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBMP, thresholdBMP);
 
-        for (Song song : prevSongs){
+        for (Song song : _prevSongs){
             if(songs.contains(song)){
                 songs.remove(song);
             }
         }
-        for (Song song : nextSongs){
+
+        for (Song song : _nextSongs){
             if(songs.contains(song)){
                 songs.remove(song);
             }
         }
-        if (songs.contains(currentSong)){
-            songs.remove(currentSong);
+
+        if (songs.contains(_currentSong)){
+            songs.remove(_currentSong);
         }
 
         Collections.shuffle(songs, new Random());
+
         if (num > songs.size()){
             num = songs.size();
         }
+
         if (songs.size() == 0 && !prevSongsIsEmpty()){
-            final Song song = prevSongs.get(0);
-            prevSongs.remove(0);
+            final Song song = _prevSongs.get(0);
+            _prevSongs.remove(0);
             return new ArrayList<Song>() {{ add(song); }};
         }
+
         return songs.subList(0, num);
     }
     //endregion
