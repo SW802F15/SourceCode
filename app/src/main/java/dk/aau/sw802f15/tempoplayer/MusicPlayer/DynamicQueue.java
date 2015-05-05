@@ -154,17 +154,8 @@ public class DynamicQueue {
         final int desiredBMP = getCurrentSPM_STUB();
         final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBMP, thresholdBMP);
 
-        for (Song song : _prevSongs){
-            if(songs.contains(song)){
-                songs.remove(song);
-            }
-        }
-
-        for (Song song : _nextSongs){
-            if(songs.contains(song)){
-                songs.remove(song);
-            }
-        }
+        removeDuplicateSongs(_prevSongs, songs);
+        removeDuplicateSongs(_nextSongs, songs);
 
         if (songs.contains(_currentSong)){
             songs.remove(_currentSong);
@@ -183,6 +174,14 @@ public class DynamicQueue {
         }
 
         return songs.subList(0, num);
+    }
+
+    private void removeDuplicateSongs(List<Song> songList, List<Song> songs){
+        for (Song song : songList){
+            if(songs.contains(song)){
+                songs.remove(song);
+            }
+        }
     }
     //endregion
 }
