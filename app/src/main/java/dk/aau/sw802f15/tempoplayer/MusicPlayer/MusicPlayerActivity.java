@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
@@ -43,11 +44,15 @@ public class MusicPlayerActivity extends Activity{
         super.onCreate(savedInstanceState);
 
         songDirContainsSongs = dirContainsSongs(_musicPathStub);
+
         if(!songDirContainsSongs){
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
         else{
+            if(!DBContainsSongs()){
+                SongScanner.getInstance(this).scan();
+            }
             Intent intentPlayer = new Intent(this, MusicPlayerService.class);
             bindService(intentPlayer, mMusicPlayerConnection, Context.BIND_AUTO_CREATE);
 
@@ -66,6 +71,10 @@ public class MusicPlayerActivity extends Activity{
         }
 
         instance = this;
+    }
+
+    private boolean DBContainsSongs() {
+        return new SongDatabase(this).getSongsWithBPM().size() >= MINIMUM_SONGS_REQUIRED;
     }
 
     @Override
@@ -229,12 +238,6 @@ public class MusicPlayerActivity extends Activity{
                                          AudioManager.FLAG_PLAY_SOUND
                                         +AudioManager.FLAG_SHOW_UI);
         }
-    }
-
-    public void setBPMText(int bpm) {
-        TextView BPMTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_bpm);
-        String BPM = Integer.toString(bpm);
-        BPMTextView.setText(BPM);
     }
 
     public void setSPMText(int spm) {

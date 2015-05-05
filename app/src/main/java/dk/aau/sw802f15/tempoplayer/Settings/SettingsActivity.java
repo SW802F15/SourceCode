@@ -46,14 +46,4 @@ public class SettingsActivity extends PreferenceActivity {
     }
     //endregion
 
-    ////////////////////////////////////////////////////////////////////////
-    //                  Public Functionality - Interface                  //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-    public void openMusicPlayer(View v)
-    {
-        Intent intent = new Intent(this, MusicPlayerActivity.class);
-        startActivity(intent);
-    }
-    //endregion
 }

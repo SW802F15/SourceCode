@@ -154,7 +154,7 @@ public class Initializers {
         ((TextView)_activity.findViewById(R.id.textView_title)).setText(song.getTitle());
         ((TextView)_activity.findViewById(R.id.textView_artist)).setText(song.getArtist());
         ((TextView)_activity.findViewById(R.id.textView_album)).setText(song.getAlbum());
-        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm()+"");
+        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm().toString());
 
         _activity.setSongDurationText(song.getDurationInSec());
     }

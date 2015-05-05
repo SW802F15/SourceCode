@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Handler;
@@ -52,15 +53,24 @@ public class SongScanner{
         return _instance;
     }
     public void scanInBackground(){
-        removeSongs();
-        findSongs();
-       /* new Thread() { TODO fix race
+       new Thread() {
             @Override
             public void run() {
-                removeSongs();
-                findSongs();
+                scan();
             }
-        }.start(); */
+        }.start();
+    }
+
+    public void scan(){
+        findSongs();
+        updateBPM();
+    }
+
+    private void updateBPM() {
+        List<Song> songs = _db.getSongsWithBPM(-1, 0);
+        for (Song song : songs) {
+            loadBPM(song);
+        }
     }
 
 
@@ -76,7 +86,6 @@ public class SongScanner{
                 _db.deleteSongByID(key);
             }
         }
-
     }
 
     private void findSongsHelper(String path){
@@ -91,8 +100,6 @@ public class SongScanner{
                 Song song = new Song(file);
                 song = _db.insertSong(song);
                 loadCover(song);
-                loadBPM(song);
-
             }
             else if(file.isDirectory()){
                 findSongsHelper(file.getPath());
