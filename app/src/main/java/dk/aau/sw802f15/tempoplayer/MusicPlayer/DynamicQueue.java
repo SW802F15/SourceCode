@@ -35,6 +35,7 @@ public class DynamicQueue {
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private int prevSongsSizeBeforeAdd = -1;
+    private static Context _context;
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -68,6 +69,7 @@ public class DynamicQueue {
 
     public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
+            _context = context;
             _songDatabase = new SongDatabase(context);
             instance = new DynamicQueue();
         }
@@ -191,14 +193,14 @@ public class DynamicQueue {
 
         for (Song song : getPrevSongs())
         {
-            allAlbumCovers.add(GUIManager.getBitmapFromUri(song.getAlbumUri()));
+            allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(song.getAlbumUri()));
         }
 
-        allAlbumCovers.add(GUIManager.getBitmapFromUri(getCurrentSong().getAlbumUri()));
+        allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(getCurrentSong().getAlbumUri()));
 
         for (Song song : getNextSongs())
         {
-            allAlbumCovers.add(GUIManager.getBitmapFromUri(song.getAlbumUri()));
+            allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(song.getAlbumUri()));
         }
 
         return allAlbumCovers;

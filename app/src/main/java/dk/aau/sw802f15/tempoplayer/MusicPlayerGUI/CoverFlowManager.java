@@ -60,7 +60,7 @@ public class CoverFlowManager {
             nextPosition = coverFlow.getSelectedItemPosition() + 1;
         }
         else {
-            GUIManager.showToast("No next song.");
+            GUIManager.getInstance(_activity).showToast("No next song.");
         }
         updateAlbumCovers(nextPosition, coverFlow);
     }
@@ -72,7 +72,7 @@ public class CoverFlowManager {
             coverFlow.setSelection(previousPosition);
         }
         else {
-            GUIManager.showToast("No previous song.");
+            GUIManager.getInstance(_activity).showToast("No previous song.");
         }
     }
 

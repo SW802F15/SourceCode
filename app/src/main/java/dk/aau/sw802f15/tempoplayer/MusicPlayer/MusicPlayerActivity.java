@@ -23,6 +23,7 @@ import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceActivity;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
 import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
@@ -97,7 +98,7 @@ public class MusicPlayerActivity extends Activity{
     protected void onResume() {
         super.onResume();
         if(songDirContainsSongs){
-            _initializers.startSeekBarPoll();
+            GUIManager.getInstance(getInstance()).startSeekBarPoll();
         }
     }
 
@@ -105,7 +106,7 @@ public class MusicPlayerActivity extends Activity{
     protected void onPause() {
         super.onPause();
         if(songDirContainsSongs) {
-            _initializers.stopSeekBarPoll();
+            GUIManager.getInstance(getInstance()).stopSeekBarPoll();
         }
     }
 

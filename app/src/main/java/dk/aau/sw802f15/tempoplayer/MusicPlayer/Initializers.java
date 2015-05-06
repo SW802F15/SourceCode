@@ -36,7 +36,6 @@ public class Initializers {
     private final static long TIME_BETWEEN_BUTTON_CLICKS = 100;
 
     private static MusicPlayerActivity _activity;
-    private static GUIManager _guiManager;
 
     private long timeForLastPrevClick = 0;
     private long timeForLastNextClick = 0;
@@ -54,7 +53,6 @@ public class Initializers {
     //region
     public Initializers(MusicPlayerActivity activity) {
         _activity = activity;
-        _guiManager = new GUIManager(_activity);
     }
     //endregion
 
@@ -69,8 +67,8 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mMusicPlayerService.play();
-                _guiManager .changePlayPauseButton();
-                _guiManager.startSeekBarPoll();
+                GUIManager.getInstance(_activity).changePlayPauseButton();
+                GUIManager.getInstance(_activity).startSeekBarPoll();
             }
         });
     }
@@ -82,7 +80,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mMusicPlayerService.pause();
-                _guiManager.changePlayPauseButton();
+                GUIManager.getInstance(_activity).changePlayPauseButton();
             }
         });
     }
@@ -93,15 +91,15 @@ public class Initializers {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _guiManager.resetSeekBar();
+                GUIManager.getInstance(_activity).resetSeekBar();
                 _activity.mMusicPlayerService.stop();
-                _guiManager.changePlayPauseButton();
+                GUIManager.getInstance(_activity).changePlayPauseButton();
             }
         });
     }
 
     private void initializeOnClickPrevious() {
-        final ImageView previousButton = (ImageView) _activity.findViewById(R.id.previousButton);
+        final ImageView previousButton = GUIManager.getInstance(_activity).findPreviousButton();
 
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +110,7 @@ public class Initializers {
     }
 
     private void initializeOnClickNext() {
-        ImageView nextButton = (ImageView) _activity.findViewById(R.id.nextButton);
+        ImageView nextButton = GUIManager.getInstance(_activity).findNextButton();
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,15 +129,15 @@ public class Initializers {
 
             if (action == controlAction.next) {
                 _activity.mMusicPlayerService.next();
-                _guiManager.nextAlbumCover();
+                GUIManager.getInstance(_activity).nextAlbumCover();
             }
             if (action == controlAction.preivous) {
                 _activity.mMusicPlayerService.previous();
-                _guiManager.previousAlbumCover();
+                GUIManager.getInstance(_activity).previousAlbumCover();
             }
 
-            _guiManager.updateSongInfo();
-            _guiManager.previousButtonSetVisibility(previousVisibility);
+            GUIManager.getInstance(_activity).updateSongInfo();
+            GUIManager.getInstance(_activity).previousButtonSetVisibility(previousVisibility);
 
             if (wasPlaying) {
                 _activity.mMusicPlayerService.play();
@@ -155,7 +153,7 @@ public class Initializers {
     }
 
     private void initializeOnClickSettings() {
-        ImageView settingsButton = _guiManager.findSettingsButton();
+        ImageView settingsButton = GUIManager.getInstance(_activity).findSettingsButton();
         settingsButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -168,7 +166,7 @@ public class Initializers {
     }
 
     private void initializeOnClickSeekBar() {
-        SeekBar seekBar = _guiManager.findSeekBar();
+        SeekBar seekBar = GUIManager.getInstance(_activity).findSeekBar();
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -210,18 +208,18 @@ public class Initializers {
 
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance(_activity).selectNextSong();
-        _guiManager.updateSongInfo();
-        _guiManager.previousButtonSetVisibility(false);
+        GUIManager.getInstance(_activity).updateSongInfo();
+        GUIManager.getInstance(_activity).previousButtonSetVisibility(false);
     }
 
     public void initializeCoverFlow() {
-        final CoverFlow coverFlow = (CoverFlow) _activity.findViewById(R.id.coverflow);
+        CoverFlow coverFlow = GUIManager.getInstance(_activity).findCoverFlow();
         BaseAdapter coverImageAdapter = new ResourceImageAdapter(_activity);
         coverFlow.setAdapter(coverImageAdapter);
         coverFlow.setSpacing(-10);
         coverFlow.setMaxZoom(-200);
 
-        _guiManager.setCoverFlowImages();
+        GUIManager.getInstance(_activity).setCoverFlowImages();
     }
 
     //endregion

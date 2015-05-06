@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
 
 public class StepCounterService extends Service implements SensorEventListener {
 
@@ -78,13 +79,13 @@ public class StepCounterService extends Service implements SensorEventListener {
             if(isStepTaken(curTime)){
                 double timeDiff = (double)(curTime - lastStep);
                 spm[spmIndex % SPM_AVG_SIZE] = (int)(1. / ( timeDiff / MS_PER_MIN));
-                musicPlayerActivity.setSPMText(getSpm());
+                GUIManager.getInstance(musicPlayerActivity).setSPMText(getSpm());
 
                 lastStep = curTime;
             }
             else if(curTime - 2000 > lastStep){
                 spm[spmIndex % SPM_AVG_SIZE] = 0;
-                musicPlayerActivity.setSPMText(getSpm());
+                GUIManager.getInstance(musicPlayerActivity).setSPMText(getSpm());
             }
             spmIndex++;
             accelerometerIndex++;

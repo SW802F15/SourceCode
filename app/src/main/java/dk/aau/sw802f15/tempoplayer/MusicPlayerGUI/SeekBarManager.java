@@ -14,7 +14,6 @@ public class SeekBarManager {
     ////////////////////////////////////////////////////////////////////////
     //region
     private static MusicPlayerActivity _activity;
-    private static GUIManager _guiManager;
     private final static int POLL_RATE = 100;
     private Handler durationHandler = new Handler();
     //endregion
@@ -25,7 +24,6 @@ public class SeekBarManager {
     //region
     public SeekBarManager(MusicPlayerActivity activity) {
         _activity = activity;
-        _guiManager = new GUIManager(_activity);
     }
     //endregion
 
@@ -42,7 +40,7 @@ public class SeekBarManager {
             int timeElapsed = _activity.mMusicPlayerService.musicPlayer.getCurrentPosition() / 1000;
             android.widget.SeekBar sb = (android.widget.SeekBar) _activity.findViewById(R.id.seekBar);
             sb.setProgress(timeElapsed);
-            _guiManager.setSongProgressText(timeElapsed);
+            GUIManager.getInstance(_activity).setSongProgressText(timeElapsed);
             durationHandler.postDelayed(this, POLL_RATE);
         }
     };

@@ -30,7 +30,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private final IBinder mBinder = new LocalBinder();
     private MusicPlayerActivity _activity;
-    private static GUIManager _guiManager;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -74,7 +73,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                 ImageView nextButton = (ImageView) _activity.findViewById(R.id.nextButton);
                 nextButton.performClick();
                 play();
-                _guiManager.changePlayPauseButton();
+                GUIManager.getInstance(_activity).changePlayPauseButton();
             }
         });
     }
@@ -94,7 +93,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         String errorMessage = "Song not available.";
 
         if (uri == null || !new File(uri.getPath()).exists()){
-            _guiManager.showToast(errorMessage);
+            GUIManager.getInstance(_activity).showToast(errorMessage);
             return;
         }
 
@@ -103,12 +102,12 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
-            _guiManager.updateSeekBarAndLabels();
+            GUIManager.getInstance(_activity).updateSeekBarAndLabels();
         }
         catch (IOException e) {
             e.printStackTrace();
             Log.e("loadSong", e.getStackTrace().toString());
-            _guiManager.showToast(errorMessage);
+            GUIManager.getInstance(_activity).showToast(errorMessage);
         }
 
         musicPlayer.prepareAsync();
@@ -153,7 +152,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void next() {
         if(!DynamicQueue.getInstance(getApplicationContext()).selectNextSong()){
-            GUIManager.showToast("No Available Songs");
+            GUIManager.getInstance(_activity).showToast("No Available Songs");
         }
         loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getSongUri());
 

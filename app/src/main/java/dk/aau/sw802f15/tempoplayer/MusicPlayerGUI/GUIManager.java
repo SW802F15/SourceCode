@@ -1,5 +1,6 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayerGUI;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.SongTime;
@@ -30,6 +32,7 @@ public class GUIManager {
     //                      Private Shared Resources                      //
     ////////////////////////////////////////////////////////////////////////
     //region
+    private static GUIManager instance = null;
     private static MusicPlayerActivity _activity;
     private static CoverFlowManager _coverFlowManager;
     private static SeekBarManager _seekBarManager;
@@ -39,11 +42,25 @@ public class GUIManager {
     //                            Constructors                            //
     ////////////////////////////////////////////////////////////////////////
     //region
-    public GUIManager(MusicPlayerActivity activity) {
-        _activity = activity;
-        _coverFlowManager = new CoverFlowManager(_activity);
-        _seekBarManager = new SeekBarManager(_activity);
+    protected GUIManager(){
+        //Empty because singleton
     }
+
+    public static GUIManager getInstance(Context context){
+        if (instance == null){
+            _activity = (MusicPlayerActivity) context;
+            _seekBarManager = new SeekBarManager(_activity);
+            _coverFlowManager = new CoverFlowManager(_activity);
+
+            instance = new GUIManager();
+        }
+        return instance;
+    }
+
+    public static void clearInstance(){
+        instance = null;
+    }
+
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -78,63 +95,63 @@ public class GUIManager {
     //                             Accessors                              //
     ////////////////////////////////////////////////////////////////////////
     //region
-    public static SeekBar findSeekBar() {
-        return  (SeekBar)_activity.findViewById(R.id.seekBar);
+    public SeekBar findSeekBar() {
+        return (SeekBar)_activity.findViewById(R.id.seekBar);
     }
 
-    public static ImageView findPlayButton() {
+    public ImageView findPlayButton() {
         return (ImageView) _activity.findViewById(R.id.playButton);
     }
 
-    public static ImageView findPauseButton() {
+    public ImageView findPauseButton() {
         return (ImageView) _activity.findViewById(R.id.pauseButton);
     }
 
-    public static ImageView findPreviousButton() {
+    public ImageView findPreviousButton() {
         return (ImageView) _activity.findViewById(R.id.previousButton);
     }
 
-    public static ImageView findNextButton() {
+    public ImageView findNextButton() {
         return (ImageView) _activity.findViewById(R.id.nextButton);
     }
 
-    public static ImageView findStopButton() {
+    public ImageView findStopButton() {
         return (ImageView) _activity.findViewById(R.id.stopButton);
     }
 
-    public static ImageView findSettingsButton() {
+    public ImageView findSettingsButton() {
         return (ImageView) _activity.findViewById(R.id.settingsButton);
     }
 
-    public static TextView findSongProgressText() {
+    public TextView findSongProgressText() {
         return  (TextView) _activity.findViewById(R.id.textView_currentPosition);
     }
 
-    public static TextView findSongDurationText() {
+    public TextView findSongDurationText() {
         return  (TextView) _activity.findViewById(R.id.textView_songDuration);
     }
 
-    public static TextView findTitleText() {
+    public TextView findTitleText() {
         return  (TextView) _activity.findViewById(R.id.textView_title);
     }
 
-    public static TextView findArtistText() {
+    public TextView findArtistText() {
         return  (TextView) _activity.findViewById(R.id.textView_artist);
     }
 
-    public static TextView findAlbumText() {
+    public TextView findAlbumText() {
         return  (TextView) _activity.findViewById(R.id.textView_album);
     }
 
-    public static TextView findSPMText() {
+    public TextView findSPMText() {
         return  (TextView) _activity.findViewById(R.id.textView_spm);
     }
 
-    public static TextView findBPMText() {
+    public TextView findBPMText() {
         return  (TextView) _activity.findViewById(R.id.textView_bpm);
     }
 
-    public static CoverFlow findCoverFlow() {
+    public CoverFlow findCoverFlow() {
         return (CoverFlow) _activity.findViewById(R.id.coverflow);
     }
     //endregion
@@ -143,29 +160,29 @@ public class GUIManager {
     //                  Public Functionality - Interface                  //
     ////////////////////////////////////////////////////////////////////////
     //region
-    public static void showToast(String message) {
+    public void showToast(String message) {
         Toast.makeText(_activity, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static void setSongProgressText(int duration) {
+    public void setSongProgressText(int duration) {
         TextView songDurationTextView = findSongProgressText();
         SongTime songTime = new SongTime(duration);
         songDurationTextView.setText(songTime.getFormattedSongTime());
     }
 
-    public static void setSongDurationText(int duration) {
+    public void setSongDurationText(int duration) {
         TextView songDurationTextView = findSongDurationText();
         SongTime songTime = new SongTime(duration);
         songDurationTextView.setText(songTime.getFormattedSongTime());
     }
 
-    public static void setSPMText(int spm) {
+    public void setSPMText(int spm) {
         TextView SPMTextView = findSPMText();
         String SPM = Integer.toString(spm);
         SPMTextView.setText(SPM);
     }
 
-    public static Bitmap getBitmapFromUri(Uri albumUri) {
+    public Bitmap getBitmapFromUri(Uri albumUri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
@@ -178,7 +195,7 @@ public class GUIManager {
         return BitmapFactory.decodeFile(albumUri.getPath(), optionsSecond);
     }
 
-    public static void previousButtonSetVisibility(boolean show) {
+    public void previousButtonSetVisibility(boolean show) {
         CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
         if(show){
             button.setAlpha(1f);
@@ -189,7 +206,7 @@ public class GUIManager {
         }
     }
 
-    public static void updateSongInfo() {
+    public void updateSongInfo() {
         Song song = DynamicQueue.getInstance(_activity).getCurrentSong();
         findTitleText().setText(song.getTitle());
         findArtistText().setText(song.getArtist());
@@ -199,7 +216,7 @@ public class GUIManager {
         setSongDurationText(song.getDurationInSec());
     }
 
-    public static void updateSeekBarAndLabels() {
+    public void updateSeekBarAndLabels() {
         if(_activity == null) {
             return;
         }
@@ -220,7 +237,7 @@ public class GUIManager {
         });
     }
 
-    public static void changePlayPauseButton(){
+    public void changePlayPauseButton(){
         new Handler().postDelayed(
                 new Runnable(){
                     @Override
@@ -239,27 +256,27 @@ public class GUIManager {
                 }, 200) ;
     }
 
-    public static void nextAlbumCover() {
+    public void nextAlbumCover() {
         _coverFlowManager.nextAlbumCover(findCoverFlow());
     }
 
-    public static void previousAlbumCover() {
+    public void previousAlbumCover() {
         _coverFlowManager.previousAlbumCover(findCoverFlow());
     }
 
-    public static void setCoverFlowImages() {
+    public void setCoverFlowImages() {
         _coverFlowManager.setCoverFlowImages(findCoverFlow());
     }
 
-    public static void startSeekBarPoll() {
+    public void startSeekBarPoll() {
         _seekBarManager.startSeekBarPoll();
     }
 
-    public static void stopSeekBarPoll() {
+    public void stopSeekBarPoll() {
         _seekBarManager.stopSeekBarPoll();
     }
 
-    public static void resetSeekBar() {
+    public void resetSeekBar() {
         _seekBarManager.resetSeekBar();
     }
     //endregion
