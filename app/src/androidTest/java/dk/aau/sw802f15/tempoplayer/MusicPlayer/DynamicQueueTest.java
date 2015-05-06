@@ -74,7 +74,7 @@ public class DynamicQueueTest extends AndroidTestCase {
 
     @MediumTest
     public void testSelectNextSong(){
-        DynamicQueue.getInstance(getContext()).setLastSPM(100);
+        //DynamicQueue.getInstance(getContext()).setLastSPM(100);
         dq.selectNextSong();
         Song formerSong = dq.getCurrentSong();
         dq.selectNextSong();
@@ -94,7 +94,7 @@ public class DynamicQueueTest extends AndroidTestCase {
     }
     @MediumTest
     public void testSelectPrevSong(){
-        DynamicQueue.getInstance(getContext()).setLastSPM(100);
+        //DynamicQueue.getInstance(getContext()).setLastSPM(100);
         dq.selectNextSong();
         dq.selectNextSong();
         Song formerSong = dq.getCurrentSong();

@@ -99,7 +99,6 @@ public class StepCounterService extends Service implements SensorEventListener {
             }
         }
         lastTime = curTime;
-        DynamicQueue.getInstance(getApplicationContext()).setLastSPM(getSpm());
     }
 
     private boolean isStepTaken(long curTime) {

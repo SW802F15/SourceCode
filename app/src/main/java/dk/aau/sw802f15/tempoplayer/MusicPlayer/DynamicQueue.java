@@ -15,6 +15,13 @@ import java.util.Random;
 
 public class DynamicQueue {
     ////////////////////////////////////////////////////////////////////////
+    //                         Stubs and Drivers                          //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    private int getCurrentSPM_STUB() { return 110; }
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
     //                      Private Shared Resources                      //
     ////////////////////////////////////////////////////////////////////////
     //region
@@ -29,6 +36,7 @@ public class DynamicQueue {
     private int _prevSongsSizeBeforeAdd = -1;
     private static Context _context;
     private int _lastSPM;
+    private int stub = 110;
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -50,6 +58,8 @@ public class DynamicQueue {
     public int getPrevSongsSizeBeforeAdd() {
         return _prevSongsSizeBeforeAdd;
     }
+
+    //todo: will be used at later time
     public void setLastSPM(int lastSpm){
         _lastSPM = lastSpm;
     }
@@ -138,7 +148,7 @@ public class DynamicQueue {
         _nextSongs.add(0, _currentSong);
 
         if (_nextSongs.size() > _lookAheadSize){
-            _nextSongs.remove(_nextSongs.size()-1);
+            _nextSongs.remove(_nextSongs.size() - 1);
         }
 
         _currentSong = _prevSongs.get(_prevSongs.size() - 1);
@@ -151,8 +161,7 @@ public class DynamicQueue {
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
-
-        final int desiredBPM = _lastSPM;
+        final int desiredBPM = getCurrentSPM_STUB();
         final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBPM, thresholdBPM);
 
         removeDuplicateSongs(_prevSongs, songs);
