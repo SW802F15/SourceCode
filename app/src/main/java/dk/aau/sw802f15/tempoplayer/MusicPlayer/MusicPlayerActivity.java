@@ -17,8 +17,10 @@ import android.widget.TextView;
 import java.io.File;
 
 import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceActivity;
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
+import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 
@@ -255,5 +257,15 @@ public class MusicPlayerActivity extends Activity{
 
     public static MusicPlayerActivity getInstance(){
         return instance;
+    }
+
+    public void updateSongInfo() {
+        Song song = DynamicQueue.getInstance(getApplicationContext()).getCurrentSong();
+        ((TextView) findViewById(R.id.textView_title)).setText(song.getTitle());
+        ((TextView) findViewById(R.id.textView_artist)).setText(song.getArtist());
+        ((TextView) findViewById(R.id.textView_album)).setText(song.getAlbum());
+        ((TextView) findViewById(R.id.textView_bpm)).setText(song.getBpm().toString());
+
+        setSongDurationText(song.getDurationInSec());
     }
 }

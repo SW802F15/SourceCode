@@ -112,7 +112,7 @@ public class Initializers {
 
                     _activity.mMusicPlayerService.previous();
                     previousAlbumCover();
-                    updateSongInfo();
+                    _activity.updateSongInfo();
                     previousButtonSetVisibility(false);
 
                     if(wasPlaying){
@@ -136,7 +136,7 @@ public class Initializers {
 
                     _activity.mMusicPlayerService.next();
                     nextAlbumCover();
-                    updateSongInfo();
+                    _activity.updateSongInfo();
                     previousButtonSetVisibility(true);
 
                     if (wasPlaying) {
@@ -148,15 +148,7 @@ public class Initializers {
         });
     }
 
-    private void updateSongInfo() {
-        Song song = DynamicQueue.getInstance(_activity).getCurrentSong();
-        ((TextView)_activity.findViewById(R.id.textView_title)).setText(song.getTitle());
-        ((TextView)_activity.findViewById(R.id.textView_artist)).setText(song.getArtist());
-        ((TextView)_activity.findViewById(R.id.textView_album)).setText(song.getAlbum());
-        ((TextView)_activity.findViewById(R.id.textView_bpm)).setText(song.getBpm().toString());
 
-        _activity.setSongDurationText(song.getDurationInSec());
-    }
 
     private void previousButtonSetVisibility(boolean show) {
         CircleButton button = (CircleButton) _activity.findViewById(R.id.previousButton);
@@ -353,7 +345,7 @@ public class Initializers {
 
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance(_activity).selectNextSong();
-        updateSongInfo();
+        _activity.updateSongInfo();
         previousButtonSetVisibility(false);
     }
 
