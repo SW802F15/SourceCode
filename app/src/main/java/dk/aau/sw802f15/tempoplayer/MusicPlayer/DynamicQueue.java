@@ -12,14 +12,6 @@ import java.util.List;
 import java.util.Random;
 
 public class DynamicQueue {
-
-    ////////////////////////////////////////////////////////////////////////
-    //                         Stubs and Drivers                          //
-    ////////////////////////////////////////////////////////////////////////
-    //region
-    private int getCurrentSPM_STUB() { return 110; }
-    //endregion
-
     ////////////////////////////////////////////////////////////////////////
     //                      Private Shared Resources                      //
     ////////////////////////////////////////////////////////////////////////
@@ -33,6 +25,7 @@ public class DynamicQueue {
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
     private int _prevSongsSizeBeforeAdd = -1;
+    private int _lastSPM;
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -51,18 +44,15 @@ public class DynamicQueue {
     public int getPrevSize() {
         return _prevSize;
     }
-    public int getPrevSongsSizeBeforeAdd() {
-        return _prevSongsSizeBeforeAdd;
-    }
+    public int getPrevSongsSizeBeforeAdd() { return _prevSongsSizeBeforeAdd; }
+    public void setLastSPM(int lastSpm){_lastSPM = lastSpm;};
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
     //                            Constructors                            //
     ////////////////////////////////////////////////////////////////////////
     //region
-    protected DynamicQueue(){
-        //Empty because singleton
-    }
+    protected DynamicQueue(){ /*Empty because singleton*/ }
 
     public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
@@ -145,14 +135,14 @@ public class DynamicQueue {
         _prevSongs.remove(null);
     }
 
-    public List<Song> getMatchingSongs(int num, int thresholdBMP){
-        if (num < 1 || thresholdBMP < 0){
+    public List<Song> getMatchingSongs(int num, int thresholdBPM){
+        if (num < 1 || thresholdBPM < 0){
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
 
-        final int desiredBMP = getCurrentSPM_STUB();
-        final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBMP, thresholdBMP);
+        final int desiredBPM = _lastSPM;
+        final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBPM, thresholdBPM);
 
         removeDuplicateSongs(_prevSongs, songs);
         removeDuplicateSongs(_nextSongs, songs);
