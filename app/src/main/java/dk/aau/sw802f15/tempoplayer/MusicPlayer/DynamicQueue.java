@@ -26,7 +26,7 @@ public class DynamicQueue {
     private int _prevSize = 3;
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
-    private int prevSongsSizeBeforeAdd = -1;
+    private int _prevSongsSizeBeforeAdd = -1;
     private static Context _context;
     private int _lastSPM;
     //endregion
@@ -47,8 +47,12 @@ public class DynamicQueue {
     public int getPrevSize() {
         return _prevSize;
     }
-    public int getPrevSongsSizeBeforeAdd() { return _prevSongsSizeBeforeAdd; }
-    public void setLastSPM(int lastSpm){_lastSPM = lastSpm;};
+    public int getPrevSongsSizeBeforeAdd() {
+        return _prevSongsSizeBeforeAdd;
+    }
+    public void setLastSPM(int lastSpm){
+        _lastSPM = lastSpm;
+    }
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
