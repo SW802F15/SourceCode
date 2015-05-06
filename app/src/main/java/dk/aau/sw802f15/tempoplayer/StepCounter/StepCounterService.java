@@ -13,6 +13,7 @@ import android.os.IBinder;
 import java.util.Arrays;
 import java.util.Collections;
 
+import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.Initializers;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
@@ -98,6 +99,7 @@ public class StepCounterService extends Service implements SensorEventListener {
             }
         }
         lastTime = curTime;
+        DynamicQueue.getInstance(getApplicationContext()).setLastSPM(getSpm());
     }
 
     private boolean isStepTaken(long curTime) {
@@ -117,9 +119,11 @@ public class StepCounterService extends Service implements SensorEventListener {
 
     public int getSpm() {
         int sum = 0;
+
         for(int n : spm){
             sum += n;
         }
+
         return sum / SPM_AVG_SIZE;
     }
 }
