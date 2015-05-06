@@ -79,7 +79,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                                             dk.aau.sw802f15.tempoplayer.R.id.nextButton);
                 nextButton.performClick();
                 play();
-                Initializers.changePlayPauseButton();
+                musicPlayerActivity.changePlayPauseButton();
             }
         });
     }

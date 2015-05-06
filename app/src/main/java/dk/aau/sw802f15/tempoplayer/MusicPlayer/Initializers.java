@@ -70,7 +70,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mMusicPlayerService.play();
-                changePlayPauseButton();
+                _activity.changePlayPauseButton();
                 startSeekBarPoll();
             }
         });
@@ -83,7 +83,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 _activity.mMusicPlayerService.pause();
-                changePlayPauseButton();
+                _activity.changePlayPauseButton();
             }
         });
     }
@@ -96,7 +96,7 @@ public class Initializers {
             public void onClick(View v) {
                 resetSeekBar();
                 _activity.mMusicPlayerService.stop();
-                changePlayPauseButton();
+                _activity.changePlayPauseButton();
             }
         });
     }
@@ -324,24 +324,6 @@ public class Initializers {
         initializeOnClickSeekBar();
     }
 
-    public static void changePlayPauseButton(){
-        new Handler().postDelayed(
-            new Runnable(){
-                @Override
-                public void run() {
-                    final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
-                    final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
-                    if (_activity.mMusicPlayerService.musicPlayer.isPlaying()) {
-                        pauseButton.setVisibility(View.VISIBLE);
-                        playButton.setVisibility(View.GONE);
-                    }
-                    else {
-                        pauseButton.setVisibility(View.GONE);
-                        playButton.setVisibility(View.VISIBLE);
-                    }
-                }
-            }, 200) ;
-    }
 
     public void initializeDynamicQueue() {
         DynamicQueue.getInstance(_activity).selectNextSong();

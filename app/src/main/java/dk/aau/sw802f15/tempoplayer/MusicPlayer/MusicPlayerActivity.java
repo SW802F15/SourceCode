@@ -8,10 +8,13 @@ import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -268,4 +271,24 @@ public class MusicPlayerActivity extends Activity{
 
         setSongDurationText(song.getDurationInSec());
     }
+
+    public static void changePlayPauseButton(){
+        new Handler().postDelayed(
+                new Runnable(){
+                    @Override
+                    public void run() {
+                        final ImageView playButton = (ImageView) getInstance().findViewById(R.id.playButton);
+                        final ImageView pauseButton = (ImageView) getInstance().findViewById(R.id.pauseButton);
+                        if (getInstance().mMusicPlayerService.musicPlayer.isPlaying()) {
+                            pauseButton.setVisibility(View.VISIBLE);
+                            playButton.setVisibility(View.GONE);
+                        }
+                        else {
+                            pauseButton.setVisibility(View.GONE);
+                            playButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, 200) ;
+    }
+
 }
