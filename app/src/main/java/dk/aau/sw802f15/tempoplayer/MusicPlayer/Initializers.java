@@ -1,28 +1,15 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Handler;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.SeekBarManager;
-import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Draegert on 26-02-2015.
@@ -34,9 +21,7 @@ public class Initializers {
     ////////////////////////////////////////////////////////////////////////
     //region
     private final static long TIME_BETWEEN_BUTTON_CLICKS = 100;
-
     private static MusicPlayerActivity _activity;
-
     private long timeForLastPrevClick = 0;
     private long timeForLastNextClick = 0;
     private boolean _isPlaying = false;
@@ -61,7 +46,7 @@ public class Initializers {
     ////////////////////////////////////////////////////////////////////////
     //region
     private void initializeOnClickPlay() {
-        final ImageView playButton = (ImageView) _activity.findViewById(R.id.playButton);
+        final ImageView playButton = GUIManager.getInstance(_activity).findPlayButton();
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +59,7 @@ public class Initializers {
     }
 
     private void initializeOnClickPause() {
-        final ImageView pauseButton = (ImageView) _activity.findViewById(R.id.pauseButton);
+        final ImageView pauseButton = GUIManager.getInstance(_activity).findPauseButton();
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +71,7 @@ public class Initializers {
     }
 
     private void initializeOnClickStop() {
-        ImageView stopButton = (ImageView) _activity.findViewById(R.id.stopButton);
+        ImageView stopButton = GUIManager.getInstance(_activity).findStopButton();
 
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +89,7 @@ public class Initializers {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeSong(controlAction.preivous, false);
+                changeSongGUIActions(controlAction.preivous, false);
             }
         });
     }
@@ -115,12 +100,12 @@ public class Initializers {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeSong(controlAction.next, true);
+                changeSongGUIActions(controlAction.next, true);
             }
         });
     }
 
-    private void changeSong(controlAction action, boolean previousVisibility) {
+    private void changeSongGUIActions(controlAction action, boolean previousVisibility) {
         long timeSinceLastClick = (action == controlAction.next) ? timeForLastNextClick
                                                                  : timeForLastPrevClick;
 
@@ -221,6 +206,5 @@ public class Initializers {
 
         GUIManager.getInstance(_activity).setCoverFlowImages();
     }
-
     //endregion
 }

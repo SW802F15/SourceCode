@@ -6,22 +6,17 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
-
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.SongTime;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CircleButton.CircleButton;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
-import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
 import dk.aau.sw802f15.tempoplayer.R;
 
 /**
@@ -60,7 +55,6 @@ public class GUIManager {
     public static void clearInstance(){
         instance = null;
     }
-
     //endregion
 
     ////////////////////////////////////////////////////////////////////////

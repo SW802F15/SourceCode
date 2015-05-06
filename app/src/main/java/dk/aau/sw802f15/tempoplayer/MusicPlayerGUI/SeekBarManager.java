@@ -1,9 +1,7 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayerGUI;
 
 import android.os.Handler;
-
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
-import dk.aau.sw802f15.tempoplayer.R;
 
 /**
  * Created by Draegert on 06-05-2015.
@@ -38,15 +36,13 @@ public class SeekBarManager {
                 return;
             }
             int timeElapsed = _activity.mMusicPlayerService.musicPlayer.getCurrentPosition() / 1000;
-            android.widget.SeekBar sb = (android.widget.SeekBar) _activity.findViewById(R.id.seekBar);
-            sb.setProgress(timeElapsed);
+            android.widget.SeekBar seekBar = GUIManager.getInstance(_activity).findSeekBar();
+            seekBar.setProgress(timeElapsed);
             GUIManager.getInstance(_activity).setSongProgressText(timeElapsed);
             durationHandler.postDelayed(this, POLL_RATE);
         }
     };
     //endregion
-
-
 
     ////////////////////////////////////////////////////////////////////////
     //                  Public Functionality - Interface                  //
@@ -68,7 +64,4 @@ public class SeekBarManager {
         }
     }
     //endregion
-
-
-
 }

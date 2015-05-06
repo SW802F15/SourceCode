@@ -1,13 +1,10 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayerGUI;
 
 import android.widget.BaseAdapter;
-import android.widget.Toast;
-
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.DynamicQueue;
 import dk.aau.sw802f15.tempoplayer.MusicPlayer.MusicPlayerActivity;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.CoverFlow;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.CoverFlow.ResourceImageAdapter;
-import dk.aau.sw802f15.tempoplayer.R;
 
 /**
  * Created by Draegert on 06-05-2015.
@@ -82,22 +79,4 @@ public class CoverFlowManager {
         coverFlow.setAdapter(coverImageAdapter);
     }
     //endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
