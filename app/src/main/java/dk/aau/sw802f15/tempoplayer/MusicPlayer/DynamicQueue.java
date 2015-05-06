@@ -75,10 +75,12 @@ public class DynamicQueue {
         if (_nextSongs == null || _nextSongs.size() == 0) {
             _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
+        
         if (_nextSongs.size() == 0 && _prevSongs.size() > 0){
             _prevSongs.clear();
             _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
+
         return _nextSongs.size() != 0;
     }
 
@@ -86,6 +88,7 @@ public class DynamicQueue {
         if (_currentSong != null){
             _prevSongsSizeBeforeAdd = _prevSongs.size();
             _prevSongs.add(_currentSong);
+
             if (_prevSongs.size() > _prevSize){
                 _prevSongs.remove(0);
             }
