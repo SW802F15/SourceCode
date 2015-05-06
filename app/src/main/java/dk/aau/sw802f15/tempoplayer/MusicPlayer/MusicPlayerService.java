@@ -6,33 +6,31 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
-import dk.aau.sw802f15.tempoplayer.R;
 
 import java.io.File;
 import java.io.IOException;
+
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
+import dk.aau.sw802f15.tempoplayer.R;
 
 /**
  * Created by Draegert on 16-02-2015.
  */
 public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener{
 
-    MediaPlayer musicPlayer;
+    public MediaPlayer musicPlayer;
     public boolean isLoaded = false;
     public boolean isPrepared = false;
     public boolean isPaused = false;
 
 
     private final IBinder mBinder = new LocalBinder();
-    private MusicPlayerActivity musicPlayerActivity;
+    private MusicPlayerActivity _activity;
+    private static GUIManager _guiManager;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -47,7 +45,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public IBinder onBind(Intent intent) {
-        musicPlayerActivity = MusicPlayerActivity.getInstance();
+        _activity = MusicPlayerActivity.getInstance();
         return mBinder;
     }
 
@@ -60,8 +58,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         isPrepared = true;
     }
 
-
-    private int i = 0;
     private void initialiseMusicPlayer(){
         if (musicPlayer == null){
             musicPlayer = new MediaPlayer();
@@ -75,11 +71,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             @Override
             public void onCompletion(MediaPlayer mp)
             {
-                ImageView nextButton = (ImageView) musicPlayerActivity.findViewById(
-                                            dk.aau.sw802f15.tempoplayer.R.id.nextButton);
+                ImageView nextButton = (ImageView) _activity.findViewById(R.id.nextButton);
                 nextButton.performClick();
                 play();
-                musicPlayerActivity.changePlayPauseButton();
+                _guiManager.changePlayPauseButton();
             }
         });
     }
@@ -99,7 +94,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         String errorMessage = "Song not available.";
 
         if (uri == null || !new File(uri.getPath()).exists()){
-            showToast(errorMessage);
+            _guiManager.showToast(errorMessage);
             return;
         }
 
@@ -108,37 +103,15 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         try {
             musicPlayer.setDataSource(this, uri);
             isLoaded = true;
-            updateSeekBarAndLabels();
+            _guiManager.updateSeekBarAndLabels();
         }
         catch (IOException e) {
             e.printStackTrace();
             Log.e("loadSong", e.getStackTrace().toString());
-            showToast(errorMessage);
+            _guiManager.showToast(errorMessage);
         }
 
         musicPlayer.prepareAsync();
-    }
-
-    public void updateSeekBarAndLabels()
-    {
-        if(musicPlayerActivity == null) {
-            return;
-        }
-
-        SeekBar seekBar = (SeekBar) musicPlayerActivity.findViewById(R.id.seekBar);
-        final Song song = DynamicQueue.getInstance(musicPlayerActivity).getCurrentSong();
-        final TextView minLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_currentPosition);
-        final TextView maxLabel = (TextView) musicPlayerActivity.findViewById(R.id.textView_songDuration);
-        Handler handler = new Handler();
-
-        seekBar.setMax(song.getDurationInSec());
-
-        handler.post(new Runnable(){
-            public void run() {
-                minLabel.setText("00:00");
-                maxLabel.setText(song.getDurationInMinAndSec());
-            }
-        });
     }
 
     public void play(){
@@ -180,7 +153,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void next() {
         if(!DynamicQueue.getInstance(getApplicationContext()).selectNextSong()){
-            Toast.makeText(this, "No Available Songs", Toast.LENGTH_SHORT).show();
+            GUIManager.showToast("No Available Songs");
         }
         loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getSongUri());
 
@@ -202,11 +175,5 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         else {
             pause();
         }
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getApplicationContext(),
-                       message,
-                       Toast.LENGTH_SHORT).show();
     }
 }

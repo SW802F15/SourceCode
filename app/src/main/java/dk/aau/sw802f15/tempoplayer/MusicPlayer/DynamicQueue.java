@@ -1,10 +1,12 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -183,6 +185,25 @@ public class DynamicQueue {
             }
         }
     }
+
+    public List<Bitmap> getDynamicQueueAsList() {
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
+
+        for (Song song : getPrevSongs())
+        {
+            allAlbumCovers.add(GUIManager.getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        allAlbumCovers.add(GUIManager.getBitmapFromUri(getCurrentSong().getAlbumUri()));
+
+        for (Song song : getNextSongs())
+        {
+            allAlbumCovers.add(GUIManager.getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        return allAlbumCovers;
+    }
+
     //endregion
 }
 

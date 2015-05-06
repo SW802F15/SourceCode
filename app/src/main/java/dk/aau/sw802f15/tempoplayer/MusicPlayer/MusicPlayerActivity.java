@@ -123,8 +123,8 @@ public class MusicPlayerActivity extends Activity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        Intent i = new Intent(this, ControlInterfaceActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(this, ControlInterfaceActivity.class);
+        startActivity(intent);
         return false;
     }
 
@@ -147,8 +147,7 @@ public class MusicPlayerActivity extends Activity{
 
     private ServiceConnection mStepCounterConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             StepCounterService.LocalBinder binder = (StepCounterService.LocalBinder) service;
             mStepCounterService = binder.getService();
@@ -236,59 +235,7 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-    public void setSPMText(int spm) {
-        TextView SPMTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_spm);
-        String SPM = Integer.toString(spm);
-        SPMTextView.setText(SPM);
-    }
-
-    public void setSongDurationText(int duration) {
-        TextView songDurationTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_songDuration);
-
-        SongTime songTime = new SongTime(duration);
-
-        songDurationTextView.setText(songTime.getFormattedSongTime());
-    }
-
-    public void setSongProgressText(int duration) {
-        TextView songDurationTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_currentPosition);
-
-        SongTime songTime = new SongTime(duration);
-
-        songDurationTextView.setText(songTime.getFormattedSongTime());
-    }
-
     public static MusicPlayerActivity getInstance(){
         return instance;
     }
-
-    public void updateSongInfo() {
-        Song song = DynamicQueue.getInstance(getApplicationContext()).getCurrentSong();
-        ((TextView) findViewById(R.id.textView_title)).setText(song.getTitle());
-        ((TextView) findViewById(R.id.textView_artist)).setText(song.getArtist());
-        ((TextView) findViewById(R.id.textView_album)).setText(song.getAlbum());
-        ((TextView) findViewById(R.id.textView_bpm)).setText(song.getBpm().toString());
-
-        setSongDurationText(song.getDurationInSec());
-    }
-
-    public static void changePlayPauseButton(){
-        new Handler().postDelayed(
-                new Runnable(){
-                    @Override
-                    public void run() {
-                        final ImageView playButton = (ImageView) getInstance().findViewById(R.id.playButton);
-                        final ImageView pauseButton = (ImageView) getInstance().findViewById(R.id.pauseButton);
-                        if (getInstance().mMusicPlayerService.musicPlayer.isPlaying()) {
-                            pauseButton.setVisibility(View.VISIBLE);
-                            playButton.setVisibility(View.GONE);
-                        }
-                        else {
-                            pauseButton.setVisibility(View.GONE);
-                            playButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }, 200) ;
-    }
-
 }
