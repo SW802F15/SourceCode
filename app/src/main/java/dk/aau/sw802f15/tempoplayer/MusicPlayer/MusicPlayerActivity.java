@@ -5,22 +5,20 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.MotionEvent;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.File;
 
-import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceActivity;
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
+import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceView;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
@@ -39,12 +37,16 @@ public class MusicPlayerActivity extends Activity{
     public MusicPlayerService mMusicPlayerService;
     private StepCounterService mStepCounterService;
 
+
     boolean mMusicPlayerBound = false;
     boolean mStepCounterBound = false;
 
     private Initializers _initializers;
     private boolean songDirContainsSongs = false;
     private static MusicPlayerActivity instance;
+    private boolean controlInterfaceActive = false;
+    private ControlInterfaceView controlInterfaceView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,8 @@ public class MusicPlayerActivity extends Activity{
             _initializers.initializeDynamicQueue();
             _initializers.initializeOnClickListeners();
             _initializers.initializeCoverFlow();
+
+            controlInterfaceView = new ControlInterfaceView(this);
         }
 
         instance = this;
@@ -121,13 +125,7 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        Intent intent = new Intent(this, ControlInterfaceActivity.class);
-        startActivity(intent);
-        return false;
-    }
+
 
     private ServiceConnection mMusicPlayerConnection = new ServiceConnection() {
         @Override
@@ -239,4 +237,22 @@ public class MusicPlayerActivity extends Activity{
     public static MusicPlayerActivity getInstance(){
         return instance;
     }
+
+    @Override
+    public void onBackPressed() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        boolean viewActive = controlInterfaceView.removeWindow();
+        if (!viewActive) {
+            super.onBackPressed();
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        controlInterfaceView.addWindow();
+        return false;
+    }
 }
+

@@ -110,7 +110,7 @@ public class Initializers {
                                                                  : timeForLastPrevClick;
 
         if (System.currentTimeMillis() - timeSinceLastClick > TIME_BETWEEN_BUTTON_CLICKS) {
-            boolean wasPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+            boolean wasPlaying = _activity.mMusicPlayerService.isPlaying();
 
             if (action == controlAction.next) {
                 _activity.mMusicPlayerService.next();
@@ -159,13 +159,13 @@ public class Initializers {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                _isPlaying = _activity.mMusicPlayerService.musicPlayer.isPlaying();
+                _isPlaying = _activity.mMusicPlayerService.isPlaying();
                 _activity.mMusicPlayerService.pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                _activity.mMusicPlayerService.musicPlayer.seekTo(seekBar.getProgress() * 1000);
+                _activity.mMusicPlayerService.seekTo(seekBar.getProgress() * 1000);
 
                 if (_isPlaying) {
                     _activity.mMusicPlayerService.play();
