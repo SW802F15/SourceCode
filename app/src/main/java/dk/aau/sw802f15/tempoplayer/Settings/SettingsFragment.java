@@ -1,6 +1,7 @@
 package dk.aau.sw802f15.tempoplayer.Settings;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -46,7 +47,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void initSongScanner() {
         initResetPaths();
         initAddPath();
-        loadSavedPaths();
+        displaySavedPaths();
 
         PreferenceCategory preferenceCategory = new PreferenceCategory(getActivity());
         preferenceCategory.setTitle("Music Paths");
@@ -56,14 +57,19 @@ public class SettingsFragment extends PreferenceFragment {
         addAllPreferences();
     }
 
-    private void loadSavedPaths() {
-        Set<String> stringSet = sharedPreferences.getStringSet("paths",
+    private void displaySavedPaths() {
+        for (String path : getSavedPaths(getActivity())) {
+            displayPath(path);
+        }
+    }
+
+    public static Set<String> getSavedPaths(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return sharedPreferences.getStringSet("paths",
                 new HashSet<String>() {{
                     add(DEFAULT_DIRECTORY);
                 }});
-        for (String path : stringSet) {
-            displayPath(path);
-        }
     }
 
     private void savePath(String path) {
