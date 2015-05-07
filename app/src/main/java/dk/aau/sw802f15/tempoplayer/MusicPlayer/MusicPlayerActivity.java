@@ -78,6 +78,15 @@ public class MusicPlayerActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
+        if(!DBContainsSongs()){
+            SongScanner.getInstance(this).scan();
+        }
+        if(!DBContainsSongs()){
+            finish();
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return;
+        }
         if(songDirContainsSongs){
             GUIManager.getInstance(getInstance()).startSeekBarPoll();
         }
@@ -131,6 +140,8 @@ public class MusicPlayerActivity extends Activity{
 
         instance = this;
     }
+
+
 
     private void bindMusicPlayerService() {
         Intent intentPlayer = new Intent(this, MusicPlayerService.class);

@@ -78,7 +78,7 @@ public class SettingsFragment extends PreferenceFragment {
                 new HashSet<String>() {{
                     add(DEFAULT_DIRECTORY);
                 }}));
-        stringSet.add(Environment.getExternalStorageDirectory().toString() + path);
+        stringSet.add(path);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("paths", stringSet);
         editor.apply();

@@ -34,7 +34,14 @@ public class SeekBarManager {
             if(_activity.getMusicPlayerService() == null) { //|| _activity.mMusicPlayerService.musicPlayer == null){
                 return;
             }
-            int timeElapsed = _activity.getMusicPlayerService().getCurrentPosition() / 1000;
+            int timeElapsed;
+            try{
+                timeElapsed = _activity.getMusicPlayerService().getCurrentPosition() / 1000;
+
+            }
+            catch (IllegalStateException e){
+                timeElapsed = 0;
+            }
             android.widget.SeekBar seekBar = GUIManager.getInstance(_activity).findSeekBar();
             seekBar.setProgress(timeElapsed);
             GUIManager.getInstance(_activity).setSongProgressText(timeElapsed);
