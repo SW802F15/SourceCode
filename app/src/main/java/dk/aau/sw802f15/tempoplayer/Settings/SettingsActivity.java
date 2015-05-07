@@ -34,7 +34,7 @@ public class SettingsActivity extends PreferenceActivity {
                 .commit();
         setContentView(R.layout.activity_settings);
 
-
+/*
         SongDatabase songDatabase = new SongDatabase(this);
         SongScanner.getInstance(this).findSongs();
 
@@ -42,7 +42,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         if(!(songs.size() >= MusicPlayerActivity.getMINIMUM_SONGS_REQUIRED())){
             Toast.makeText(this, "Not enough songs in the folder.", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
     //endregion
 

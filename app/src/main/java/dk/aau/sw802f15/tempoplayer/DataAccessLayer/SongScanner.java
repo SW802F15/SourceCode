@@ -54,16 +54,16 @@ public class SongScanner{
         return _instance;
     }
     public void scanInBackground(){
-       new Thread() {
-            @Override
-            public void run() {
-                scan();
-            }
-        }.start();
+        scan();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                scan();
+//            }
+//        }.start();
     }
 
     public void scan(){
-        removeSongs();
         findSongs();
         updateBPM();
     }
@@ -78,16 +78,6 @@ public class SongScanner{
     public void findSongs(){
         for(String path : SettingsFragment.getSavedPaths(_context)){
             findSongsHelper(path);
-        }
-    }
-
-    public void removeSongs(){
-        Map<Integer, String> paths = _db.getAllSongPaths();
-
-        for (Integer key : paths.keySet()) {
-            if(!(new File(paths.get(key)).exists())){
-                _db.deleteSongByID(key);
-            }
         }
     }
 
@@ -126,34 +116,6 @@ public class SongScanner{
             loadCoverFromFile(song, data);
         }
     }
-
-    /* for online cover demo.
-    private void loadCoverOnline(Song song) throws IOException {
-        new AsyncTask<String, Void, String>() {
-            @Override
-            protected String doInBackground(String... urls) {
-                try {
-                    HttpClient client = new DefaultHttpClient();
-                    HttpGet request = new HttpGet("http://developer.android.com/reference/android/os/AsyncTask.html");
-                    HttpResponse response = client.execute(request);
-
-                    String html = "";
-                    InputStream in = response.getEntity().getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder str = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        str.append(line);
-                    }
-                    in.close();
-                    html = str.toString();
-                    return html;
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-        }.execute();
-    }*/
 
     private void loadCoverFromFile(Song song, byte[] data) {
         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);

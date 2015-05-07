@@ -137,20 +137,25 @@ public class SongDatabase extends SQLiteOpenHelper
     }
 
     private List<Song> removeMissingSongs(List<Song> songs) {
+
+        List<Song> filteredSongs = new ArrayList<>();
+
+        filteredSongs.addAll(songs);
+
         for(Song song : songs){
 
             //Delete song if file doesn't exist
             if(!new File(song.getSongUri().getPath()).exists()) {
-                songs.remove(song);
+                filteredSongs.remove(song);
                 deleteSong(song);
             }
             //Delete song if file not in path from settings
-            if(!songInSavedPaths(song)){
-                songs.remove(song);
+            else if(!songInSavedPaths(song)){
+                filteredSongs.remove(song);
                 deleteSong(song);
             }
         }
-        return songs;
+        return filteredSongs;
     }
 
     public boolean songInSavedPaths(Song song) {
@@ -215,28 +220,6 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
         return resultSongs;
-    }
-
-    public Map<Integer, String> getAllSongPaths() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Map<Integer, String> result = new HashMap<>();
-
-        Cursor cursor = db.query(TABLE_NAME, new String[] {"ROWID ,path"}, null,
-                null, null, null, null, null);
-        if(cursor != null)
-        {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                result.put(cursor.getInt(cursor.getColumnIndex("rowid")),
-                           cursor.getString(cursor.getColumnIndex("path")));
-                cursor.moveToNext();
-            }
-            cursor.close();
-        }else {
-            throw new SQLiteException();
-        }
-
-        return result;
     }
 
     public int deleteSongByID(long id) {

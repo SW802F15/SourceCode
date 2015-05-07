@@ -86,16 +86,6 @@ public class SongScannerTest extends AndroidTestCase {
         List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
         assertEquals(12, songs.size());
     }
-
-    public void testRemoveSongs() {
-        _songDatabase.insertSong(_nonExistingSong);
-        List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
-        assertEquals(1, songs.size());
-        _songScanner.removeSongs();
-        songs = _songDatabase.getSongsWithBPM(100, 1000);
-        assertEquals(0, songs.size());
-    }
-
     @MediumTest
     public void testFindSongsHelper() {
         //todo java.lang.NoClassDefFoundError: java.lang.ReflectiveOperationException
