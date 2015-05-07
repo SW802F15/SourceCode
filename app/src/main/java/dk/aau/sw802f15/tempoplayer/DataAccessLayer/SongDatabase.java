@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,25 +123,7 @@ public class SongDatabase extends SQLiteOpenHelper
 
     public int deleteSong(Song song) throws SQLiteException
     {
-        //If song already exists
-        if (song.getID() == -1)
-        {
-            throw new SQLiteException("Song doesn't exist in database.");
-        }
-
-        try{
-            SQLiteDatabase db = this.getWritableDatabase();
-
-            db.delete(TABLE_NAME, "ROWID = " + song.getID(), null);
-
-            db.close();
-
-            return 0;
-        }catch (SQLiteException e)
-        {
-            e.printStackTrace();
-            throw new SQLiteException();
-        }
+        return deleteSongByID(song.getID());
     }
 
     public Song getSongById(long songId) throws SQLiteException{
@@ -175,8 +158,9 @@ public class SongDatabase extends SQLiteOpenHelper
         Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
                 new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
                 , null, null, null, null);
+        List<Song> songs = constructSongListFromCursor(cursor, db);
 
-        return constructSongListFromCursor(cursor, db);
+        return songs;
     }
 
     private List<Song> constructSongListFromCursor(Cursor cursor, SQLiteDatabase db){
@@ -227,8 +211,10 @@ public class SongDatabase extends SQLiteOpenHelper
         return result;
     }
 
-    public int deleteSongByID(Integer id) {
+    public int deleteSongByID(long id) {
         try{
+            deleteAlbumCoverById(id);
+
             SQLiteDatabase db = this.getWritableDatabase();
             db.delete(TABLE_NAME, "ROWID = " + id, null);
             db.close();
@@ -238,6 +224,14 @@ public class SongDatabase extends SQLiteOpenHelper
         {
             e.printStackTrace();
             throw new SQLiteException();
+        }
+    }
+
+    private void deleteAlbumCoverById(long songID) {
+        Song song = getSongById(songID);
+        File cover = new File(song.getAlbumUri().getPath());
+        if (cover.exists()){
+            cover.delete();
         }
     }
 

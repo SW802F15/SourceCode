@@ -33,7 +33,7 @@ public class TapCounter {
         MusicPlayerActivity activity = MusicPlayerActivity.getInstance();
         switch (taps){
             case 1:
-                if (!activity.getMusicPlayerService().isPlaying()) {
+                if (!activity.isPlaying()) {
                     GUIManager.getInstance(activity).findPlayButton().callOnClick();
                 }
                 else {
