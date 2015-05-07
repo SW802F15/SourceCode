@@ -49,7 +49,6 @@ public class TapCounter {
             default:
                 //do nothing
         }
-        Toast.makeText(activity, "taps: " + taps, Toast.LENGTH_SHORT).show();
     }
     //endregion
 
