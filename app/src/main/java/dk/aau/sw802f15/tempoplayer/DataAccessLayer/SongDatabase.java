@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
@@ -185,11 +186,18 @@ public class SongDatabase extends SQLiteOpenHelper
         return resultSong;
     }
 
-    public List<Song> getSongsWithBPM(int BMP, int tresholdBMP){
+    public List<Song> getSongsWithBPM(int BPM, int thresholdBPM, int minimumBPM){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
-                new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
+        if (((BPM - thresholdBPM) >= (BPM + thresholdBPM)) && thresholdBPM != 0 ) {
+            Log.w("Database Query" ,"Threshold causes out of bounds exception.");
+            return new ArrayList<Song>();
+        }
+
+        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm >= ? AND bpm <= ?",
+                new String[] {String.valueOf(minimumBPM),
+                              String.valueOf(BPM - thresholdBPM),
+                              String.valueOf(BPM + thresholdBPM) }
                 , null, null, null, null);
 
         List<Song> songs = constructSongListFromCursor(cursor, db);
@@ -220,6 +228,26 @@ public class SongDatabase extends SQLiteOpenHelper
             throw new SQLiteException();
         }
         return resultSongs;
+    }
+
+    public boolean isEmpty() {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT count(*) FROM " + TABLE_NAME, null);
+
+        cursor.moveToFirst();
+
+        try {
+            if (cursor.getInt(0) > 0) {
+                database.close();
+                return false;
+            } else {
+                database.close();
+                return true;
+            }
+        }
+        catch (Exception e) {
+            return true;
+        }
     }
 
     public int deleteSongByID(long id) {
@@ -277,6 +305,6 @@ public class SongDatabase extends SQLiteOpenHelper
 
     //Returns all songs in the 0-200 BMP range, other values not supported.
     public List<Song> getSongsWithBPM() {
-        return getSongsWithBPM(100,100);
+        return getSongsWithBPM(100,100, 0);
     }
 }

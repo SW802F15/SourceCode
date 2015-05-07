@@ -110,6 +110,12 @@ public class MusicPlayerActivity extends Activity{
             if(!DBContainsSongs()){
                 SongScanner.getInstance(this).scan();
             }
+            if(!DBContainsSongs()){
+                finish();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return;
+            }
 
             bindMusicPlayerService();
             bindStepCounterService();
