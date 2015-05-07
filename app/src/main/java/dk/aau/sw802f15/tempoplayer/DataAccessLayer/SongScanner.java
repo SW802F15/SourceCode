@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Handler;
 
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsFragment;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class SongScanner{
@@ -74,9 +75,10 @@ public class SongScanner{
         }
     }
 
-
     public void findSongs(){
-        findSongsHelper(_musicPathStub);
+        for(String path : SettingsFragment.getSavedPaths(_context)){
+            findSongsHelper(path);
+        }
     }
 
     public void removeSongs(){

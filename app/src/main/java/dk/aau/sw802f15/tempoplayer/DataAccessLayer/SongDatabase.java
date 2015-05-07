@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsFragment;
+
 /**
  * Created by Dan on 18-02-2015.
  */
@@ -134,6 +136,32 @@ public class SongDatabase extends SQLiteOpenHelper
         return getSong("path", uri);
     }
 
+    private List<Song> removeMissingSongs(List<Song> songs) {
+        for(Song song : songs){
+
+            //Delete song if file doesn't exist
+            if(!new File(song.getSongUri().getPath()).exists()) {
+                songs.remove(song);
+                deleteSong(song);
+            }
+            //Delete song if file not in path from settings
+            if(!songInSavedPaths(song)){
+                songs.remove(song);
+                deleteSong(song);
+            }
+        }
+        return songs;
+    }
+
+    public boolean songInSavedPaths(Song song) {
+        for(String path : SettingsFragment.getSavedPaths(_context)){
+            if(song.getSongUri().getPath().contains(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Song getSong(String searchRow, Object searchParameter) {
         Song resultSong = null;
 
@@ -158,9 +186,9 @@ public class SongDatabase extends SQLiteOpenHelper
         Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm <= ?",
                 new String[] { String.valueOf(BMP - tresholdBMP), String.valueOf(BMP + tresholdBMP) }
                 , null, null, null, null);
-        List<Song> songs = constructSongListFromCursor(cursor, db);
 
-        return songs;
+        List<Song> songs = constructSongListFromCursor(cursor, db);
+        return removeMissingSongs(songs);
     }
 
     private List<Song> constructSongListFromCursor(Cursor cursor, SQLiteDatabase db){
