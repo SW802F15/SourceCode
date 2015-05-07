@@ -83,16 +83,16 @@ public class SongScannerTest extends AndroidTestCase {
     public void testFindSongs() {
         _songDatabase.insertSong(_song);
         _songScanner.findSongs();
-        List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
+        List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
         assertEquals(12, songs.size());
     }
 
     public void testRemoveSongs() {
         _songDatabase.insertSong(_nonExistingSong);
-        List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
+        List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
         assertEquals(1, songs.size());
         _songScanner.removeSongs();
-        songs = _songDatabase.getSongsWithBPM(100, 1000);
+        songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
         assertEquals(0, songs.size());
     }
 
@@ -110,22 +110,22 @@ public class SongScannerTest extends AndroidTestCase {
 
         try {
             findSongsHelper.invoke(_songScanner, _correctDirPath);
-            List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000);
+            List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
             assertEquals(12, songs.size());
 
             _songDatabase.clearDatabase();
             findSongsHelper.invoke(_songScanner, _wrongDirPath);
-            songs = _songDatabase.getSongsWithBPM(100, 1000);
+            songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
             assertEquals(0, songs.size());
 
             _songDatabase.clearDatabase();
             findSongsHelper.invoke(_songScanner, _invalidDirPath);
-            songs = _songDatabase.getSongsWithBPM(100, 1000);
+            songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
             assertEquals(0, songs.size());
 
             _songDatabase.clearDatabase();
             findSongsHelper.invoke(_songScanner, "");
-            songs = _songDatabase.getSongsWithBPM(100, 1000);
+            songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
             assertEquals(0, songs.size());
 
 //            TODO can't invoke methods with null as an argument

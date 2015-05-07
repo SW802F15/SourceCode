@@ -67,7 +67,7 @@ public class SongScanner{
     }
 
     private void updateBPM() {
-        List<Song> songs = _db.getSongsWithBPM(-1, 0);
+        List<Song> songs = _db.getSongsWithBPM(-1, 0, -1);
         for (Song song : songs) {
             loadBPM(song);
         }

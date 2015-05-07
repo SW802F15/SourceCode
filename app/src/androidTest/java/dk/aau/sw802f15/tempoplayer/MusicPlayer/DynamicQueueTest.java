@@ -51,17 +51,14 @@ public class DynamicQueueTest extends AndroidTestCase {
         }};
 
         for(Integer num : values){
-            testGetMatchingSongsHelper(num, 10, 42);
+            testGetMatchingSongsHelper(num, 45);
         }
         for(Integer thresholdBMP : values){
-            testGetMatchingSongsHelper(2, thresholdBMP, 42);
-        }
-        for(Integer bpm : values){
-            testGetMatchingSongsHelper(2, 10, bpm);
+            testGetMatchingSongsHelper(80, thresholdBMP);
         }
     }
 
-    private void testGetMatchingSongsHelper(int num, int thresholdBMP, int bpm) {
+    private void testGetMatchingSongsHelper(int num, int thresholdBMP) {
         List<Song> result = dq.getMatchingSongs(num, thresholdBMP);
 
         assertTrue(result != null);

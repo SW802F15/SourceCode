@@ -160,21 +160,21 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testGetSongsWithBPM(){
-        List<Song> songs = _songDatabase.getSongsWithBPM(110, 30);
+        List<Song> songs = _songDatabase.getSongsWithBPM(110, 30, 0);
         assertEquals(5, songs.size());
 
-        songs = _songDatabase.getSongsWithBPM(80, 10);
+        songs = _songDatabase.getSongsWithBPM(80, 10, 0);
         assertEquals(2, songs.size());
 
-        songs = _songDatabase.getSongsWithBPM(30, 5);
+        songs = _songDatabase.getSongsWithBPM(30, 5, 0);
         assertEquals(0, songs.size());
 
         try{
             for(Integer i : _intValues){
-                _songDatabase.getSongsWithBPM(i, 10);
+                _songDatabase.getSongsWithBPM(i, 10, 0);
             }
             for (Integer i : _intValues){
-                _songDatabase.getSongsWithBPM(50, i);
+                _songDatabase.getSongsWithBPM(50, i, 0);
             }
         }catch (Exception e){
             e.printStackTrace();
