@@ -56,7 +56,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertTrue(getService().musicPlayer.isPlaying());
+                assertTrue(getService().isPlaying());
             }
         }.start();
 
@@ -76,7 +76,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertFalse(getService().musicPlayer.isPlaying());
+                assertFalse(getService().isPlaying());
             }
         }.start();
     }
@@ -112,7 +112,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertFalse(getService().musicPlayer.isPlaying());
+                assertFalse(getService().isPlaying());
                 try {
                     startService(playIntent);
                 } catch (IllegalStateException e){
@@ -142,14 +142,14 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                 final Intent pauseIntent = new Intent();
                 pauseIntent.setAction("Pause");
                 startService(pauseIntent);
-                final int currentPosition = getService().musicPlayer.getCurrentPosition();
+                final int currentPosition = getService().getCurrentPosition();
 
                 new CountDownTimer(2000,1) {
                     @Override
                     public void onTick(long millisUntilFinished) { }
                     @Override
                     public void onFinish() {
-                        assertTrue(currentPosition == getService().musicPlayer.getCurrentPosition());
+                        assertTrue(currentPosition == getService().getCurrentPosition());
                     }
                 }.start();
             }
@@ -175,7 +175,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                 final Intent pauseIntent = new Intent();
                 pauseIntent.setAction("Pause");
                 startService(pauseIntent);
-                final float currentPosition = getService().musicPlayer.getCurrentPosition();
+                final float currentPosition = getService().getCurrentPosition();
                 startService(playIntent);
 
                 new CountDownTimer(1000,1) {
@@ -183,7 +183,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
                     public void onTick(long millisUntilFinished) { }
                     @Override
                     public void onFinish() {
-                        assertTrue(currentPosition < getService().musicPlayer.getCurrentPosition());
+                        assertTrue(currentPosition < getService().getCurrentPosition());
                     }
                 }.start();
             }
@@ -209,7 +209,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertFalse(getService().musicPlayer.isPlaying());
+                assertFalse(getService().isPlaying());
                 try {
                     startService(playIntent);
                     Assert.fail();
@@ -266,7 +266,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         startService(loadIntent);
 
         final int startPos = (7*60+38)*1000;
-        getService().musicPlayer.seekTo(startPos);
+        getService().seekTo(startPos);
 
         final Intent repeatIntent = new Intent();
         repeatIntent.setAction("Repeat");
@@ -281,9 +281,9 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertTrue(getService().musicPlayer.isPlaying() &&
-                           getService().musicPlayer.isLooping() &&
-                           getService().musicPlayer.getCurrentPosition() < startPos);
+                assertTrue(getService().isPlaying() &&
+                           getService().isLooping() &&
+                           getService().getCurrentPosition() < startPos);
             }
         }.start();
     }
@@ -296,7 +296,7 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
         startService(loadIntent);
 
         final int startPos = (7*60+38)*1000;
-        getService().musicPlayer.seekTo(startPos);
+        getService().seekTo(startPos);
 
         final Intent repeatIntent = new Intent();
         repeatIntent.setAction("Repeat");
@@ -322,9 +322,9 @@ public class MusicPlayerServiceTest extends ServiceTestCase<MusicPlayerService>
             public void onTick(long millisUntilFinished) { }
             @Override
             public void onFinish() {
-                assertTrue(getService().musicPlayer.isPlaying() &&
-                           !getService().musicPlayer.isLooping() &&
-                           getService().musicPlayer.getCurrentPosition() < startPos);
+                assertTrue(getService().isPlaying() &&
+                           !getService().isLooping() &&
+                           getService().getCurrentPosition() < startPos);
             }
         }.start();
     }

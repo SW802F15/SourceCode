@@ -37,6 +37,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         musicPlayer.seekTo(progress);
     }
 
+    public boolean isLooping() {
+        return musicPlayer.isLooping();
+    }
+
     public int getCurrentPosition() {
         return musicPlayer.getCurrentPosition();
         //todo     java.lang.IllegalStateException

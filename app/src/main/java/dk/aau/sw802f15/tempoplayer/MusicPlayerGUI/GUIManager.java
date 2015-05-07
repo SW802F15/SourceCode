@@ -238,7 +238,7 @@ public class GUIManager {
                     public void run() {
                         final ImageView playButton = findPlayButton();
                         final ImageView pauseButton = findPauseButton();
-                        if (_activity.mMusicPlayerService.isPlaying()) {
+                        if (_activity.getMusicPlayerService().isPlaying()) {
                             pauseButton.setVisibility(View.VISIBLE);
                             playButton.setVisibility(View.GONE);
                         }

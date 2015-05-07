@@ -5,19 +5,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.widget.Toast;
-
 import java.io.File;
-
 import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceView;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
@@ -28,66 +23,48 @@ import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 
 
 public class MusicPlayerActivity extends Activity{
-    public static int MINIMUM_SONGS_REQUIRED = 6;
-
-    // todo: remove stub when settings are done
+    ////////////////////////////////////////////////////////////////////////
+    //                         Stubs and Drivers                          //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public static String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
-            + Environment.DIRECTORY_MUSIC + "/tempo/";
+                                        + Environment.DIRECTORY_MUSIC + "/tempo/";
 
-    public MusicPlayerService mMusicPlayerService;
-    private StepCounterService mStepCounterService;
+    //endregion
 
-
-    boolean mMusicPlayerBound = false;
-    boolean mStepCounterBound = false;
-
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    private static int MINIMUM_SONGS_REQUIRED = 6;
+    private static String SUPPORTED_FILE_EXTENSION = ".mp3";
+    private MusicPlayerService _MusicPlayerService;
+    private StepCounterService _StepCounterService;
+    boolean isMusicPlayerBound = false;
+    boolean isStepCounterBound = false;
     private Initializers _initializers;
     private boolean songDirContainsSongs = false;
     private static MusicPlayerActivity instance;
     private boolean controlInterfaceActive = false;
     private ControlInterfaceView controlInterfaceView;
+    //endregion
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        songDirContainsSongs = dirContainsSongs(_musicPathStub);
-
-        if(!songDirContainsSongs){
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        }
-        else{
-            if(!DBContainsSongs()){
-                SongScanner.getInstance(this).scan();
-            }
-            Intent intentPlayer = new Intent(this, MusicPlayerService.class);
-            bindService(intentPlayer, mMusicPlayerConnection, Context.BIND_AUTO_CREATE);
-
-            Intent intentStep = new Intent(this, StepCounterService.class);
-            bindService(intentStep, mStepCounterConnection, Context.BIND_AUTO_CREATE);
-
-            setContentView(dk.aau.sw802f15.tempoplayer.R.layout.activity_music_player);
-
-
-            SongScanner.getInstance(this).scanInBackground();
-
-            _initializers = new Initializers(this);
-            _initializers.initializeDynamicQueue();
-            _initializers.initializeOnClickListeners();
-            _initializers.initializeCoverFlow();
-
-            controlInterfaceView = new ControlInterfaceView(this);
-        }
-
-        instance = this;
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public static int getMINIMUM_SONGS_REQUIRED() {
+        return MINIMUM_SONGS_REQUIRED;
     }
-
-    private boolean DBContainsSongs() {
-        return new SongDatabase(this).getSongsWithBPM().size() >= MINIMUM_SONGS_REQUIRED;
+    public MusicPlayerService getMusicPlayerService() {
+        return _MusicPlayerService;
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     protected void onStart() {
         super.onStart();
@@ -117,15 +94,71 @@ public class MusicPlayerActivity extends Activity{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mMusicPlayerBound) {
+        if (isMusicPlayerBound) {
             unbindService(mMusicPlayerConnection);
-            mMusicPlayerBound = false;
+            isMusicPlayerBound = false;
             unbindService(mStepCounterConnection);
-            mStepCounterBound = false;
+            isStepCounterBound = false;
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        if (!openSettingsBecauseNoSongs()) {
+            if(!DBContainsSongs()){
+                SongScanner.getInstance(this).scan();
+            }
+
+            bindMusicPlayerService();
+            bindStepCounterService();
+
+            setContentView(R.layout.activity_music_player);
+
+            SongScanner.getInstance(this).scanInBackground();
+
+            setInitializers();
+
+            controlInterfaceView = new ControlInterfaceView(this);
+        }
+
+        instance = this;
+    }
+
+    private void bindMusicPlayerService() {
+        Intent intentPlayer = new Intent(this, MusicPlayerService.class);
+        bindService(intentPlayer, mMusicPlayerConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void bindStepCounterService() {
+        Intent intentStep = new Intent(this, StepCounterService.class);
+        bindService(intentStep, mStepCounterConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private boolean openSettingsBecauseNoSongs() {
+        songDirContainsSongs = dirContainsSongs(_musicPathStub);
+
+        if(!songDirContainsSongs){
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private void setInitializers() {
+        _initializers = new Initializers(this);
+        _initializers.initializeDynamicQueue();
+        _initializers.initializeOnClickListeners();
+        _initializers.initializeCoverFlow();
+    }
+
+    private boolean DBContainsSongs() {
+        return new SongDatabase(this).getSongsWithBPM().size() >= MINIMUM_SONGS_REQUIRED;
+    }
 
     private ServiceConnection mMusicPlayerConnection = new ServiceConnection() {
         @Override
@@ -133,14 +166,14 @@ public class MusicPlayerActivity extends Activity{
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MusicPlayerService.LocalBinder binder = (MusicPlayerService.LocalBinder) service;
-            mMusicPlayerService = binder.getService();
-            mMusicPlayerBound = true;
-            mMusicPlayerService.loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getSongUri());
+            _MusicPlayerService = binder.getService();
+            isMusicPlayerBound = true;
+            _MusicPlayerService.loadSong(DynamicQueue.getInstance(getApplicationContext()).getCurrentSong().getSongUri());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mMusicPlayerBound = false;
+            isMusicPlayerBound = false;
         }
     };
 
@@ -149,16 +182,51 @@ public class MusicPlayerActivity extends Activity{
         public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             StepCounterService.LocalBinder binder = (StepCounterService.LocalBinder) service;
-            mStepCounterService = binder.getService();
-            mStepCounterBound = true;
+            _StepCounterService = binder.getService();
+            isStepCounterBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            mMusicPlayerBound = false;
+            isMusicPlayerBound = false;
         }
     };
 
+    private boolean dirContainsSongs(String path){
+        return dirContainsSongsHelper(path) >= MINIMUM_SONGS_REQUIRED;
+    }
+
+    private int dirContainsSongsHelper(String path) {
+        int count = 0;
+        if (path == null) { return 0; }
+
+        File dir = new File(path);
+        if (!dir.exists()) { return 0; }
+
+        for(File file : dir.listFiles()){
+            if (file.getPath().endsWith(SUPPORTED_FILE_EXTENSION)){
+                count++;
+            }
+            else if(file.isDirectory()){
+                count += dirContainsSongsHelper(file.getPath());
+            }
+        }
+        return count;
+    }
+
+    private void setStreamVolume(AudioManager audioManager, int volume) {
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                volume,
+                AudioManager.FLAG_PLAY_SOUND + AudioManager.FLAG_SHOW_UI);
+    }
+
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
@@ -177,43 +245,16 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-
-    private boolean dirContainsSongs(String path){
-        return dirContainsSongsHelper(path) >= MINIMUM_SONGS_REQUIRED;
-    }
-
-    private int dirContainsSongsHelper(String path) {
-        int count = 0;
-        if (path == null) { return 0; }
-
-        File dir = new File(path);
-        if (!dir.exists()) { return 0; }
-
-        for(File file : dir.listFiles()){
-            if (file.getPath().endsWith(".mp3")){
-                count++;
-            }
-            else if(file.isDirectory()){
-                count += dirContainsSongsHelper(file.getPath());
-            }
-        }
-        return count;
-    }
-
     public void volumeUp()
     {
         AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         final int currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         if(currentVol == audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVol,
-                                         AudioManager.FLAG_PLAY_SOUND
-                                        +AudioManager.FLAG_SHOW_UI);
+            setStreamVolume(audioManager, currentVol);
         }
         else {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVol + 1,
-                                         AudioManager.FLAG_PLAY_SOUND
-                                        +AudioManager.FLAG_SHOW_UI);
+            setStreamVolume(audioManager, currentVol + 1);
         }
     }
 
@@ -223,19 +264,11 @@ public class MusicPlayerActivity extends Activity{
         final int currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         if(currentVol == 0) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVol,
-                                         AudioManager.FLAG_PLAY_SOUND
-                                        +AudioManager.FLAG_SHOW_UI);
+            setStreamVolume(audioManager, currentVol);
         }
         else {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVol - 1,
-                                         AudioManager.FLAG_PLAY_SOUND
-                                        +AudioManager.FLAG_SHOW_UI);
+            setStreamVolume(audioManager, currentVol - 1);
         }
-    }
-
-    public static MusicPlayerActivity getInstance(){
-        return instance;
     }
 
     @Override
@@ -254,5 +287,10 @@ public class MusicPlayerActivity extends Activity{
         controlInterfaceView.addWindow();
         return false;
     }
+
+    public static MusicPlayerActivity getInstance(){
+        return instance;
+    }
+    //endregion
 }
 

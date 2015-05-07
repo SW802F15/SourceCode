@@ -51,7 +51,7 @@ public class Initializers {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mMusicPlayerService.play();
+                _activity.getMusicPlayerService().play();
                 GUIManager.getInstance(_activity).changePlayPauseButton();
                 GUIManager.getInstance(_activity).startSeekBarPoll();
             }
@@ -64,7 +64,7 @@ public class Initializers {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _activity.mMusicPlayerService.pause();
+                _activity.getMusicPlayerService().pause();
                 GUIManager.getInstance(_activity).changePlayPauseButton();
             }
         });
@@ -77,7 +77,7 @@ public class Initializers {
             @Override
             public void onClick(View v) {
                 GUIManager.getInstance(_activity).resetSeekBar();
-                _activity.mMusicPlayerService.stop();
+                _activity.getMusicPlayerService().stop();
                 GUIManager.getInstance(_activity).changePlayPauseButton();
             }
         });
@@ -110,14 +110,14 @@ public class Initializers {
                                                                  : timeForLastPrevClick;
 
         if (System.currentTimeMillis() - timeSinceLastClick > TIME_BETWEEN_BUTTON_CLICKS) {
-            boolean wasPlaying = _activity.mMusicPlayerService.isPlaying();
+            boolean wasPlaying = _activity.getMusicPlayerService().isPlaying();
 
             if (action == controlAction.next) {
-                _activity.mMusicPlayerService.next();
+                _activity.getMusicPlayerService().next();
                 GUIManager.getInstance(_activity).nextAlbumCover();
             }
             if (action == controlAction.preivous) {
-                _activity.mMusicPlayerService.previous();
+                _activity.getMusicPlayerService().previous();
                 GUIManager.getInstance(_activity).previousAlbumCover();
             }
 
@@ -125,7 +125,7 @@ public class Initializers {
             GUIManager.getInstance(_activity).previousButtonSetVisibility(previousVisibility);
 
             if (wasPlaying) {
-                _activity.mMusicPlayerService.play();
+                _activity.getMusicPlayerService().play();
             }
         }
 
@@ -159,18 +159,18 @@ public class Initializers {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                _isPlaying = _activity.mMusicPlayerService.isPlaying();
-                _activity.mMusicPlayerService.pause();
+                _isPlaying = _activity.getMusicPlayerService().isPlaying();
+                _activity.getMusicPlayerService().pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                _activity.mMusicPlayerService.seekTo(seekBar.getProgress() * 1000);
+                _activity.getMusicPlayerService().seekTo(seekBar.getProgress() * 1000);
 
                 if (_isPlaying) {
-                    _activity.mMusicPlayerService.play();
+                    _activity.getMusicPlayerService().play();
                 } else {
-                    _activity.mMusicPlayerService.pause();
+                    _activity.getMusicPlayerService().pause();
                 }
             }
         });
