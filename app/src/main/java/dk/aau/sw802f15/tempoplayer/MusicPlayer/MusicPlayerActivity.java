@@ -9,19 +9,25 @@ import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
 import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceView;
+import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
+import dk.aau.sw802f15.tempoplayer.R;
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsActivity;
 import dk.aau.sw802f15.tempoplayer.StepCounter.StepCounterService;
 
@@ -100,7 +106,7 @@ public class MusicPlayerActivity extends Activity{
     protected void onResume() {
         super.onResume();
         if(songDirContainsSongs){
-            _initializers.startSeekBarPoll();
+            GUIManager.getInstance(getInstance()).startSeekBarPoll();
         }
     }
 
@@ -108,7 +114,7 @@ public class MusicPlayerActivity extends Activity{
     protected void onPause() {
         super.onPause();
         if(songDirContainsSongs) {
-            _initializers.stopSeekBarPoll();
+            GUIManager.getInstance(getInstance()).stopSeekBarPoll();
         }
     }
 
@@ -159,8 +165,7 @@ public class MusicPlayerActivity extends Activity{
 
     private ServiceConnection mStepCounterConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
+        public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             StepCounterService.LocalBinder binder = (StepCounterService.LocalBinder) service;
             mStepCounterService = binder.getService();
@@ -246,28 +251,6 @@ public class MusicPlayerActivity extends Activity{
                                          AudioManager.FLAG_PLAY_SOUND
                                         +AudioManager.FLAG_SHOW_UI);
         }
-    }
-
-    public void setSPMText(int spm) {
-        TextView SPMTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_spm);
-        String SPM = Integer.toString(spm);
-        SPMTextView.setText(SPM);
-    }
-
-    public void setSongDurationText(int duration) {
-        TextView songDurationTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_songDuration);
-
-        SongTime songTime = new SongTime(duration);
-
-        songDurationTextView.setText(songTime.getFormattedSongTime());
-    }
-
-    public void setSongProgressText(int duration) {
-        TextView songDurationTextView = (TextView) findViewById(dk.aau.sw802f15.tempoplayer.R.id.textView_currentPosition);
-
-        SongTime songTime = new SongTime(duration);
-
-        songDurationTextView.setText(songTime.getFormattedSongTime());
     }
 
     public static MusicPlayerActivity getInstance(){

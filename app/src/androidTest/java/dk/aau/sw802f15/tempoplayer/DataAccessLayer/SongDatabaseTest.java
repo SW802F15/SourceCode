@@ -200,7 +200,7 @@ public class SongDatabaseTest extends AndroidTestCase {
         }
 
         try {
-            actualSongList = (List<Song>) privateMethod.invoke(_songDatabase, cursor);
+            actualSongList = (List<Song>) privateMethod.invoke(_songDatabase, cursor, db);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

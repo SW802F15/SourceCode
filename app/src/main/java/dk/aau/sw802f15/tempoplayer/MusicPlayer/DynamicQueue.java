@@ -1,10 +1,12 @@
 package dk.aau.sw802f15.tempoplayer.MusicPlayer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
+import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 public class DynamicQueue {
-
     ////////////////////////////////////////////////////////////////////////
     //                         Stubs and Drivers                          //
     ////////////////////////////////////////////////////////////////////////
@@ -32,7 +33,10 @@ public class DynamicQueue {
     private int _prevSize = 3;
     private int _lookAheadSize = 2;
     private int _BPMDeviation = 45;
-    private int prevSongsSizeBeforeAdd = -1;
+    private int _prevSongsSizeBeforeAdd = -1;
+    private static Context _context;
+    private int _lastSPM;
+    private int stub = 110;
     //endregion
 
     ////////////////////////////////////////////////////////////////////////
@@ -52,7 +56,12 @@ public class DynamicQueue {
         return _prevSize;
     }
     public int getPrevSongsSizeBeforeAdd() {
-        return prevSongsSizeBeforeAdd;
+        return _prevSongsSizeBeforeAdd;
+    }
+
+    //todo: will be used at later time
+    public void setLastSPM(int lastSpm){
+        _lastSPM = lastSpm;
     }
     //endregion
 
@@ -60,12 +69,11 @@ public class DynamicQueue {
     //                            Constructors                            //
     ////////////////////////////////////////////////////////////////////////
     //region
-    protected DynamicQueue(){
-        //Empty because singleton
-    }
+    protected DynamicQueue(){ /*Empty because singleton*/ }
 
     public static DynamicQueue getInstance(Context context){
         if ( instance == null ){
+            _context = context;
             _songDatabase = new SongDatabase(context);
             instance = new DynamicQueue();
         }
@@ -85,17 +93,20 @@ public class DynamicQueue {
         if (_nextSongs == null || _nextSongs.size() == 0) {
             _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
+        
         if (_nextSongs.size() == 0 && _prevSongs.size() > 0){
             _prevSongs.clear();
             _nextSongs = getMatchingSongs(_lookAheadSize, _BPMDeviation);
         }
+
         return _nextSongs.size() != 0;
     }
 
     private void moveCurrentSongToPrevious() {
         if (_currentSong != null){
-            prevSongsSizeBeforeAdd = _prevSongs.size();
+            _prevSongsSizeBeforeAdd = _prevSongs.size();
             _prevSongs.add(_currentSong);
+
             if (_prevSongs.size() > _prevSize){
                 _prevSongs.remove(0);
             }
@@ -137,7 +148,7 @@ public class DynamicQueue {
         _nextSongs.add(0, _currentSong);
 
         if (_nextSongs.size() > _lookAheadSize){
-            _nextSongs.remove(_nextSongs.size()-1);
+            _nextSongs.remove(_nextSongs.size() - 1);
         }
 
         _currentSong = _prevSongs.get(_prevSongs.size() - 1);
@@ -145,14 +156,13 @@ public class DynamicQueue {
         _prevSongs.remove(null);
     }
 
-    public List<Song> getMatchingSongs(int num, int thresholdBMP){
-        if (num < 1 || thresholdBMP < 0){
+    public List<Song> getMatchingSongs(int num, int thresholdBPM){
+        if (num < 1 || thresholdBPM < 0){
             Log.d("getMatchingSongs", "Illegal Arguments");
             return new ArrayList<>();
         }
-
-        final int desiredBMP = getCurrentSPM_STUB();
-        final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBMP, thresholdBMP);
+        final int desiredBPM = getCurrentSPM_STUB();
+        final List<Song> songs = _songDatabase.getSongsWithBPM(desiredBPM, thresholdBPM);
 
         removeDuplicateSongs(_prevSongs, songs);
         removeDuplicateSongs(_nextSongs, songs);
@@ -183,6 +193,25 @@ public class DynamicQueue {
             }
         }
     }
+
+    public List<Bitmap> getDynamicQueueAsList() {
+        List<Bitmap> allAlbumCovers = new ArrayList<>();
+
+        for (Song song : getPrevSongs())
+        {
+            allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(getCurrentSong().getAlbumUri()));
+
+        for (Song song : getNextSongs())
+        {
+            allAlbumCovers.add(GUIManager.getInstance(_context).getBitmapFromUri(song.getAlbumUri()));
+        }
+
+        return allAlbumCovers;
+    }
+
     //endregion
 }
 
