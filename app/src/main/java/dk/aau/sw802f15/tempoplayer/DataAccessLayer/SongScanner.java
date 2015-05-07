@@ -62,6 +62,7 @@ public class SongScanner{
     }
 
     public void scan(){
+        removeSongs();
         findSongs();
         updateBPM();
     }
@@ -82,7 +83,7 @@ public class SongScanner{
         Map<Integer, String> paths = _db.getAllSongPaths();
 
         for (Integer key : paths.keySet()) {
-            if(!new File(paths.get(key)).exists()){
+            if(!(new File(paths.get(key)).exists())){
                 _db.deleteSongByID(key);
             }
         }
@@ -96,7 +97,7 @@ public class SongScanner{
 
         for(File file : dir.listFiles()){
             if (file.getPath().endsWith(".mp3") &&
-                    _db.getSongByPath(Uri.fromFile(file)) == null){
+                    _db.getSongByPath(Uri.parse(file.getPath())) == null){
                 Song song = new Song(file);
                 song = _db.insertSong(song);
                 loadCover(song);
@@ -175,7 +176,7 @@ public class SongScanner{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        song.setAlbumUri(Uri.fromFile(file));
+        song.setAlbumUri(Uri.parse(file.getPath()));
 
         _db.updateSong(song);
     }

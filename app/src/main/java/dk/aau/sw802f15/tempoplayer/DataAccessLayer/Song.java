@@ -97,7 +97,7 @@ public class Song {
                 metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ARTIST),
                 metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_ALBUM),
                 INT_DOES_NOT_EXIST,
-                Uri.fromFile(file),
+                Uri.parse(file.getPath()),
                 URI_DOES_NOT_EXIST,
                 Integer.parseInt(metadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION))/MS_PER_SEC
         );

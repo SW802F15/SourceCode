@@ -297,6 +297,10 @@ public class MusicPlayerActivity extends Activity{
     public static MusicPlayerActivity getInstance(){
         return instance;
     }
+
+    public boolean isPlaying() {
+        return _MusicPlayerService.isPlaying();
+    }
     //endregion
 }
 
