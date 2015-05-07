@@ -9,20 +9,18 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
 import dk.aau.sw802f15.tempoplayer.R;
 
-/**
- * Created by Draegert on 16-02-2015.
- */
+
 public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener{
 
-    public MediaPlayer musicPlayer;
+    private MediaPlayer musicPlayer;
     public boolean isLoaded = false;
     public boolean isPrepared = false;
     public boolean isPaused = false;
@@ -30,6 +28,20 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private final IBinder mBinder = new LocalBinder();
     private MusicPlayerActivity _activity;
+
+    public boolean isPlaying() {
+        return musicPlayer.isPlaying();
+    }
+
+    public void seekTo(int progress) {
+        musicPlayer.seekTo(progress);
+    }
+
+    public int getCurrentPosition() {
+        return musicPlayer.getCurrentPosition();
+        //todo     java.lang.IllegalStateException
+
+    }
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -106,7 +118,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
         catch (IOException e) {
             e.printStackTrace();
-            Log.e("loadSong", e.getStackTrace().toString());
+            Log.e("loadSong", Arrays.toString(e.getStackTrace()));
             GUIManager.getInstance(_activity).showToast(errorMessage);
         }
 

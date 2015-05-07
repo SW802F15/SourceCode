@@ -31,11 +31,10 @@ public class SeekBarManager {
     //region
     private Runnable updateSeekBarTime = new Runnable() {
         public void run() {
-            if(_activity.mMusicPlayerService == null ||
-                    _activity.mMusicPlayerService.musicPlayer == null){
+            if(_activity.mMusicPlayerService == null) { //|| _activity.mMusicPlayerService.musicPlayer == null){
                 return;
             }
-            int timeElapsed = _activity.mMusicPlayerService.musicPlayer.getCurrentPosition() / 1000;
+            int timeElapsed = _activity.mMusicPlayerService.getCurrentPosition() / 1000;
             android.widget.SeekBar seekBar = GUIManager.getInstance(_activity).findSeekBar();
             seekBar.setProgress(timeElapsed);
             GUIManager.getInstance(_activity).setSongProgressText(timeElapsed);
@@ -58,9 +57,9 @@ public class SeekBarManager {
     }
 
     protected void resetSeekBar() {
-        if (_activity.mMusicPlayerService.musicPlayer.isPlaying() ||
+        if (_activity.mMusicPlayerService.isPlaying() ||
             _activity.mMusicPlayerService.isPaused) {
-            _activity.mMusicPlayerService.musicPlayer.seekTo(0);
+            _activity.mMusicPlayerService.seekTo(0);
         }
     }
     //endregion

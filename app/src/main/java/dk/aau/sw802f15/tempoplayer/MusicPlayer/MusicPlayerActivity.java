@@ -9,21 +9,16 @@ import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
 import dk.aau.sw802f15.tempoplayer.ControlInterface.ControlInterfaceView;
-import dk.aau.sw802f15.tempoplayer.DataAccessLayer.Song;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongDatabase;
 import dk.aau.sw802f15.tempoplayer.DataAccessLayer.SongScanner;
 import dk.aau.sw802f15.tempoplayer.MusicPlayerGUI.GUIManager;
@@ -42,7 +37,6 @@ public class MusicPlayerActivity extends Activity{
     public MusicPlayerService mMusicPlayerService;
     private StepCounterService mStepCounterService;
 
-    ControlInterfaceView controlInterfaceView;
 
     boolean mMusicPlayerBound = false;
     boolean mStepCounterBound = false;
@@ -51,6 +45,8 @@ public class MusicPlayerActivity extends Activity{
     private boolean songDirContainsSongs = false;
     private static MusicPlayerActivity instance;
     private boolean controlInterfaceActive = false;
+    private ControlInterfaceView controlInterfaceView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,22 +125,7 @@ public class MusicPlayerActivity extends Activity{
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        if (!controlInterfaceActive) {
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT, 150,
-                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                            | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                    PixelFormat.TRANSLUCENT);
-            windowManager.addView(controlInterfaceView, params);
-            controlInterfaceActive = true;
-        }
 
-        return false;
-    }
 
     private ServiceConnection mMusicPlayerConnection = new ServiceConnection() {
         @Override
@@ -257,48 +238,21 @@ public class MusicPlayerActivity extends Activity{
         return instance;
     }
 
-    public void doTapAction(int taps) {
-        switch (taps){
-            case 0:
-                mMusicPlayerService.stop();
-                break;
-            case 1:
-                if (mMusicPlayerService.isPaused) {
-                    mMusicPlayerService.play();
-                }
-                else {
-                    mMusicPlayerService.pause();
-                }
-                break;
-            case 2:
-                mMusicPlayerService.next();
-                break;
-            case 3:
-                mMusicPlayerService.previous();
-                break;
-            default:
-                //do nothing
-        }
-        Toast.makeText(this, "taps: " + taps, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        if (controlInterfaceActive) {
-            return controlInterfaceView.detector.onTouchEvent(event);
-        }
-        return super.onTouchEvent(event);
-    }
-
     @Override
     public void onBackPressed() {
-        if (controlInterfaceActive){
-            controlInterfaceActive = false;
-            getWindowManager().removeView(controlInterfaceView);
-        }
-        else {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        boolean viewActive = controlInterfaceView.removeWindow();
+        if (!viewActive) {
             super.onBackPressed();
         }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        controlInterfaceView.addWindow();
+        return false;
     }
 }
 
