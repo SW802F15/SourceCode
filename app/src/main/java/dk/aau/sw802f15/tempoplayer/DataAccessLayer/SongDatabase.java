@@ -173,8 +173,8 @@ public class SongDatabase extends SQLiteOpenHelper
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, searchRow + "=?",
-                new String[] { String.valueOf(searchParameter) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"rowid", "*"}, searchRow + "=?",
+                new String[]{String.valueOf(searchParameter)}, null, null, null, null);
 
         try{
             resultSong = constructSongListFromCursor(cursor, db).get(0);
@@ -194,10 +194,10 @@ public class SongDatabase extends SQLiteOpenHelper
             return new ArrayList<Song>();
         }
 
-        Cursor cursor = db.query(TABLE_NAME, new String[] {"rowid", "*"}, "bpm >= ? AND bpm >= ? AND bpm <= ?",
-                new String[] {String.valueOf(minimumBPM),
-                              String.valueOf(BPM - thresholdBPM),
-                              String.valueOf(BPM + thresholdBPM) }
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"rowid", "*"}, "bpm >= ? AND bpm >= ? AND bpm <= ?",
+                new String[]{String.valueOf(minimumBPM),
+                        String.valueOf(BPM - thresholdBPM),
+                        String.valueOf(BPM + thresholdBPM)}
                 , null, null, null, null);
 
         List<Song> songs = constructSongListFromCursor(cursor, db);
@@ -250,7 +250,7 @@ public class SongDatabase extends SQLiteOpenHelper
         }
     }
 
-    public int deleteSongByID(long id) {
+    public int deleteSongByID(long id) throws SQLiteException {
         try{
             deleteAlbumCoverById(id);
 
@@ -268,11 +268,14 @@ public class SongDatabase extends SQLiteOpenHelper
 
     private void deleteAlbumCoverById(long songID) {
         Song song = getSongById(songID);
+
         File cover = new File(song.getAlbumUri().getPath());
-        if (cover.exists()){
+
+        if (cover.exists()) {
             cover.delete();
         }
     }
+
 
     public int updateSong(Song song) throws SQLiteException{
         SQLiteDatabase db = null;

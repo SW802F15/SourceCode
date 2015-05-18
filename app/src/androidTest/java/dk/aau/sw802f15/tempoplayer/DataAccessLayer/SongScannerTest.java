@@ -1,11 +1,13 @@
 package dk.aau.sw802f15.tempoplayer.DataAccessLayer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.MediumTest;
@@ -16,8 +18,11 @@ import junit.framework.Assert;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import dk.aau.sw802f15.tempoplayer.Settings.SettingsFragment;
 import dk.aau.sw802f15.tempoplayer.TestHelper;
 
 public class SongScannerTest extends AndroidTestCase {
@@ -81,6 +86,14 @@ public class SongScannerTest extends AndroidTestCase {
     }
 
     public void testFindSongs() {
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        Set<String> stringSet = new HashSet<String>() {{ add(_correctDirPath); }};
+//
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putStringSet("paths", stringSet);
+//        editor.apply();
+//
+
         _songDatabase.insertSong(_song);
         _songScanner.findSongs();
         List<Song> songs = _songDatabase.getSongsWithBPM(100, 1000, 0);

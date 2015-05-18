@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.HandlerThread;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,25 +25,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Handler;
 
 import dk.aau.sw802f15.tempoplayer.Settings.SettingsFragment;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class SongScanner{
+
+    ////////////////////////////////////////////////////////////////////////
+    //                      Private Shared Resources                      //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private static SongScanner _instance;
     private static Context _context;
     private static SongDatabase _db;
+    //endregion
 
-    private String _musicPathStub = Environment.getExternalStorageDirectory() + "/"
-            + Environment.DIRECTORY_MUSIC + "/tempo/";
-
-    protected SongScanner(){
-        //Empty because singleton
-    }
-
+    ////////////////////////////////////////////////////////////////////////
+    //                             Accessors                              //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     public static SongScanner getInstance(Context context) {
         if ( _instance == null ){
             _context = context;
@@ -53,31 +53,25 @@ public class SongScanner{
         }
         return _instance;
     }
-    public void scanInBackground(){
-        scan();
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                scan();
-//            }
-//        }.start();
-    }
+    //endregion
 
-    public void scan(){
-        findSongs();
-        updateBPM();
+    ////////////////////////////////////////////////////////////////////////
+    //                            Constructors                            //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    protected SongScanner(){
+        //Empty because singleton
     }
+    //endregion
 
+    ////////////////////////////////////////////////////////////////////////
+    //                        Private Functionality                       //
+    ////////////////////////////////////////////////////////////////////////
+    //region
     private void updateBPM() {
         List<Song> songs = _db.getSongsWithBPM(-1, 0, -1);
         for (Song song : songs) {
             loadBPM(song);
-        }
-    }
-
-    public void findSongs(){
-        for(String path : SettingsFragment.getSavedPaths(_context)){
-            findSongsHelper(path);
         }
     }
 
@@ -99,8 +93,6 @@ public class SongScanner{
             }
         }
     }
-
-
 
     private void loadCover(Song song){
         if (!new File(song.getSongUri().getPath()).exists()) return;
@@ -157,8 +149,8 @@ public class SongScanner{
 
             Integer bpm;
             bpm = getOnlineBPM(String.format(webservice + apiKey + responseFormat,
-                               song.getArtist().replace(' ', '+'),
-                               song.getTitle().replace(' ', '+')));
+                    song.getArtist().replace(' ', '+'),
+                    song.getTitle().replace(' ', '+')));
 
             updateBpm(bpm, song.getID());
 
@@ -276,4 +268,37 @@ public class SongScanner{
             e.printStackTrace();
         }
     }
+
+    //endregion
+
+    ////////////////////////////////////////////////////////////////////////
+    //                  Public Functionality - Interface                  //
+    ////////////////////////////////////////////////////////////////////////
+    //region
+    public void scanInBackground(){
+        scan();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                scan();
+//            }
+//        }.start();
+    }
+
+    public void scan(){
+        findSongs();
+        updateBPM();
+    }
+
+    public void findSongs(){
+        for(String path : SettingsFragment.getSavedPaths(_context)){
+            findSongsHelper(path);
+        }
+    }
+    //endregion
+
+
+
+
+
 }

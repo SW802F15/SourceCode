@@ -95,10 +95,12 @@ public class SongDatabaseTest extends AndroidTestCase {
 
     @MediumTest
     public void testDeleteNotExists(){
-        try {
+        try
+        {
             _songDatabase.deleteSong(_song);
             Assert.fail();
-        }catch (SQLiteException e)
+        }
+        catch (SQLiteException | NullPointerException e)
         {
             e.printStackTrace();
         }
