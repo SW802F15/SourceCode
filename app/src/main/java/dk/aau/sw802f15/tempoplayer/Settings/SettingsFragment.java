@@ -143,7 +143,7 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });*/
-        AddButton.setOrder(10000); //TODO: Should never reach this value
+        AddButton.setOrder(10000); //Should never reach this value
         pathPreferenceList.add(AddButton);
     }
 

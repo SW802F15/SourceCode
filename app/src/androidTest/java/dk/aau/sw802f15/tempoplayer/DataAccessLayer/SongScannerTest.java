@@ -131,7 +131,7 @@ public class SongScannerTest extends AndroidTestCase {
             songs = _songDatabase.getSongsWithBPM(100, 1000, 0);
             assertEquals(0, songs.size());
 
-//            TODO can't invoke methods with null as an argument
+//            can't invoke methods with null as an argument
 //            _songDatabase.clearDatabase();
 //            findSongsHelper.invoke(_songScanner, null);
 //            songs = _songDatabase.getSongsWithBPM(100, 1000);

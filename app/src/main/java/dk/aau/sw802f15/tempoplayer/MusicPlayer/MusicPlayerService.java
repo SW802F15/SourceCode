@@ -43,7 +43,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public int getCurrentPosition() {
         return musicPlayer.getCurrentPosition();
-        //todo     java.lang.IllegalStateException
+        //java.lang.IllegalStateException if not playing
 
     }
 

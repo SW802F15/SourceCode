@@ -21,11 +21,8 @@ public class StepCounterServiceTest extends ServiceTestCase<StepCounterService> 
     @SmallTest
     public void testGetSPM() {
 
-        //TODO Need to fake sensor data, doesn't work
+        //Need to fake sensor data, doesn't work
         //getService().onSensorChanged(new SensorEvent());
         //assertEquals(getService().getSpm(), 100);
-
     }
-
-
 }

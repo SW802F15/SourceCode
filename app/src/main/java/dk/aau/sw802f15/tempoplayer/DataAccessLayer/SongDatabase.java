@@ -75,7 +75,6 @@ public class SongDatabase extends SQLiteOpenHelper
         }
         catch(SQLiteException e)
         {
-            //TODO: Display error message
             e.printStackTrace();
             return false;
         }
@@ -292,7 +291,6 @@ public class SongDatabase extends SQLiteOpenHelper
         }
 
         ContentValues values = new ContentValues();
-        //TODO consider if this should be more general
         values.put("album_path", song.getAlbumUri().toString());
         if (song.getBpm() != null) {
             values.put("bpm", song.getBpm().toString());

@@ -54,7 +54,6 @@ public class DynamicQueue {
         return _prevSongsSizeBeforeAdd;
     }
 
-    //todo: will be used at later time
     public void setLastSPM(int lastSpm){
         _lastSPM = lastSpm;
     }

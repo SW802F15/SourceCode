@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 
 //Source: http://www.codeproject.com/Articles/547636/Android-Ready-to-use-simple-directory-chooser-dial
-//TODO move to lib folder
 public class DirectoryChooserDialog
 {
     private boolean m_isNewFolderEnabled = true;
@@ -203,7 +202,6 @@ public class DirectoryChooserDialog
 
             for (File file : dirFile.listFiles())
             {
-                //TODO make an option.
                 //if ( file.isDirectory() )
                 //{
                     dirs.add( file.getName() );
