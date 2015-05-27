@@ -31,6 +31,7 @@ public class DynamicQueue {
     private static Context _context;
     private static int THRESHOLD_BPM_INCREMENTOR = 5;
     private static int DEFAULT_BPM_WITHOUT_SPM = 110;
+    private static int SINGLE_SONG = 1;
     private int _lastSPM = 0;
     //endregion
 
@@ -110,7 +111,7 @@ public class DynamicQueue {
     private void updateCurrentSongFromNextSongs() {
         _currentSong = _nextSongs.get(0);
         _nextSongs.remove(0);
-        _nextSongs.add(getMatchingSongs(1, _BPMDeviation).get(0));
+        _nextSongs.add(getMatchingSongs(SINGLE_SONG, _BPMDeviation).get(0));
     }
     //endregion
 
